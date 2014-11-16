@@ -1,0 +1,8 @@
+<script src="js/libs/jquery-1.11.1.min.js"></script>
+<script src="js/libs/require.min.js"></script>
+<script>
+require.config({ baseUrl:'../src', paths: { cartoon: 'cartoon' } });
+require([ 'cartoon' ], function(ct) {
+	console.log(ct);
+});
+</script>
