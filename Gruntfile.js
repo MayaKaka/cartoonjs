@@ -7,11 +7,11 @@ module.exports = function(grunt) {
 	  	requirejs: {
 		  	compile: {
 		    	options: {
-		      		baseUrl: "src",
+		      		baseUrl: 'src',
 		      		// mainConfigFile: "buildConfig.js",
-		      		name: "<%= pkg.main %>",
-		      		out: "build/<%= pkg.main %>.js",
-		      		optimize: "none"
+		      		name: '<%= pkg.main %>',
+		      		out: 'build/<%= pkg.main %>.<%= grunt.template.today("yymmdd") %>.js',
+		      		optimize: 'none'
 		    	}
 		  	}
 		},
@@ -20,7 +20,7 @@ module.exports = function(grunt) {
 	      		banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
 	    	},
 	    	build: {
-	      		src: 'build/<%= pkg.main %>.js',
+	      		src: 'build/<%= pkg.main %>.<%= grunt.template.today("yymmdd") %>.js',
 	      		dest: 'build/<%= pkg.main %>.min.js'
 	    	}
 	  	}

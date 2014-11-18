@@ -255,7 +255,7 @@ StyleSheet.styles = {
 					style.width = this.width + 'px';
 					style.height = this.height + 'px';
 				}
-			}		
+			}
 		},
 		step: StyleSheet.commonSteps
 	},

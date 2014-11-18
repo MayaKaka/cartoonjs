@@ -1,8 +1,111 @@
-<script src="js/libs/jquery-1.11.1.min.js"></script>
-<script src="js/libs/require.min.js"></script>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <script src="js/libs/jquery-1.11.1.min.js"></script>
+  <script src="js/libs/require.min.js"></script>
+  <style>
+  	html { font-family: "Helvetica Neue", Helvetica, Microsoft Yahei, Hiragino Sans GB, WenQuanYi Micro Hei, sans-serif; }
+    .op-home-header { background:rgb(45,58,66); color:#FFF; overflow:hidden; }
+    .op-home-header h1 { float:left; margin-left:20px; margin-right:20px; }
+    .op-home-navbar a { float:left; margin-top:20px; color:#FFF; }
+    .op-home-slide { height:300px; background:url(images/home_slide_0.jpg) center -100px; overflow:hidden; }
+    .op-home-banner { margin:30px 0 0 20px; color:#FFF; }
+    .op-home-banner li { font-size:20px; margin-top:10px; }
+	.op-home-main {}
+	.op-home-footer { width: 100%; text-align: center; overflow: hidden; }
+	.op-home-footer {  }
+	.op-home-footer canvas { margin-top:10px; border-radius: 0.5em; }
+  </style>
+</head>
+  <body>
+	<div class="op-home-header">  
+   	  <h1>CartoonJS</h1>
+   	  <ul class="nav navbar-nav op-home-navbar">
+   	  	<li><a href="api.html" target="_blank">api文档</a></li>
+   	  	<li><a href="demo.html" target="_blank">api展示</a></li>
+   	  	<li><a href="three.html" target="_blank">3d展示</a></li>
+   	  </ul>
+    </div>
+	<div class="op-home-main">
+	  <div class="op-home-slide">
+	  	<div class="op-home-banner">
+	  	  <h2>Create.Connect.Succeed</h2>
+	  	  <br>
+	      <ul>
+	        <li>构建高性能WEB动画</li>
+	        <li>引导产品设计，提升页面表现力</li>
+	        <li>基础技术积累，提高迭代效率</li>
+	        <li>新技术的创新与实践</li>
+	      </ul>
+	  	</div>
+	  </div>
+	</div>
+	<div class="op-home-footer">
+		<canvas id="cvs"></canvas>
+	
 <script>
 require.config({ baseUrl:'../src', paths: { cartoon: 'cartoon' } });
 require([ 'cartoon' ], function(ct) {
+	ct.DisplayObject.setRenderMode('canvas');
 	console.log(ct);
+	var ticker = new ct.Ticker(),
+		random = ct.random;
+		
+	var cvs = new ct.Canvas({ elem: '#cvs', width: 900, height: 300 });
+	
+	var bg = new ct.Shape({ 
+		g: { type: 'rect', width: cvs.width, height: cvs.height, fill: 'top,#0000FF,#00FF00' }
+	});
+	cvs.add(bg);
+			
+	var spriteSheet = {
+		images: [ 'images/runningGrant.png' ],
+		frames: { width: 165, height: 292, num: 64, cols: 12, rows: 6, img: 0 },
+		animations: {
+			'run': [0, 25, 'run', 0],
+			'jump': [26, 63, 'run', 0]
+		}
+	};
+	var sprite;
+			
+	for (var i=0; i<60; i++) {
+		sprite = new ct.Sprite({
+			x: random(0, cvs.width), y: random(0, cvs.height), ss: spriteSheet,
+			transform: { translateX: -spriteSheet.frames.width/2, translateY: -spriteSheet.frames.height/2, scale: random(25, 100)/100 }
+		});
+		sprite.play('run');
+		cvs.add(sprite);
+	}
+			
+	var fps = new ct.Text({ 
+		text: 'fps:0' 
+	});
+	cvs.add(fps);
+	
+	ticker.add(function() { fps.value('fps:' + ticker.fps); });
+	ticker.add(cvs);
+
+   	ticker.start();
 });
 </script>
+
+<div>
+<a href="http://threejs.org/" target="_blank">threejs</a>
+<a href="http://threejs.org/examples/" target="_blank">examples</a>
+<a href="http://webglsamples.org/" target="_blank">webglsamples</a>
+<a href="http://cycleblob.com/" target="_blank">cycleblob</a>
+<a href="http://chrysaora.com/" target="_blank">chrysaora</a>
+<a href="http://madebyevan.com/" target="_blank">madebyevan</a>
+<a href="http://aleksandarrodic.com/" target="_blank">aleksandarrodic</a>
+<a href="http://lights.elliegoulding.com/" target="_blank">lights</a>
+<a href="http://www.creativebloq.com/3d/30-amazing-examples-webgl-action-6142954" target="_blank">creativebloq</a>
+<a href="http://www.randelshofer.ch/webgl/rubikscube/" target="_blank">rubikscube</a>
+<a href="http://stars.chromeexperiments.com/" target="_blank">rubikscube</a>
+<a href="http://playwebgl.com/" target="_blank">rubikscube</a>
+<a href="http://labs.chinamobile.com/mblog/287/168169"></a>
+</div>
+	</div>
+  </body>
+</html>

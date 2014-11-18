@@ -19,5 +19,9 @@ var expand = function (props) {
 	}
 }
 
-return { version: '0.0.0', expand: expand };
+var random = function(min, max) {
+	return Math.round(Math.random() * (max - min)) + min;
+}
+
+return { version: '0.0.0', expand: expand, random: random };
 });

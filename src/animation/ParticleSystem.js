@@ -3,7 +3,7 @@ define( function ( require, exports, module ) {
 	"use strict";
 	   
 var DisplayObject = require('display/DisplayObject'),
-	ParticleEmitter = require('extra/ParticleEmitter');
+	ParticleEmitter = require('animation/ParticleEmitter');
 
 var ParticleSystem = DisplayObject.extend({
 	
@@ -15,7 +15,7 @@ var ParticleSystem = DisplayObject.extend({
 	
 	init: function(props) {
 		this._super(props);
-		this._initParticle(props.particle); // 初始化粒子
+		this._initParticle(props.particle || props.p); // 初始化粒子
 	},
 	
 	stop: function() {

@@ -25,7 +25,7 @@ var Sprite = DisplayObject.extend({
     init: function(props) {
 		this._super(props);
 		// 初始化精灵序列帧
-		this._initSpriteSheet(props.spriteSheet);
+		this._initSpriteSheet(props.spriteSheet || props.ss);
 	},
 	
     play: function(name) {

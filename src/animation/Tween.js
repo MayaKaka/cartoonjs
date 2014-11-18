@@ -114,6 +114,10 @@ Tween.get = function(target) {
 	return this;
 }
 
+Tween.has = function(target) {
+	return !!target.data('fx_queue');
+}
+
 Tween.addTween = function(props, duration, easing, callback, onframe) {
 	var target = this._currentTarget,
 		queue = target.data('fx_queue');

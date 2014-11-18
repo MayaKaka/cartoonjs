@@ -262,16 +262,18 @@ var DisplayObject = EventDispatcher.extend({
 			updater;
 		for (var i = 0, len = updaters.length; i < len; i++) {
 			updater = updaters[i];
-	
-			if (updater.hasEventListener('update')) {
-				updater.trigger({ type: 'update', delta: delta });
-			}
-					
-			if (updater.update) {
-				updater.update(delta);	
-			} 
-			else if (updater.type === 'DisplayObject') {
-				updater._eachUpdaters(delta);		
+			
+			if (updater) {
+				if (updater.hasEventListener('update')) {
+					updater.trigger({ type: 'update', delta: delta });
+				}
+						
+				if (updater.update) {
+					updater.update(delta);	
+				} 
+				else if (updater.type === 'DisplayObject') {
+					updater._eachUpdaters(delta);		
+				}
 			}
 		}
 	},

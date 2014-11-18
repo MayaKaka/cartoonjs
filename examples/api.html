@@ -7,28 +7,29 @@
   <script src="js/libs/require.min.js"></script>
   <style>
   	html { font-family: "Helvetica Neue", Helvetica, Microsoft Yahei, Hiragino Sans GB, WenQuanYi Micro Hei, sans-serif; }
-    .op-doc-header { padding: 10px 10px; color: #FFF; height: 150px; background-color: #6f5499; background-image: linear-gradient(to bottom,rgb(45,58,66) 0,rgb(85,98,106) 100%); }
-  	.op-doc-header h1 { font-size: 50px;  }
-  	.op-doc-header p { font-size: 18px; margin-left: 6px; }
-  	.op-doc-main { padding: 30px 15px; }
-  	.op-doc-main h3 { padding-top: 10px; border-top: 1px solid #eee; }
-  	.op-doc-api { border-color: #ddd; border-width: 1px; border-radius: 4px 4px 0 0; }
-  	.op-doc-api span { display: inline-block; margin: 5px 3px; padding: 3px 6px 3px 6px; border: 1px #DDD solid; border-radius: 5px; background: #FBFBFB; }
-  	.op-doc-api label { color: #2a6496; margin-left: 20px; width: 150px; font-weight: normal;}
-  	.op-doc-api li label { margin-left: 0px; width: 132px; }
+    .doc-header { padding: 10px 10px; color: #FFF; height: 150px; background-color: #6f5499; background-image: linear-gradient(to bottom,rgb(45,58,66) 0,rgb(85,98,106) 100%); }
+  	.doc-header h1 { font-size: 50px; }
+  	.doc-header p { font-size: 18px; margin-left: 6px; }
+  	.doc-main { padding: 30px 15px; }
+  	.doc-main h3 { padding-top: 10px; border-top: 1px solid #eee; }
+  	.doc-main canvas { box-sizing:content-box; }
+  	.doc-api { border-color: #ddd; border-width: 1px; border-radius: 4px 4px 0 0; }
+  	.doc-api span { display: inline-block; margin: 5px 3px; padding: 3px 6px 3px 6px; border: 1px #DDD solid; border-radius: 5px; background: #FBFBFB; }
+  	.doc-api label { color: #2a6496; margin-left: 20px; width: 150px; font-weight: normal;}
+  	.doc-api li label { margin-left: 0px; width: 132px; }
   </style>
   <script>
 	require.config({ baseUrl: '../src', paths: { cartoon: 'cartoon' }});
   </script>
 </head>
 <body>
-<div class="op-doc-header">
+<div class="doc-header">
   <div class="container">
     <h1>特效库    API 设计</h1>
     <p>图形，图像，动画，事件</p>
   </div>
 </div>
-<div class="op-doc-main">
+<div class="doc-main">
   <div class="container">
   	<div class="row">
   	  <div class="col-md-9">
@@ -38,7 +39,7 @@
   	  	<!--  Class  -->
   	  	<h3 id="base-class">Class</h3>
 		<p>类式继承基类，参考 <a href="http://ejohn.org/blog/simple-javascript-inheritance" target="_blank">simple-javascript-inheritance</a></p>
-		<div class="op-doc-api">
+		<div class="doc-api">
 			<div>
 				<h5>Static</h5>
 				<ul>
@@ -66,7 +67,7 @@ var student = new Student();</code>
 		<!--  Ticker  -->
 		<h3 id="base-ticker">Ticker</h3>
 		<p>高频计时器</p>
-		<div class="op-doc-api">
+		<div class="doc-api">
 			<div>
 				<h5>Static</h5>
 				<ul>
@@ -137,7 +138,7 @@ require(['cartoon'], function(ct){
 		<!--  Matrix2D  -->
 		<h3 id="base-matrix">Matrix2D</h3>
 		<p>2D矩阵，参考 <a href="https://github.com/CreateJS/EaselJS/blob/master/src/easeljs/geom/Matrix2D.js" target="_blank">gskinner-Matrix2D</a></p>
-		<div class="op-doc-api">
+		<div class="doc-api">
 			<div>
 				<h5>Properties</h5>
 				<div>
@@ -162,7 +163,7 @@ matrix.append(1, 0, 0, 1, 50, 50);</code>
 		<!--  EventDispatcher  -->
 		<h3 id="base-dispatcher">EventDispatcher</h3>
 		<p>事件派发器，参考 <a href="https://github.com/mrdoob/eventdispatcher.js" target="_blank">mrdoob-EventDispatcher</a></p>
-		<div class="op-doc-api">
+		<div class="doc-api">
 			<div>
 				<h5>Properties</h5>
 				<ul>					
@@ -189,7 +190,7 @@ dispatcher.trigger(new Event('click'));</code>
 		<!--  DisplayObject  -->
 		<h3 id="base-display">DisplayObject</h3>
 		<p>基础显示对象，继承 EventDispatcher，参考 <a href="http://help.adobe.com/zh_CN/FlashPlatform/reference/actionscript/3/flash/display/DisplayObject.html#" target="_blank">as3-DisplayObject</a></p>
-		<div class="op-doc-api">
+		<div class="doc-api">
 			<div>
 				<h5>Constructor</h5>
 				<ul>
@@ -289,7 +290,7 @@ dispatcher.trigger(new Event('click'));</code>
 		<!--  Shape  -->
 		<h3 id="base-shape">Shape</h3>
 		<p>基础图形对象，继承 DisplayObject，参照 <a href="http://www.w3school.com.cn/svg/svg_rect.asp" target="_blank">svg-shapes</a></p>
-		<div class="op-doc-api">
+		<div class="doc-api">
 			<div>
 				<h5>Constructor</h5>
 				<ul>
@@ -408,7 +409,7 @@ require(['cartoon'], function(ct){
 		<!--  Bitmap  -->
 		<h3 id="base-bitmap">Bitmap</h3>
 		<p>位图，滤镜，继承 DisplayObject</p>
-		<div class="op-doc-api">
+		<div class="doc-api">
 			<div>
 				<h5>Constructor</h5>
 				<ul>
@@ -485,7 +486,7 @@ require(['cartoon'], function(ct){
 		<!--  Text  -->
 		<h3 id="base-text">Text</h3>
 		<p>文本，继承 DisplayObject</p>
-		<div class="op-doc-api">
+		<div class="doc-api">
 			<div>
 				<h5>Constructor</h5>
 				<ul>
@@ -536,7 +537,7 @@ require(['cartoon'], function(ct){
 		<!--  Container  -->
 		<h3 id="base-container">Container</h3>
 		<p>dom容器，继承 DisplayObject，处理子对象的事件响应</p>
-		<div class="op-doc-api">
+		<div class="doc-api">
 			<div>
 				<h5>Constructor</h5>
 				<ul>
@@ -564,7 +565,7 @@ require(['cartoon'], function(ct){
 		<!--  Canvas  -->
 		<h3 id="base-canvas">Canvas</h3>
 		<p>canvas容器，继承 DisplayObject，处理子对象的  canvas 方式渲染 和 事件响应</p>
-		<div class="op-doc-api">
+		<div class="doc-api">
 			<div>
 				<h5>Constructor</h5>
 				<ul>
@@ -594,7 +595,7 @@ require(['cartoon'], function(ct){
 		<!--  Tween  -->
 		<h3 id="base-tween">Tween</h3>
 		<p>补间动画</p>
-		<div class="op-doc-api">
+		<div class="doc-api">
 			<div>
 				<h5>Static</h5>
 				<ul>
@@ -660,7 +661,7 @@ require(['cartoon'], function(ct){
 		<!--  Timeline  -->
 		<h3 id="base-line">Timeline</h3>
 		<p>时间轴动画</p>
-		<div class="op-doc-api">
+		<div class="doc-api">
 			<div>
 				<h5>Constructor</h5>
 				<ul>
@@ -731,7 +732,7 @@ require(['cartoon'], function(ct){
 		<!--  Sprite  -->
 		<h3 id="base-sprite">Sprite</h3>
 		<p>精灵，帧动画，继承 DisplayObject</p>
-		<div class="op-doc-api">
+		<div class="doc-api">
 			<div>
 				<h5>Constructor</h5>
 				<ul>
@@ -814,7 +815,7 @@ require(['cartoon'], function(ct){
 		<!--  ParticleSystem  -->
 		<h3 id="base-particle">ParticleSystem</h3>
 		<p>粒子动画，继承 DisplayObject</p>
-		<div class="op-doc-api">
+		<div class="doc-api">
 			<div>
 				<h5>Constructor</h5>
 				<ul>

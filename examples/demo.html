@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>测试</title>
+  <title>api测试</title>
   <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <script src="js/libs/jquery-1.11.1.min.js"></script>
@@ -11,76 +11,69 @@
   <script src="js/apitest.js"></script>
   <style>
     html { font-family: "Helvetica Neue", Helvetica, Microsoft Yahei, Hiragino Sans GB, WenQuanYi Micro Hei, sans-serif; }
-    .op-demo-header { padding: 10px 10px; color: #FFF; height: 70px; background-color: #6f5499; background-image: linear-gradient(to bottom,rgb(45,58,66) 0,rgb(85,98,106) 100%); }
-	.op-demo-header h1 { text-align:center; font-size: 50px; }
-	.op-demo-header p { text-align:center; font-size: 18px; }
+    .demo-header { padding: 10px 10px; color: #FFF; height: 70px; background-color: #6f5499; background-image: linear-gradient(to bottom,rgb(45,58,66) 0,rgb(85,98,106) 100%); }
+	.demo-header label { font-size: 30px; }
+	.demo-header span { margin-left: 30px; font-size: 14px; }
 	
-	.op-demo-main { width:100%; height:80%; }
-	.op-demo-menu { position:absolute; width:200px; height:100%; overflow:scroll; }
-	.op-demo-stage { position:absolute; width:1000px; height:100%; left:200px }	
+	.demo-main { position: relative; width: 1230px; height:540px; margin: auto; box-shadow: 0px 3px 6px #666; }
+	.demo-menu { position:absolute; width: 150px; height:540px; overflow-x:hidden; overflow-y:scroll; }
+	.demo-stage { position:absolute; width: 1080px; height: 54px; left:150px; }	
+	.demo-stage * { box-sizing:content-box; }
+	.demo-dom { position:absolute; border:1px solid #999;  }
+	.demo-cvs { position:absolute; border:1px solid #999; border-left-width:0px; left:540px; }
+	.demo-fps { position:absolute; left:500px; width:40px; color:black; z-index:999;}
+	.demo-item { cursor:pointer; }
 	
-	.op-demo-dom { position:absolute; border:1px solid gray; box-sizing: content-box; }
-	.op-demo-cvs { position:absolute; border:1px solid gray; left:540px; }
-	.op-demo-fps { position:absolute; left:500px; width:40px; color:black; z-index:999;}
-	.op-demo-item { cursor:pointer; }
-	
-	.op-demo-control-table { position:absolute; bottom: 0px; width: 100%; }
-	.op-demo-control-table label { width: 80px; }
-	.op-demo-control-table span { display: inline-block; width: 40px; }
-	.op-demo-control-tbody>div { display: inline-block; margin-left: 20px; }
-	.op-demo-control-table input { margin-top: 5px; width: 80px; display: inline-block; }
-	.op-demo-tip-dom, .op-demo-tip-gl { position:absolute; left: 0px; background: rgb(180,180,180); color:#000; padding: 5px; }
-	.op-demo-tip-cvs { position:absolute; left: 540px; background: rgb(180,180,180); color:#000; padding: 5px; }
-	.op-demo-footer {}
+	.demo-control-table { position:absolute; bottom: 0px; width: 100%; }
+	.demo-control-table label { width: 80px; }
+	.demo-control-table span { display: inline-block; width: 40px; }
+	.demo-control-tbody>div { display: inline-block; margin-left: 20px; }
+	.demo-control-table input { margin-top: 5px; width: 80px; display: inline-block; }
+	.demo-tip-dom, .demo-tip-gl { position:absolute; left: 1px; background: rgb(180,180,180); color:#000; padding: 5px; }
+	.demo-tip-cvs { position:absolute; left: 541px; background: rgb(180,180,180); color:#000; padding: 5px; }
+	.demo-footer {}
   </style>
 </head>
 <body>
-  <div class="op-demo-header">
+  <div class="demo-header">
   	<label>API TEST</label>
-  	<span>2D，3D，图形，图像</span>
+  	<span>2D . 3D . 图形 . 图像 . 动画</span>
   </div>
   
-  <div class="op-demo-main">
-  	<div class="op-demo-menu">
+  <div class="demo-main">
+  	<div class="demo-menu">
   	  <ul>
-  	  	<li><div class="op-demo-item" data-name="bug">Bug收集</div></li>
-  	  	<li><div class="op-demo-item" data-name="transform2d">2D变形</div></li>
-  		<li><div class="op-demo-item" data-name="transform3d">3D变形</div></li>
-  	  	<li><div class="op-demo-item" data-name="paint">2D图形</div></li>
-  		<li><div class="op-demo-item" data-name="webgl">3D图形</div></li>
-  		<li><div class="op-demo-item" data-name="transition">渐变动画</div></li>
-  		<li><div class="op-demo-item" data-name="ease">过渡动画</div></li>
-  		<li><div class="op-demo-item" data-name="sprite">帧动画</div></li>
-  		<li><div class="op-demo-item" data-name="timeline">时间轴动画</div></li>
-  		<li><div class="op-demo-item" data-name="particle">粒子动画</div></li>
-  		<li><div class="op-demo-item" data-name="bones">骨骼动画</div></li>
+  	  	<li><div class="demo-item" data-name="transform2d">2D变形</div></li>
+  		<li><div class="demo-item" data-name="transform3d">3D变形</div></li>
+  	  	<li><div class="demo-item" data-name="paint">2D图形</div></li>
+  		<li><div class="demo-item" data-name="webgl">3D图形</div></li>
+  		<li><div class="demo-item" data-name="transition">渐变动画</div></li>
+  		<li><div class="demo-item" data-name="ease">过渡动画</div></li>
+  		<li><div class="demo-item" data-name="sprite">帧动画</div></li>
+  		<li><div class="demo-item" data-name="timeline">时间轴动画</div></li>
+  		<li><div class="demo-item" data-name="particle">粒子动画</div></li>
+  		<li><div class="demo-item" data-name="bones">骨骼动画</div></li>
   		
-  		<li><div class="op-demo-item" data-name="filter">滤镜</div></li>
-  		<li><div class="op-demo-item" data-name="clock">时钟</div></li>
-  		<li><div class="op-demo-item" data-name="board">涂鸦板</div></li>
-  		<li><div class="op-demo-item" data-name="ball">物理效果</div></li>
-  		<li><div class="op-demo-item" data-name="model">三维模型</div></li>
-
-  		<li><div class="op-demo-item" data-name="threejs">外部案例:<a href="http://www.pixijs.com/examples/" target="_blank">像素特效</a></div></li>
-  		<li><div class="op-demo-item" data-name="threejs">外部案例:<a href="http://threejs.org/" target="_blank">3D特效</a></div></li>
-  		<li><div class="op-demo-item" data-name="threejs">外部案例:<a href="http://moonbear.animalsasia.org/ie/" target="_blank">动物基金</a></div></li>
-  		<li><div class="op-demo-item" data-name="threejs">外部案例:<a href="http://graphicnovel-hybrid4.peugeot.com/start.html" target="_blank">标致汽车</a></div></li>
-  		<li><div class="op-demo-item" data-name="tmall">外部案例:<a href="http://1111.tmall.com/" target="_blank">天猫双11</a></div></li>
-  	
+  		<li><div class="demo-item" data-name="filter">滤镜</div></li>
+  		<li><div class="demo-item" data-name="clock">时钟</div></li>
+  		<li><div class="demo-item" data-name="blend">混色</div></li>
+  		<li><div class="demo-item" data-name="board">涂鸦板</div></li>
+  		<li><div class="demo-item" data-name="ball">物理效果</div></li>
+  		<li><div class="demo-item" data-name="model">三维模型</div></li>
 	  </ul>
     </div>
     
-	<div class="op-demo-stage">
-      <canvas class="op-demo-cvs"></canvas>
-      <div class="op-demo-dom"></div>
-      <div class="op-demo-fps"></div>
-      <div class="op-demo-tip-dom">DOM 渲染模式</div>
-      <div class="op-demo-tip-cvs">Canvas 渲染模式</div>
+	<div class="demo-stage">
+      <canvas class="demo-cvs"></canvas>
+      <div class="demo-dom"></div>
+      <div class="demo-fps"></div>
+      <div class="demo-tip-dom">DOM 渲染模式</div>
+      <div class="demo-tip-cvs">Canvas 渲染模式</div>
     </div>
   </div>
-  
-  <div class="op-demo-footer">
-		
+
+  <div class="demo-footer">
+  	
   </div>
   <script>
     require.config({ baseUrl: '../src' });
@@ -104,31 +97,30 @@
 			'images/tree_big.png',
 			'images/tree_small.png',
 			'images/home.jpg',
-			'../build/cartoon.js'
+			'json/ground.js'
 		]);
 		loader.on('progress', function(evt) {
-			console.log(evt.file, evt.progress);
+			// console.log(evt.file, evt.progress);
 		}, 'first_load');
 		
 		loader.on('complete', function(evt) {
 			loader.off('progress', 'first_load');
 			loader.off('complete', 'first_load');
-			var txt = loader.getItem('../build/cartoon.js');
-			// console.log(txt.replace(/define\(.*\)/, ''));
+			loader.getItem('json/ground.js');
 		}, 'first_load');
 		
 		
 		var dom = new ct.Container({
-				elem: '.op-demo-dom', width: 540, height: 540, overflow: 'hidden' 
+				elem: '.demo-dom', width: 540, height: 540, overflow: 'hidden' 
 			}),
 			cvs = new ct.Canvas({ 
-				elem: '.op-demo-cvs', width: 540, height: 540 
+				elem: '.demo-cvs', width: 540, height: 540 
 			});
 			
-		var	$fps = $('.op-demo-fps'),
+		var	$fps = $('.demo-fps'),
 			test;
 			
-		$('.op-demo-item').click(function(){
+		$('.demo-item').click(function(){
 			var name = $(this).data('name');
 			
 			if (test) {
@@ -142,7 +134,6 @@
 				$fps.html('');
 			}
 		});
-
 	});
   </script>
 </body>

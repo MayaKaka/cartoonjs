@@ -14,7 +14,7 @@ var Shape = DisplayObject.extend({
 	
 	init: function(props) {
 		this._super(props);
-		this._initGraphics(props.graphics); // 初始化图形
+		this._initGraphics(props.graphics || props.g); // 初始化图形
 	},
 	
 	draw: function(ctx) {

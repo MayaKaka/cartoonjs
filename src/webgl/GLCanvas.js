@@ -19,6 +19,10 @@ var GLCanvas = DisplayObject.extend({
 		this._initScene(props);
 	},
 	
+	clear: function() {
+		
+	},
+	
 	update: function(delta) {
 		var renderer = this._renderer,
 			scene = this._scene,

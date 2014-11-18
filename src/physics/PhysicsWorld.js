@@ -26,8 +26,8 @@ var PhysicsWorld = DisplayObject.extend({
 	
 	init: function(props) {
 		this._super(props);
-		this._createWorld({ width: props.worldWidth, height: props.worldHeight }, props.scale || 50);
-		this._createGround();
+		this._initWorld({ width: props.worldWidth, height: props.worldHeight }, props.scale || 50);
+		this._initGround();
 	},
 		
 	update: function(delta) {
@@ -39,51 +39,53 @@ var PhysicsWorld = DisplayObject.extend({
 		this._updateObjects();
 	},
 	
-	getWorld: function() {
-		return this._world;
-	},
+
 	
-	add: function(displayObj, data) {
+	add: function(child, data) {
 		if (!data) data = {};
 		
-		this._super(displayObj);
+		this._super(child);
 		
-		if (data.type === 'none') return;
-		        
+		if (!data.type) return;
+
         var world = this._world,
-        	scale = this._scale,
-        	bodyDef = new b2BodyDef();
-			
+        	scale = this._scale;
+        
+        var bodyDef = new b2BodyDef();
         bodyDef.type = data.type === 'static' ? b2Body.b2_staticBody : b2Body.b2_dynamicBody;
-        bodyDef.position.x = displayObj.x / scale;
-        bodyDef.position.y = displayObj.y / scale;
+        bodyDef.position.x = child.x / scale;
+        bodyDef.position.y = child.y / scale;
        
         var fixDef = new b2FixtureDef();
         fixDef.density = data.density || 1.0;
         fixDef.friction = data.friction || 0.5;
         fixDef.restitution = data.restitution || 0.2;
         
-        if (displayObj.radius) {
-       		fixDef.shape = new b2CircleShape(displayObj.radius/scale);
+        if (child.radius) {
+       		fixDef.shape = new b2CircleShape(child.radius/scale);
        	}
        	else if (data.shape === 'circle') {
-        	fixDef.shape = new b2CircleShape(displayObj.width/scale/2);
+        	fixDef.shape = new b2CircleShape(child.width/scale/2);
         } 
         else {
         	fixDef.shape = new b2PolygonShape();
-        	fixDef.shape.SetAsBox(displayObj.width/scale/2, displayObj.height/scale/2);
+        	fixDef.shape.SetAsBox(child.width/scale/2, child.height/scale/2);
         }
-        displayObj.style('transform', { translateX: -displayObj.width/2, translateY: -displayObj.height/2 });
+        child.style('transform', { translateX: -child.width/2, translateY: -child.height/2 });
          
         var body = world.CreateBody(bodyDef).CreateFixture(fixDef);
-        body.m_userData = { displayObj: displayObj };
+        body.m_userData = { displayObj: child };
 	},
 	
 	drawDebug: function() {
 		this._world.DrawDebugData();
 	},
 	
-	_createWorld: function(size, scale) {
+	getWorld: function() {
+		return this._world;
+	},
+	
+	_initWorld: function(size, scale) {
 		this._world = new b2World(new b2Vec2(0, 10), true);
 		this._scale = scale;
 		this._worldSize = { width: size.width / scale, height: size.height / scale };
@@ -100,20 +102,22 @@ var PhysicsWorld = DisplayObject.extend({
 		this._world.SetDebugDraw(debugDraw);
 	},
 	
-	_createGround: function() {
+	_initGround: function() {
+		var world = this._world;
+		
+		var bodyDef = new b2BodyDef();
+        bodyDef.type = b2Body.b2_staticBody;
+        bodyDef.position.x = this._worldSize.width/2;
+        bodyDef.position.y = this._worldSize.height;
+        
 		var fixDef = new b2FixtureDef();
         fixDef.density = 1.0;
         fixDef.friction = 0.5;
         fixDef.restitution = 0.2;
         
-        var world = this._world,
-        	bodyDef = new b2BodyDef();
-
-        bodyDef.type = b2Body.b2_staticBody;
-        bodyDef.position.x = this._worldSize.width/2;
-        bodyDef.position.y = this._worldSize.height;
         fixDef.shape = new b2PolygonShape();
         fixDef.shape.SetAsBox(this._worldSize.width/2, 0);
+        
         world.CreateBody(bodyDef).CreateFixture(fixDef);
 	},
 	
@@ -123,11 +127,10 @@ var PhysicsWorld = DisplayObject.extend({
 			PI2 = Math.PI * 2,
 			R2D = 180 / Math.PI;
 			
-		var i = 0, 
+		var i = 0,
 			f, xf, data,
 	   		b = world.m_bodyList,
-	   		x, y, r,
-	   		displayObj;
+	   		x, y, r, obj;
 	   		
 	    while (b) {
 	    	f = b.m_fixtureList;
@@ -135,13 +138,12 @@ var PhysicsWorld = DisplayObject.extend({
 	        	if (f.m_userData) {
 	        		xf = f.m_body.m_xf;
 	        		data = f.m_userData;
-	          		displayObj = data.displayObj;
+	          		obj = data.displayObj;
+	          		
 	          		x = xf.position.x * scale;
 	          		y = xf.position.y * scale;
 	          		r = Math.round(((f.m_body.m_sweep.a + PI2) % PI2) * R2D * 100) / 100;
-	          
-	          		displayObj.style('pos', { x: x, y: y });
-	          		displayObj.style('transform', { rotate: r });
+	          		obj.style({ pos: { x: x, y: y }, transform: { rotate: r } });
 	        	}
 	        	f = f.m_next;
 	      	}
@@ -149,7 +151,7 @@ var PhysicsWorld = DisplayObject.extend({
 	    }
 	}
 	
-});  
-      
+});
+
 return PhysicsWorld;
 });

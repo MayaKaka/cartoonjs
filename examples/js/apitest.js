@@ -1,51 +1,4 @@
 var apitest = {
-	bug : {
-		init: function(ct, dom, cvs, $fps) {
-			var winW = window.innerWidth,
-            	winH = window.innerHeight,
-            	ticker = new ct.Ticker(),
-            	THREE = ct.THREE;
-            	console.log(THREE);
-            	
-			var scene = new THREE.Scene();
-			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 10000 );
-			
-			var renderer = new THREE.WebGLRenderer();
-			renderer.setSize( window.innerWidth, window.innerHeight );
-			document.body.appendChild( renderer.domElement );
-	
-			var geometry, material, cube, sphere;
-			
-			geometry = new THREE.BoxGeometry( 10, 10, 10 );
-			material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-			cube = new THREE.Mesh( geometry, material );
-			scene.add( cube );
-			
-			geometry = new THREE.SphereGeometry( 10, 32, 32 );
-			material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-			sphere = new THREE.Mesh( geometry, material );
-			sphere.position.set( 20, 0, 0 );
-			scene.add( sphere );
-			
-			camera.position.z = 50;
-
-			var render = function () {
-
-				cube.rotation.x += 0.1;
-				cube.rotation.y += 0.1;
-
-				renderer.render(scene, camera);
-			};
-
-			ticker.add(render);
-            ticker.start();
-			
-			this.dispose = function() {
-				ticker.stop();
-				document.body.appendChild( renderer.domElement );
-			}
-		}
-	},
 	
 	paint: {
 		init: function(ct, dom, cvs, $fps) {
@@ -142,7 +95,7 @@ var apitest = {
 			
 			var	rect = new ct.Shape({
 				x: 10, y: 36, 
-				graphics: { type: 'rect', fill: '#88AAFF', width: 60, height: 60 } 
+				graphics: { type: 'rect', fill: '#88AAFF', stroke:'#0F0', lineWidth: 10,  width: 60, height: 60 } 
 			});	
 			rect.on('click', function(e){
 				console.log(e);
@@ -154,7 +107,7 @@ var apitest = {
 			
 			var rect_cvs = new ct.Shape({
 				x: 10, y: 36, 
-				graphics: { type: 'rect', fill: 'top,#0022FF,#00DDFF', width: 60, height: 60 } 
+				graphics: { type: 'rect', fill: 'top,#0022FF,#00DDFF', stroke:'#0F0', lineWidth: 10, width: 60, height: 60 } 
 			});
 			rect_cvs.on('click', function(e){
 				console.log(e);
@@ -525,7 +478,7 @@ var apitest = {
 				ticker.remove(fireworks);
 			})
 			var bg = new ct.Shape({
-				x: 0, y: 0, graphics: { type: 'rect', width: 540, height: 540, fill: 'top,rgb(30,115,195),rgb(125,175,225)' }
+				x: 0, y: 0, graphics: { type: 'rect', width: 540, height: 540, fill: 'top,#2080C0,#80B0E0' }
 			});
 			dom.add(bg);
 			dom.add(snow);
@@ -847,8 +800,9 @@ var apitest = {
 			
 			mark.add(new ct.Shape({
 				x: 6, y: 6,
-				graphics: { type: 'circle', stroke: 'rgba(0,0,0,0.2)', radius: 94, lineWidth: 6 }
+				graphics: { type: 'circle', stroke: 'rgba(0,0,0,0.2)', radius: 94, lineWidth: 12 }
 			}));
+			
 			mark.add(new ct.Shape({
 				x: 100, y: 100,
 				graphics: { 
@@ -888,26 +842,28 @@ var apitest = {
 			mark.cache();
 			
 			clock.add(new ct.Shape({
-				shadow: '0px 0px 15px #000',
+				shadow: '0px 0px 40px #000',
 				graphics: { type: 'circle', fill: '#CCC', radius: 100 }
 			}));
-			clock.add(new ct.Shape({
-				graphics: { type: 'circle', stroke: '#3A3A3A', radius: 100, lineWidth: 5 }
-			}));
+			
 			clock.add(mark);
 			clock.add(hand2);
 			clock.add(hand);
 			clock.add(hand3);
+			
 			clock.add(new ct.Shape({
 				x: 97, y: 97,
 				graphics: { type: 'circle', fill: '#F00', radius: 3 }
 			}));
+			clock.add(new ct.Shape({
+				graphics: { type: 'circle', stroke: '#2D2D2D', radius: 100, lineWidth: 6 }
+			}));
 			clock.on('click', function(){
 				if (clock.transform.scaleX === 1) {
 					mark.uncache();
-					clock.to({transform: { scale: 2.2 }}, 300, 'backOut');
+					clock.to({transform: { scale: 2.2 }}, 500, 'bounceOut');
 				} else {
-					clock.to({transform: { scale: 1 }}, 300, 'backOut', function() {
+					clock.to({transform: { scale: 1 }}, 500, 'backOut', function() {
 						mark.cache();
 					});
 				}
@@ -1007,6 +963,83 @@ var apitest = {
 		}
 	},
 	
+	blend: {
+		init: function(ct, dom, cvs, $fps) {
+			ct.DisplayObject.setRenderMode('canvas');
+			var ticker = new ct.Ticker();
+			var random = ct.random;
+
+			var bg = new ct.Shape({
+				g: { type: 'rect', width: 550, height: 550, fill: 'top,rgb('+random(0, 55)+','+random(0, 55)+','+random(0, 55)+'),rgb('+random(0, 55)+','+random(0, 55)+','+random(0, 55)+')' }
+			});
+			cvs.add(bg);
+	
+			var circle, r, c ='rgb('+random(0, 255)+','+random(0, 255)+','+random(0, 255)+')';
+			for (var i=0; i<6; i++) {
+				r = (6-i)*8;
+				circle = new ct.Shape({
+					blendMode: 'lighter',
+					x: 300, y: 300, transform: { translateX: -r, translateY: -r },
+					g: { type: 'circle', radius: r, lineWidth: 11,
+						stroke: c }
+				});
+				cvs.add(circle);
+			}
+			var layer = new ct.DisplayObject({ blendMode: 'lighter' });
+			
+			for (var i=0; i<20; i++) {
+				c ='rgb('+random(0, 255)+','+random(0, 255)+','+random(0, 255)+')';
+				circle = new ct.Shape({
+					blendMode: 'lighter',
+					x: random(0,550), y: random(0,550), transform: { translateX: -r, translateY: -r },
+					g: { type: 'circle', radius: 14, lineWidth: 10,
+						stroke: c }
+				});
+				circle.data({
+					dx: random(0, 1)?1:-1, dy: random(0, 1)?1:-1, spd: random(1, 8)/4
+				})
+				layer.add(circle);
+			}
+			cvs.add(layer);
+			ticker.add(ct.Tween);
+			ticker.add(cvs);
+			
+			var x, y, e, ease = [ 'easeInOut', 'backInOut', 'expoInOut' ];
+			bg.on('click', function(evt) {
+				c ='rgb('+random(0, 255)+','+random(0, 255)+','+random(0, 255)+')';
+				x = evt.mouseX;
+				y = evt.mouseY;
+				e = ease[random(0,2)];
+				cvs.each(function(a, i){
+					if (a === bg) {
+						a.to({ fill: 'top,rgb('+random(0, 55)+','+random(0, 55)+','+random(0, 55)+'),rgb('+random(0, 55)+','+random(0, 55)+','+random(0, 55)+')' }, 1000);
+					} else if (a !== layer) {
+						a.to(i*30).to({ x: x, y: y, stroke: c }, 1000, e);
+					}
+				});
+			})
+			var dx, dy;
+			ticker.add(function() {
+				layer.each(function(a, i){
+					dx = a.data('dx');
+					dy = a.data('dy');
+					spd = a.data('spd');
+					a.style({ x:a.x+dx*spd, y:a.y+dy*spd });
+					dx = a.x<0 ? 1 : a.x>550 ? -1 : dx;
+					dy = a.y<0 ? 1 : a.y>550 ? -1 : dy;
+					a.data({ dx:dx, dy:dy });
+				});
+				$fps.html(ticker.fps);
+			});
+			ticker.start();
+
+			this.dispose = function() {
+				ticker.stop();
+				cvs.removeAll();
+			}
+		}
+	},
+	
 	ball: {
 		init: function(ct, dom, cvs, $fps) {
 			var ticker = new ct.Ticker();
@@ -1024,7 +1057,7 @@ var apitest = {
 				x: 250, y: 400,
 				graphics: { type: 'rect', width: 200, height: 100, fill: '#FF0000' }
 			});
-			world.add(bg, { type: 'none' });
+			world.add(bg);
 			world.add(box, {
 				type: 'static', density: 0.1, friction: 1, restitution: 0
 			});
@@ -1043,7 +1076,7 @@ var apitest = {
 				x: 250, y: 400,
 				graphics: { type: 'rect', width: 200, height: 100, fill: '#FF0000' }
 			});
-			world_cvs.add(bg_cvs, { type: 'none' });
+			world_cvs.add(bg_cvs);
 			world_cvs.add(box_cvs, {
 				type: 'static', density: 0.1, friction: 1, restitution: 0
 			});
@@ -1057,7 +1090,7 @@ var apitest = {
 					renderMode: renderMode, x: evt.mouseX, y: evt.mouseY+30,
 					graphics: { type: (Math.random() > 0.5 ? 'circle' : 'rect'), width: 40, height: 20, radius: 15, fill: 'rgb('+random(0,256)+','+random(0,256)+','+random(0,256)+')' }
 				}), {
-					density: 0.1, friction: 1, restitution: 0
+					type: 'dynamic', density: 0.1, friction: 1, restitution: 0
 				});
 			}
 			world.on('click', function(evt){
@@ -1106,7 +1139,7 @@ var apitest = {
 			var world3d = new ct.GLCanvas({
 				x: 1, y: 1, width: 1080, height: 540, clearColor: 0xffffdd
 			});
-			world3d.$.appendTo('.op-demo-stage');
+			world3d.$.appendTo('.demo-stage');
 			
 			var camera = world3d.getCamera();
 			camera.position.set(0, 330, 380);
@@ -1167,7 +1200,7 @@ var apitest = {
 			setTimeout(function() {
 				onchange();
 			},100);
-			$control.appendTo('.op-demo-stage');
+			$control.appendTo('.demo-stage');
 			
 			this.dispose = function() {
 				ticker.stop();
@@ -1190,7 +1223,7 @@ var apitest = {
 			var world3d = new ct.GLCanvas({
 				x: 1, y: 1, width: 1080, height: 540, sceneFog: true
 			});
-			world3d.$.appendTo('.op-demo-stage');
+			world3d.$.appendTo('.demo-stage');
 			
 			var camera = world3d.getCamera();
 			camera.position.set(0, 120, 400);
@@ -1241,7 +1274,7 @@ var apitest = {
 			ticker.start();
 			
 			var $control = $(html.join(''));
-			$control.appendTo('.op-demo-stage');
+			$control.appendTo('.demo-stage');
 			
 			this.dispose = function() {
 				ticker.stop();

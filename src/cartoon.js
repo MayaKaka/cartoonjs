@@ -9,6 +9,7 @@ cartoon.expand({
 	// 基础组件
 	Class: require('core/Class'),
 	Ticker: require('core/Ticker'),
+	EventDispatcher: require('core/EventDispatcher'),
 	Loader: require('core/Loader'),
 	Preload: require('core/Preload'),
 	
@@ -26,11 +27,11 @@ cartoon.expand({
 	// 动画组件
 	Ease: require('animation/Ease'),
 	Tween: require('animation/Tween'),
-	Timeline:  require('animation/Timeline'),
 	Sprite: require('animation/Sprite'),
-	ParticleEmitter: require('extra/ParticleEmitter'),
-	ParticleSystem: require('extra/ParticleSystem'),
-	SkeletalAnimation: require('extra/SkeletalAnimation')
+	ParticleEmitter: require('animation/ParticleEmitter'),
+	ParticleSystem: require('animation/ParticleSystem'),
+	Timeline:  require('animation/Timeline'),
+	SkeletalAnimation: require('animation/SkeletalAnimation')
 	
 });
 
