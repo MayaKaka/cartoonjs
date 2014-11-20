@@ -1,0 +1,71 @@
+<script src="js/libs/jquery-1.11.1.min.js"></script>
+<script src="js/libs/require.min.js"></script>
+
+<div style="background: #F00; width: 600px; height: 300px; ">
+	<canvas id="cvs"></canvas>	
+<div>
+
+<script>
+require.config({ paths: { cartoon: '//www.baidu.com/aladdin/js/cartoonjs/cartoon.141117' } });
+require(['cartoon'], function(cartoon) {
+var c = cartoon;
+
+// <input> -> HTMLElement style className addEventListener
+// cirlce = DisplayObject 
+
+c.DisplayObject.setRenderMode('canvas');
+
+var ticker = new c.Ticker();
+
+var canvas = new c.Canvas({ elem: '#cvs', width: 300, height: 300 });
+// update --> render
+var circle = new c.Shape({ graphics: { type: 'circle', radius: 10, fill: '#0F0' } });
+// 
+var rect = new c.Shape({ graphics: { type: 'rect', width: 100, height: 20, fill: '#00F' } });
+
+// <circle>
+circle.style('x', 200);
+rect.style('transform', {  originX: 1, originY: 1 });
+
+
+rect.on('click', function(){
+	alert(123);
+});
+// rect.style({ x: 100, y: 200 });
+// $().css('left', 200);
+canvas.add(circle); 
+canvas.add(rect);
+// dom.appendChild(child)
+
+// canvas.update();
+
+ticker.add(c.Tween); // 补间动画
+var count = 0, deg = 0;
+var move = function() {
+	deg += 10;
+	var x = Math.sin(deg*Math.PI/180)*20 + 200,
+		y = Math.cos(deg*Math.PI/180)*20 + 200;
+	circle.style({ x: x, y: y });
+};
+ticker.add(move) // function 自定义函数
+/*
+circle.on('update', function() {
+	this.style('y', this.y+1);
+	if (this.y > 300) this.style('y', 0);
+})*/
+
+ticker.add(canvas); // update object render
+ticker.start();
+
+// circle.to({ y: 200 }, 1200, 'backInOut');
+rect.to({ transform: { rotate: 360*5+145 } }, 3600, 'expoInOut');
+
+// $().animate()
+
+this.dispose = function() {
+	ticker.stop();
+	$('#cvs').remove();
+}
+
+});
+</script>

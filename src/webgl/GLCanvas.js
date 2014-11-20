@@ -4,13 +4,17 @@ define( function ( require, exports, module ) {
 	   
 var DisplayObject = require('display/DisplayObject'),
 	THREE = require('webgl/THREE');
-	
+
 var GLCanvas = DisplayObject.extend({
 	
 	type: 'GLCanvas',
 		
 	renderMode: 0,
 	useElemSize: true,
+	
+	renderer: null,
+	scene: null,
+	camera: null,
 	
 	_tagName: 'canvas',
 
@@ -24,49 +28,35 @@ var GLCanvas = DisplayObject.extend({
 	},
 	
 	update: function(delta) {
-		var renderer = this._renderer,
-			scene = this._scene,
-			camera = this._camera;
-			
 		THREE.AnimationHandler.update(delta / 1000);
+		
+		var renderer = this.renderer,
+			scene = this.scene,
+			camera = this.camera;
+
 		renderer.render( scene, camera );
 	},
 	
-	getRenderer: function() {
-		return this._renderer;
+	add: function(child) {
+		this.scene.add(child);
 	},
 	
-	getScene: function() {
-		return this._camera;
+	remove: function(child) {
+		this.scene.remove(child);
 	},
 	
-	getCamera: function() {
-		return this._camera;
-	},
-	
-	add: function(type, data) {
-		if (!data) data = {};
-		
-		var scene = this._scene,
-			obj3d;
-		// 创建3d显示对象
-		switch(type) {
-			case 'light': obj3d = this.createLight(data); break;
-			case 'plane': obj3d = this.createPlane(data); break;
-			case 'cube': obj3d = this.createCube(data); break;
-			case 'sphere': obj3d = this.createSphere(data); break;
-			case 'ring': obj3d = this.createRing(data); break;
-			case 'sprite': obj3d = this.createSprite(data); break;
-			case 'model': obj3d = this.createModel(data, function(obj){ scene.add(obj); 
-				data.onload && data.onload(obj); }); break;
+	removeAll: function(){
+		var scene = this.scene,
+			children = scene.children,
+			index, child;
+		// 遍历移除子节点
+		while (children.length) {
+			index = children.length - 1;
+			child = children[index];
+			scene.remove(child);
 		}
-		// 添加显示对象
-		if (obj3d) {
-			scene.add(obj3d);
-		}
-		
-		return obj3d;
 	},
+	
 	createRing: function(data) {
 		var geometry = new THREE.RingGeometry( 50, 70, 32 );
 		var material = new THREE.MeshBasicMaterial( { color: 0x000fff, side: THREE.DoubleSide } );
@@ -207,23 +197,23 @@ var GLCanvas = DisplayObject.extend({
 	},
 	
 	_initScene: function(data) {
-		var scene = new THREE.Scene();
+		var renderer = this.renderer = new THREE.WebGLRenderer({ 
+			canvas: this.elem, 
+			antialias: true, 
+			alpha: data.clearColor === 'alpha' 
+		});
+		renderer.setSize( this.width, this.height );
+		
+		var scene = this.scene = new THREE.Scene();
 		scene.fog = data.sceneFog ? new THREE.Fog( 0xaaaaee, 800) : null;
 		
-		var	camera = new THREE.PerspectiveCamera( 70, this.width / this.height, 0.1, 1000 );
-		
-		var renderer = new THREE.WebGLRenderer({ canvas: this.elem, antialias: true, alpha: data.clearColor === 'alpha' });
-		renderer.setSize( this.width, this.height );
+		var	camera = this.camera  = new THREE.PerspectiveCamera( 70, this.width/this.height, 0.1, 1000 );
 		
 		if (data.clearColor && data.clearColor !== 'alpha') {
 			renderer.setClearColor( data.clearColor, 1 );
 		} else if (data.sceneFog) {
 			renderer.setClearColor( scene.fog.color, 1 );
 		}
-		
-		this._scene = scene;
-		this._camera = camera;
-		this._renderer = renderer;
 	}
 
 });
