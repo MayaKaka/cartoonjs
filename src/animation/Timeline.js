@@ -205,7 +205,7 @@ var Timeline = EventDispatcher.extend({
 			percent = (now - step.from) / duration,
 			pos = easing(percent, percent, 0, 1, 1),
 			start = step.start,
-			end = step.end;			
+			end = step.end;
 		// 设置过渡样式
 		for (var i in end) {
 			target._stepStyle(i, {

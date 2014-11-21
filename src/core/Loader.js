@@ -59,15 +59,17 @@ var Loader = EventDispatcher.extend({
 		this._resources[url] = file;		
 	},
 	
-	_loadComplete: function(file) {
+	_loadComplete: function(res, file) {
 		var progress = 1;
 		
 		if (this._loadQueueLength) {
 			progress = 1 - this._loadQueue.length / this._loadQueueLength;		
 			this.trigger({
-				type: 'progress', progress: progress, file: file
+				type: 'progress', progress: progress
 			})
-		}	
+		}
+		
+		res.onload && res.onload(file);
 		
 		if (progress < 1) {
 			this._loadNext();
@@ -87,7 +89,7 @@ var Loader = EventDispatcher.extend({
 		
 		image.src = res.url;
 		image.onload = function(){
-			self._loadComplete(image);
+			self._loadComplete(res, image);
 		};
 		
 		this.setItem(res.url, image);
@@ -104,7 +106,7 @@ var Loader = EventDispatcher.extend({
 					if (text) {
 						json = res.type === 'json' ? JSON.parse(text) : text;
 						self.setItem(res.url, json);
-						self._loadComplete(json);
+						self._loadComplete(res, json);
 					}
 				}
 			}

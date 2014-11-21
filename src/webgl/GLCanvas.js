@@ -57,69 +57,6 @@ var GLCanvas = DisplayObject.extend({
 		}
 	},
 	
-	createRing: function(data) {
-		var geometry = new THREE.RingGeometry( 50, 70, 32 );
-		var material = new THREE.MeshBasicMaterial( { color: 0x000fff, side: THREE.DoubleSide } );
-
-		return new THREE.Mesh( geometry, material );
-	},
-	createLight: function(data) {
-		var light = new THREE.DirectionalLight( 0xffffff, data.strong || 1 );
-		
-		light.add( new THREE.Mesh( new THREE.SphereGeometry( 3, 6, 6 ), new THREE.MeshBasicMaterial( { color: 0xff0000 } )) )
-
-		return light;
-	},
-	
-	createPlane: function(data) {
-		// 构建图形-平面
-		var geometry = new THREE.PlaneGeometry( data.width || 500, data.height || 500 );
-		// 创建纹理贴图
-		var map = data.texture ? THREE.ImageUtils.loadTexture( data.texture ) : null;
-		// 构建平面材质
-		var material = new THREE.MeshLambertMaterial( { color: 0x808080, map: map } );
-		// 生成平面网格
-		return new THREE.Mesh( geometry, material );
-	},
-	
-	
-	
-	createCube: function(data) {
-		// 构建图形-立方体
-		var geometry = new THREE.BoxGeometry( 100, 100, 100 );
-		
-		for ( var i = 0; i < geometry.faces.length; i += 2 ) {
-			// 设置立方体表面颜色
-			var hex = data.color || Math.random() * 0xffffff;
-			geometry.faces[ i ].color.setHex( hex );
-			geometry.faces[ i + 1 ].color.setHex( hex );
-		}
-		// 构建立方体材质
-		var material = new THREE.MeshLambertMaterial( { vertexColors: THREE.FaceColors } );
-		// 生成立方体网格
-		return new THREE.Mesh( geometry, material );
-	},
-	
-	createSphere: function(data) {
-		// 构建图形-球体
-		var geometry = new THREE.SphereGeometry( data.radius || 50, 16, 16 );
-		// 创建球体表面的材质 
-		var material = new THREE.MeshLambertMaterial( { color: data.color || 0x00ff00 } );
-		// 生成球体网格
-		return new THREE.Mesh( geometry, material );
-	},
-	
-	createSprite: function(data) {
-		var program = function( ctx ) {
-			ctx.beginPath();
-			ctx.arc( 0, 0, 0.5, 0, Math.PI * 2, true );
-			ctx.fill();
-		}
-		// 创建图像表面材质
-		var material = new THREE.SpriteCanvasMaterial( { color: 0xff0040, program: program } );
-		// 生成图像
-		return new THREE.Sprite( material );
-	},
 	
 	createModel: function(data, callback) {
 		var loader = new THREE.JSONLoader();

@@ -75,7 +75,6 @@ var test3d = {
 			var icosahedron = mesh( g );
 			icosahedron.position.set( -40, 0, 0 );
 			
-			
 			g = new T.OctahedronGeometry( 8, 0 );
 			var octahedron = mesh( g );
 			octahedron.position.set( 0, -20, 0 );
@@ -225,6 +224,174 @@ var test3d = {
 				cvs.removeAll();
 			}
 		}
+	},
+	
+	light: {
+		init: function(ct, cvs, $fps) {
+			var ticker = new ct.Ticker(),
+				RAD_P_DEG = Math.PI/180,
+				O3D = ct.Object3D,
+				T = ct.THREE;
+				
+			var camera = cvs.camera;
+			
+			var plane = O3D.create({
+				g: { type: 'plane', width: 100, height: 100 },
+				m: { type: 'phong', color: 0xffffff, specular: 0x888888, shininess: 200 }
+			});
+			var box = O3D.create({
+				g: { type: 'sphere', radius: 10, segment: 30 },
+				m: { type: 'lambert', color: 0xff0000 }
+			});
+			box.position.set(0, 0, 20);
+			var obj = new O3D();
+			
+			var point = O3D.createLight({
+				type: 'point', color: 0xff0000, debug: true, distance:40
+			});
+			point.position.set(20, 0, 0);
+			
+			var hemi = O3D.createLight({
+				type: 'hemisphere', color: 0x00ff00, debug: true, groundColor:0x222222
+			});
+			hemi.position.set(-100, -100, -100);
+			
+			// var area = O3D.createLight({
+				// type: 'area', color: 0x0000ff, debug: true, intensity: 1
+			// });
+			function createAreaEmitter( light ) {
+				var geometry = new T.BoxGeometry( 1, 1, 1 );
+				var material = new T.MeshBasicMaterial( { color: light.color.getHex(), vertexColors: T.FaceColors } );
+
+				var backColor = 0x222222;
+
+				geometry.faces[ 5 ].color.setHex( backColor );
+				geometry.faces[ 4 ].color.setHex( backColor );
+				geometry.faces[ 2 ].color.setHex( backColor );
+				geometry.faces[ 1 ].color.setHex( backColor );
+				geometry.faces[ 0 ].color.setHex( backColor );
+
+				var emitter = new T.Mesh( geometry, material );
+				emitter.scale.set( light.width * 2, 0.2, light.height * 2 );
+
+				light.add( emitter );
+			}			var area = new T.AreaLight( 0x0000ff, 10 );
+			area.width = 20; area.height = 2;
+			createAreaEmitter( area );
+			area.rotation.set(0.2, 0, 0);
+			area.position.set(0, -30, 2);
+			
+			var direct = O3D.createLight({
+				type: 'direct', color: 0xffff00, debug: true
+			});
+			
+			var spot = O3D.createLight({
+				type: 'spot', color: 0xff00ff, debug: true
+			});
+			spot.position.set(80, 80, 30);
+			
+			var ambient = O3D.createLight({
+				type: 'ambient', color: 0xffffff, debug: true
+			});
+			ambient.position.set(0, 20, 20);
+			
+			obj.add(point);
+			obj.add(area);
+			obj.add(direct);
+			obj.add(spot);
+			obj.add(hemi);
+			
+			
+			
+			/* obj.add(ambient); */
+			
+			cvs.add(plane);
+			cvs.add(box);
+			cvs.add(obj);
+			
+			camera.position.set(0, -60, 60);
+			camera.lookAt(new T.Vector3(0, 0, 0));
+			var deg = 0, c, y;
+			ticker.add(function() { 
+				deg++;
+				point.position.set(Math.sin(deg*RAD_P_DEG)*25, Math.cos(deg*RAD_P_DEG)*25, 20);
+				// direct.position.set(Math.sin(deg*RAD_P_DEG)*30, Math.cos(deg*RAD_P_DEG)*30, 20);
+				// direct.lookAt(new T.Vector3(0, 0, 0));
+				direct.position.set(Math.sin(deg*RAD_P_DEG/3)*80, -20, Math.cos(deg*RAD_P_DEG/3)*20);
+				spot.position.set(Math.cos(deg*RAD_P_DEG/4)*25, Math.sin(deg*RAD_P_DEG/4)*25, 20);
+				// hemi.position.set(-100, -100, -Math.cos(deg*RAD_P_DEG/10)*100);
+			});
+			ticker.add(cvs);
+			ticker.start();
+
+			this.dispose = function() {
+				ticker.stop();
+				cvs.removeAll();
+			}
+		}
+	},
+	
+	model: {
+		init: function(ct, cvs, $fps) {
+			var ticker = new ct.Ticker(),
+				T = ct.THREE;
+			
+			var RAD_P_DEG = Math.PI/180;
+
+			var camera = cvs.camera;
+			camera.position.set(0, 120, 400);
+			camera.rotation.set(0, 0, 0);
+			
+			var light = cvs.add('light', { strong: 2.5 });
+			light.position.set(0, 200, 0);
+			
+			var plane = cvs.add('plane', { width: 4000, height: 2000, texture: 'images/grasslight_big.jpg' });
+			plane.position.set(0, 0, 0);
+			plane.rotation.set(-90*RAD_P_DEG, 0, 0);
+			plane.material.map.repeat.set( 8, 8 );
+			plane.material.map.wrapS = plane.material.map.wrapT = ct.THREE.RepeatWrapping;
+			plane.receiveShadow = true;
+			
+			cvs.add('model', { url: 'json/knight.js', type: 'skinned' });
+			var bear;
+			cvs.add('model', { url: 'json/bear.js', type: 'morphAnim',
+				onload: function(obj) {
+					bear = obj;
+					obj.position.set(0,20,-150);
+					obj.scale.set(20,20,20);
+			 	}
+			});
+			cvs.add('model', { url: 'json/ground.js', 
+				onload: function(obj) {
+					obj.position.set(0,20,-320);
+					obj.scale.set(20,20,20);
+			 	}
+			});
+			cvs.add('model', { url: 'json/gastonLagaffe.js',
+				onload: function(obj) {
+					obj.position.set(0,0,140);
+					obj.scale.set(10,10,10);
+			 	}
+			});
+			var angle = 0, deg, rad;
+			ticker.add(function(delta) {
+				deg = angle+=0.5%360;
+				rad = Math.PI*deg/180;
+				camera.position.x = Math.sin(rad)*350;
+				camera.position.z = Math.cos(rad)*350;
+				camera.lookAt(new T.Vector3(0, 0, 0));
+				bear && bear.updateAnimation(delta / 1000);
+				$fps.html(ticker.fps);
+			});
+			ticker.add(cvs);
+			ticker.start();
+
+			this.dispose = function() {
+				ticker.stop();
+				cvs.removeAll();
+			}
+		}
+		
 	}
 	
 }
