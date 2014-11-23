@@ -301,8 +301,6 @@ var test3d = {
 			obj.add(spot);
 			obj.add(hemi);
 			
-			
-			
 			/* obj.add(ambient); */
 			
 			cvs.add(plane);
@@ -334,53 +332,65 @@ var test3d = {
 	model: {
 		init: function(ct, cvs, $fps) {
 			var ticker = new ct.Ticker(),
+				RAD_P_DEG = Math.PI/180,
+				O3D = ct.Object3D,
 				T = ct.THREE;
+				
+			var renderer = cvs.renderer,
+				scene = cvs.scene,
+				camera = cvs.camera;
 			
-			var RAD_P_DEG = Math.PI/180;
-
-			var camera = cvs.camera;
-			camera.position.set(0, 120, 400);
-			camera.rotation.set(0, 0, 0);
-			
-			var light = cvs.add('light', { strong: 2.5 });
-			light.position.set(0, 200, 0);
-			
-			var plane = cvs.add('plane', { width: 4000, height: 2000, texture: 'images/grasslight_big.jpg' });
-			plane.position.set(0, 0, 0);
+			var plane = O3D.create({
+				g: { type: 'plane', width: 4000, height: 4000 },
+				m: { type: 'lambert', map: 'images/grasslight_big.jpg' }
+			});
 			plane.rotation.set(-90*RAD_P_DEG, 0, 0);
 			plane.material.map.repeat.set( 8, 8 );
-			plane.material.map.wrapS = plane.material.map.wrapT = ct.THREE.RepeatWrapping;
+			plane.material.map.wrapS = plane.material.map.wrapT = T.RepeatWrapping;
 			plane.receiveShadow = true;
 			
-			cvs.add('model', { url: 'json/knight.js', type: 'skinned' });
-			var bear;
-			cvs.add('model', { url: 'json/bear.js', type: 'morphAnim',
-				onload: function(obj) {
-					bear = obj;
-					obj.position.set(0,20,-150);
-					obj.scale.set(20,20,20);
-			 	}
+			var hemi = O3D.createLight({
+				type: 'hemisphere', color: 0xffffdd, debug: true, groundColor:0x222222
 			});
-			cvs.add('model', { url: 'json/ground.js', 
-				onload: function(obj) {
-					obj.position.set(0,20,-320);
-					obj.scale.set(20,20,20);
-			 	}
+			
+			var ground = O3D.createModel({
+				json: 'json/ground.js'
 			});
-			cvs.add('model', { url: 'json/gastonLagaffe.js',
-				onload: function(obj) {
-					obj.position.set(0,0,140);
-					obj.scale.set(10,10,10);
-			 	}
+			var g = ground.geometry;
+			ground.position.set(0, -g.boundingBox.min.y*12, 0);
+			ground.scale.set(24, 24, 24);
+			ground.castShadow = true;
+			ground.receiveShadow = true;
+			
+			var human = O3D.createModel({
+				json: 'json/gastonLagaffe.js',
+				pre: function(geometry, materials) {
+					console.log(geometry, materials);
+				}
 			});
-			var angle = 0, deg, rad;
-			ticker.add(function(delta) {
-				deg = angle+=0.5%360;
-				rad = Math.PI*deg/180;
-				camera.position.x = Math.sin(rad)*350;
-				camera.position.z = Math.cos(rad)*350;
-				camera.lookAt(new T.Vector3(0, 0, 0));
-				bear && bear.updateAnimation(delta / 1000);
+			human.position.set(0, -g.boundingBox.min.y*12, 0);
+			human.scale.set(8, 8, 8);
+			human.castShadow = true;
+			human.receiveShadow = true;
+			
+			var point = O3D.createLight({
+				type: 'point', color: 0xffffdd, debug: true, distance: 100, intensity: 10
+			});
+			
+			cvs.add(plane);
+			cvs.add(hemi);
+			scene.add(human);
+			scene.add(ground);
+			scene.add(point);
+			
+			renderer.setClearColor(0xaaaaee);
+			scene.fog = new T.Fog(0xaaaaee, 600);
+			var deg = 0;
+			ticker.add(function() {
+				deg+=1;
+				camera.position.set(Math.cos(deg*RAD_P_DEG/4)*220, 100, Math.sin(deg*RAD_P_DEG/4)*220);
+				point.position.set(Math.sin(deg*RAD_P_DEG)*30, 120, Math.cos(deg*RAD_P_DEG)*30);
+				camera.lookAt(new T.Vector3(0, 0, 0));	
 				$fps.html(ticker.fps);
 			});
 			ticker.add(cvs);
@@ -388,10 +398,92 @@ var test3d = {
 
 			this.dispose = function() {
 				ticker.stop();
+				renderer.setClearColor(0x000000);
+				scene.fog = null;
 				cvs.removeAll();
 			}
 		}
-		
-	}
+	},
 	
+	animation: {
+		init: function(ct, cvs, $fps) {
+			var ticker = new ct.Ticker(),
+				RAD_P_DEG = Math.PI/180,
+				O3D = ct.Object3D,
+				T = ct.THREE;
+				
+			var renderer = cvs.renderer,
+				scene = cvs.scene,
+				camera = cvs.camera;
+			
+			var plane = O3D.create({
+				g: { type: 'plane', width: 4000, height: 4000 },
+				m: { type: 'lambert', map: 'images/grasslight_big.jpg' }
+			});
+			plane.rotation.set(-90*RAD_P_DEG, 0, 0);
+			plane.material.map.repeat.set( 8, 8 );
+			plane.material.map.wrapS = plane.material.map.wrapT = T.RepeatWrapping;
+			plane.receiveShadow = true;
+			
+			var hemi = O3D.createLight({
+				type: 'hemisphere', color: 0xffffdd, debug: true, groundColor:0x222222
+			});
+
+			var human = O3D.createModel({
+				json: 'json/knight.js',
+				pre: function(geometry, materials) {
+					console.log(geometry, materials);
+				}
+			});
+			var g = human.geometry;
+			human.position.set(0, -g.boundingBox.min.y*8, 100);
+			human.scale.set(8, 8, 8);
+			human.castShadow = true;
+			human.receiveShadow = true;
+			
+			var bear = O3D.createModel({
+				json: 'json/bear.js',
+				pre: function(geometry, materials) {
+					console.log(geometry, materials);
+				}
+			});
+			var g = human.geometry;
+			bear.position.set(0, -g.boundingBox.min.y*16, 0);
+			bear.scale.set(16, 16, 16);
+			bear.castShadow = true;
+			bear.receiveShadow = true;
+			
+			var point = O3D.createLight({
+				type: 'point', color: 0xffffdd, debug: true, distance: 100, intensity: 10
+			});
+			
+			cvs.add(plane);
+			cvs.add(hemi);
+			cvs.add(human);
+			cvs.add(point);
+			cvs.add(bear);
+			
+			renderer.setClearColor(0xaaaaee);
+			scene.fog = new T.Fog(0xaaaaee, 600);
+			var deg = 0;
+			ticker.add(function(delta) {
+				deg+=1;
+				camera.position.set(Math.cos(deg*RAD_P_DEG/4)*220, 100, Math.sin(deg*RAD_P_DEG/4)*220);
+				point.position.set(Math.sin(deg*RAD_P_DEG)*60, 120, Math.cos(deg*RAD_P_DEG)*60);
+				camera.lookAt(new T.Vector3(0, 0, 0));	
+				human.updateAnimation(delta/1000);
+				bear.updateAnimation(delta/1000);
+				$fps.html(ticker.fps);
+			});
+			ticker.add(cvs);
+			ticker.start();
+
+			this.dispose = function() {
+				ticker.stop();
+				renderer.setClearColor(0x000000);
+				scene.fog = null;
+				cvs.removeAll();
+			}
+		}
+	}
 }

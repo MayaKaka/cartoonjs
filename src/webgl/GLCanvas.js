@@ -20,7 +20,7 @@ var GLCanvas = DisplayObject.extend({
 
 	init: function(props) {
 		this._super(props);
-		this._initScene(props);
+		this._initScene(props.render);
 	},
 	
 	clear: function() {
@@ -28,7 +28,7 @@ var GLCanvas = DisplayObject.extend({
 	},
 	
 	update: function(delta) {
-		THREE.AnimationHandler.update(delta / 1000);
+		// THREE.AnimationHandler.update(delta / 1000);
 		
 		var renderer = this.renderer,
 			scene = this.scene,
@@ -134,23 +134,16 @@ var GLCanvas = DisplayObject.extend({
 	},
 	
 	_initScene: function(data) {
-		var renderer = this.renderer = new THREE.WebGLRenderer({ 
-			canvas: this.elem, 
-			antialias: true, 
-			alpha: data.clearColor === 'alpha' 
-		});
-		renderer.setSize( this.width, this.height );
+		data = data || {};
+		data.canvas = this.elem;
+		data.antialias = true;
+		
+		var renderer = this.renderer = new THREE.WebGLRenderer(data);		
+		renderer.setSize(this.width, this.height);
 		
 		var scene = this.scene = new THREE.Scene();
-		scene.fog = data.sceneFog ? new THREE.Fog( 0xaaaaee, 800) : null;
 		
 		var	camera = this.camera  = new THREE.PerspectiveCamera( 70, this.width/this.height, 0.1, 1000 );
-		
-		if (data.clearColor && data.clearColor !== 'alpha') {
-			renderer.setClearColor( data.clearColor, 1 );
-		} else if (data.sceneFog) {
-			renderer.setClearColor( scene.fog.color, 1 );
-		}
 	}
 
 });

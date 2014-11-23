@@ -3,6 +3,7 @@ define( function ( require, exports, module ) {
 	"use strict";
 
 var THREE = require('webgl/THREE'),
+	Preload = require('core/Preload'),
 	Tween = require('animation/Tween'),
 	OriginObject3D = THREE.Object3D,
 	JSONLoader = THREE.JSONLoader;
@@ -48,52 +49,82 @@ p.to = function() {
 	
 }
 
-Object3D.create = function(props) {
-	var g = props.geometry || props.g || {},
-		m = props.material || props.m || {};
+Object3D.create = function(data) {
+	var geo = data.geometry || data.g || {},
+		mat = data.material || data.m || {};
 	
-	var geometry = this.geometries[g.type || 'plane'],
-		material = this.materials[m.type || 'basic'];
+	var geometry = this.geometries[geo.type || 'plane'],
+		material = this.materials[mat.type || 'basic'],
+		mesh;
+		
+	if (typeof(mat.map) === 'string') {
+		mat.map = new THREE.Texture(Preload.getItem(mat.map));
+		mat.map.needsUpdate = true;
+	}
 	
-	geometry = geometry.init(g);
-	material = material.init(m);
+	geometry = geometry.init(geo);
+	material = material.init(mat);
 	
-	g.fn && g.fn(geometry);
-	m.fn && m.fn(material);
-
-	return new THREE.Mesh( geometry, material );
+	data.pre && data.pre(geometry, material);
+	mesh = new THREE.Mesh(geometry, material); 
+	data.fn && data.fn(mesh);
+	
+	return mesh;
 }
 
-Object3D.createLight = function(props) {
-	var l = props || {};
+Object3D.createLight = function(data) {
+	data = data || {};
 	
-	var light = this.lights[l.type || 'point'];
+	var light = this.lights[data.type || 'point'];
 	
-	l.color = l.color || 0xffffff;
-	l.intensity = l.intensity || 1;
+	data.color = data.color || 0xffffff;
+	data.intensity = data.intensity || 1;
 	
-	light = light.init(l);
-	if (l.debug) {
+	light = light.init(data);
+	if (data.debug) {
 		light.add(this.create({
-			g: { type: 'box', size: [ 1, 1, 1] }, m: { type: 'basic', color: l.color }
+			g: { type: 'box', size: [ 1, 1, 1 ] }, m: { type: 'basic', color: data.color }
 		}))
 	}
-	l.fn && l.fn(light);
+	data.fn && data.fn(light);
 
 	return light;
 }
 
 Object3D.createModel = function(data) {
-	var result = new THREE.JSONLoader().parse(data.json),
+	var loader = new THREE.JSONLoader(),
+		url = data.json,
+		json = JSON.parse(Preload.getItem(url)),
+		mesh;
+	
+	var result = loader.parse(json, loader.extractUrlBase(url)),
 		geometry = result.geometry,
-		material = result.material;
+		materials = result.materials,
+		animation = geometry.animation,
+		hierarchy = animation ? animation.hierarchy : null,
+		morph = geometry.morphTargets.length, 
+		Mesh = (!animation && !hierarchy && morph) ? THREE.MorphAnimMesh : THREE.SkinnedMesh;
+		
+	geometry.computeBoundingBox();
+	if (morph) {
+		var material = materials[0];
+		material.morphTargets = true; 
+		// material.shading = THREE.NoShading;
+	}
+	data.pre && data.pre(geometry, materials);
+	mesh = new Mesh(geometry, new THREE.MeshFaceMaterial(materials));	
 	
-	material = new THREE.MeshFaceMaterial(material);
+	if (Mesh === THREE.MorphAnimMesh) {
+		mesh.setFrameRange(0, morph);
+		mesh.duration = morph * 24 / 1000;
+	} else if (animation) {
+		mesh.updateAnimation = function() {
+				
+		}
+	}
+	data.fn && data.fn(mesh);
 	
-	var model = new THREE.SkinnedMesh( geometry, material );
-	data.fn && data.fn(model)
-	
-	return model;
+	return mesh;
 }
 
 Object3D.geometries = {
@@ -143,6 +174,11 @@ Object3D.materials = {
 	phong: {
 		init: function(data) {
 			return new THREE.MeshPhongMaterial(data);
+		}
+	},
+	face: {
+		init: function(data) {
+			return new THREE.MeshFaceMaterial(data);
 		}
 	}
 }
