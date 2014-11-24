@@ -33,7 +33,8 @@ StyleSheet.get = function(target, key) {
 	var style = StyleSheet.styles[key];
 	// 获取样式
 	if (style) {
-		return style.get.call(target, key);
+		var get = style.get || StyleSheet.commonGet;
+		return get.call(target, key);
 	}
 }
 
@@ -41,7 +42,8 @@ StyleSheet.set = function(target, key, value) {
 	var style = StyleSheet.styles[key];
 	// 设置样式
 	if (style) {
-		style.set.call(target, key, value);
+		var set = style.set || StyleSheet.commonSet;
+		set.call(target, key, value);
 	}
 }
 
@@ -157,7 +159,6 @@ StyleSheet.stepColor = function(pos, start, end) {
 
 StyleSheet.styles = {
 	x: { // x轴坐标
-		get: StyleSheet.commonGet,
 		set: function(key, value) {
 			this[key] = value;
 			if (this.renderMode === 0) {
@@ -170,7 +171,6 @@ StyleSheet.styles = {
 	},
 	
 	y: { // y轴坐标
-		get: StyleSheet.commonGet,
 		set: function(key, value) {
 			this[key] = value;
 			if (this.renderMode === 0) {
@@ -183,7 +183,6 @@ StyleSheet.styles = {
 	},
 	
 	z: { // 3d远视坐标
-		get: StyleSheet.commonGet,
 		set: function(key, value) {
 			this[key] = value;
 			this.style('transform3d', { perspective: value });
@@ -209,7 +208,6 @@ StyleSheet.styles = {
 	},
 	
 	width: { // 宽度
-		get: StyleSheet.commonGet,
 		set: function(key, value) {
 			this[key] = value;
 			if (this.renderMode === 0) {
@@ -224,7 +222,6 @@ StyleSheet.styles = {
 	},
 	
 	height: { // 高度
-		get: StyleSheet.commonGet,
 		set: function(key, value) {
 			this[key] = value;
 			if (this.renderMode === 0) {
@@ -344,7 +341,6 @@ StyleSheet.styles = {
 	},
 	
 	visible: { // 是否可见
-		get: StyleSheet.commonGet,
 		set: function(key, value) {
 			this[key] = value;		
 			if (this.renderMode === 0) {
@@ -354,7 +350,6 @@ StyleSheet.styles = {
 	},
 		
 	overflow: { // 溢出效果
-		get: StyleSheet.commonGet,
 		set: function(key, value) {
 			this[key] = value;
 			if (this.renderMode === 0) {
@@ -364,7 +359,6 @@ StyleSheet.styles = {
 	},
 	
 	alpha: { // 透明度
-		get: StyleSheet.commonGet,
 		set: function(key, value) {
 			value = value >= 0 ? value : 0;
 			this[key] = value;
@@ -386,7 +380,6 @@ StyleSheet.styles = {
 	},
 	
 	shadow: { // 阴影
-		get: StyleSheet.commonGet,
 		set: function(key, value) {
 			if (typeof(value) === 'string') {
 				value = value.split('px ');
@@ -429,7 +422,6 @@ StyleSheet.styles = {
 	},
 	
 	fillColor: { // 填充色
-		get: StyleSheet.commonGet,
 		set: function(key, value) {
 			this.fillGradient = this.fillImage = null;
 			this[key] = value;
@@ -444,7 +436,6 @@ StyleSheet.styles = {
 	},	
 	
 	fillGradient: { // 填充渐变
-		get: StyleSheet.commonGet,
 		set: function(key, value) {
 			this.fillColor = this.fillImage = null;
 			this[key] = value = StyleSheet.toGradient(value);
@@ -483,7 +474,6 @@ StyleSheet.styles = {
 	},
 	
 	fillImage: { // 填充位图
-		get: StyleSheet.commonGet,
 		set: function(key, value) {
 			this.fillColor = this.fillGradient = null;
 			if (this.renderMode === 0) {
@@ -511,7 +501,6 @@ StyleSheet.styles = {
 	},
 	
 	strokeColor: { // 画笔颜色
-		get: StyleSheet.commonGet,
 		set: function(key, value) {
 			this[key] = value;
 			if (this.renderMode === 0) {
@@ -526,7 +515,6 @@ StyleSheet.styles = {
 	},
 	
 	lineWidth: { // 画笔宽度
-		get: StyleSheet.commonGet,
 		set: function(key, value) {
 			this[key] = value;
 			if (this.renderMode === 0) {
@@ -537,24 +525,29 @@ StyleSheet.styles = {
 	},
 	
 	radius: { // 圆半径
-		get: StyleSheet.commonGet,
 		set: function(key, value) {
-			this[key] = value;
-			this.width = this.height = value * 2;
+			if (typeof(value) === 'object') {
+				if (this[key]) this[key] = { x: 0, y: 0};
+				for (var i in value) {
+					this[key][i] = value[i];
+				}
+				this.width = this[key].x * 2;
+				this.height = this[key].y * 2;
+			} else {
+				this[key] = value;
+				this.width = this.height = value * 2;
+			}
 			if (this.renderMode === 0) {
 				var style = this.elemStyle;
 				style.borderRadius = '50%';
-				style.width = style.height = this.width + 'px';
+				style.width = this.width + 'px';
+				style.height = this.height + 'px';
 			}
 		},
 		step: StyleSheet.commonStep
 	},
 	
-	angle: { // 圆角度
-		get: StyleSheet.commonGet,
-		set: StyleSheet.commonSet,
-		step: StyleSheet.commonStep
-	},
+	angle: {}, // 圆角度
 	
 	radiusXY: { // 椭圆半径
 		get: function(key) {
@@ -579,18 +572,10 @@ StyleSheet.styles = {
 		step: StyleSheet.commonSteps
 	},
 	
-	font: { // 字体
-		get: StyleSheet.commonGet,
-		set: StyleSheet.commonSet,
-		step: StyleSheet.commonStep
-	},
+	font: {},  // 字体
 
-	textColor: { // 文字颜色
-		get: StyleSheet.commonGet,
-		set: StyleSheet.commonSet,
-		step: StyleSheet.commonStep
-	}
-	
+	textColor: {} // 文字颜色
+
 }
 
 return StyleSheet;

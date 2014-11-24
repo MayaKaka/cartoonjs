@@ -2,13 +2,13 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>api测试</title>
+  <title>2d测试</title>
   <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <script src="js/libs/jquery-1.11.1.min.js"></script>
   <script src="js/libs/require.min.js"></script>
   <script src="js/libs/excanvas.js"></script>
-  <script src="js/apitest.js"></script>
+  <script src="js/2dtest.js"></script>
   <style>
     html { font-family: "Helvetica Neue", Helvetica, Microsoft Yahei, Hiragino Sans GB, WenQuanYi Micro Hei, sans-serif; }
     .demo-header { padding: 10px 10px; color: #FFF; height: 70px; background-color: #6f5499; background-image: linear-gradient(to bottom,rgb(45,58,66) 0,rgb(85,98,106) 100%); }
@@ -36,16 +36,17 @@
 </head>
 <body>
   <div class="demo-header">
-  	<label>API TEST</label>
-  	<span>2D . 3D . 图形 . 图像 . 动画</span>
+  	<label>2D TEST</label>
+  	<span>图形 . 图像 . 动画</span>
   </div>
   
   <div class="demo-main">
   	<div class="demo-menu">
   	  <ul>
+  	  	<li><div class="demo-item" data-name="paint">2D图形</div></li>
   	  	<li><div class="demo-item" data-name="transform2d">2D变形</div></li>
   		<li><div class="demo-item" data-name="transform3d">3D变形</div></li>
-  	  	<li><div class="demo-item" data-name="paint">2D图形</div></li>
+  	  	
   		<!--<li><div class="demo-item" data-name="webgl">3D图形</div></li>-->
   		<li><div class="demo-item" data-name="transition">渐变动画</div></li>
   		<li><div class="demo-item" data-name="ease">过渡动画</div></li>
@@ -127,7 +128,7 @@
 				cvs.clear();
 				test.dispose && test.dispose(); 
 			}
-			test = apitest[name];
+			test = test2d[name];
 				
 			if (test) {
 				test.init(ct, dom, cvs, $fps);

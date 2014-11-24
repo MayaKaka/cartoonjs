@@ -85,7 +85,6 @@ var test3d = {
 					h += ' '+i;
 				}
 			}
-
 			/*
 			g = new T.TextGeometry( 'ABC', {
 
@@ -133,8 +132,10 @@ var test3d = {
 				}
 				
 				renderer.render(scene, camera);
+				$fps.html(ticker.fps);
 			};
 			
+			$fps.css('color', '#FFF');
 			camera.position.set(0, 0, 60);
 			camera.lookAt(new T.Vector3(0, 0, 0));
 			ticker.add(render);
@@ -143,6 +144,7 @@ var test3d = {
 			this.dispose = function() {
 				ticker.stop();
 				cvs.removeAll();
+				$fps.css('color', '');
 			}
 		}
 	},
@@ -214,14 +216,17 @@ var test3d = {
 				rad = Math.PI/180*(deg++);
 				light.position.set( Math.sin(rad)*60, Math.cos(rad)*60, 20 );
 				renderer.render(scene, camera);
+				$fps.html(ticker.fps);
 			};
-
+			
+			$fps.css('color', '#FFF');
 			ticker.add(render);
             ticker.start();
 			
 			this.dispose = function() {
 				ticker.stop();
 				cvs.removeAll();
+				$fps.css('color', '');
 			}
 		}
 	},
@@ -318,13 +323,16 @@ var test3d = {
 				direct.position.set(Math.sin(deg*RAD_P_DEG/3)*80, -20, Math.cos(deg*RAD_P_DEG/3)*20);
 				spot.position.set(Math.cos(deg*RAD_P_DEG/4)*25, Math.sin(deg*RAD_P_DEG/4)*25, 20);
 				// hemi.position.set(-100, -100, -Math.cos(deg*RAD_P_DEG/10)*100);
+				$fps.html(ticker.fps);
 			});
+			$fps.css('color', '#FFF');
 			ticker.add(cvs);
 			ticker.start();
 
 			this.dispose = function() {
 				ticker.stop();
 				cvs.removeAll();
+				$fps.css('color', '');
 			}
 		}
 	},

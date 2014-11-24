@@ -10,20 +10,16 @@ var THREE = require('webgl/THREE'),
 
 var Object3D = OriginObject3D,
 	p = Object3D.prototype;
+
+var blendings = [ "NoBlending", "NormalBlending", "AdditiveBlending", "SubtractiveBlending", "MultiplyBlending", "AdditiveAlphaBlending" ];
 	
 p.renderMode = 2; // 渲染模式 WebGL
 
-p.on = function() {
-	
-}
+p.on = p.addEventListener;
 
-p.off = function() {
-	
-}
+p.off = p.removeEventListener;
 
-p.trigger = function() {
-	
-}
+p.trigger = p.dispatchEvent;
 
 p.removeAll = function() {
 
@@ -32,13 +28,13 @@ p.removeAll = function() {
 p.each = function(fn) {
 	var children = this.children;
 
-	for (var i=0, l=children.length; i<l; i++) {
+	for (var i = 0, len = children.length; i < len; i++) {
 		fn(children[i], i);
 	}
 }
 
 p.style = function() {
-	
+		
 }
 
 p.data = function() {
@@ -56,7 +52,7 @@ Object3D.create = function(data) {
 	var geometry = this.geometries[geo.type || 'plane'],
 		material = this.materials[mat.type || 'basic'],
 		mesh;
-		
+
 	if (typeof(mat.map) === 'string') {
 		mat.map = new THREE.Texture(Preload.getItem(mat.map));
 		mat.map.needsUpdate = true;
@@ -103,27 +99,27 @@ Object3D.createModel = function(data) {
 		animation = geometry.animation,
 		hierarchy = animation ? animation.hierarchy : null,
 		morph = geometry.morphTargets.length, 
-		Mesh = (!animation && !hierarchy && morph) ? THREE.MorphAnimMesh : THREE.SkinnedMesh;
+		Mesh = ((!animation || !hierarchy) && morph) ? THREE.MorphAnimMesh : THREE.SkinnedMesh;
 		
 	geometry.computeBoundingBox();
 	if (morph) {
 		var material = materials[0];
-		material.morphTargets = true; 
+		material.morphTargets = true;
 		// material.shading = THREE.NoShading;
 	}
 	data.pre && data.pre(geometry, materials);
 	mesh = new Mesh(geometry, new THREE.MeshFaceMaterial(materials));	
 	
-	if (Mesh === THREE.MorphAnimMesh) {
+	if (Mesh === THREE.MorphAnimMesh) {	
 		mesh.setFrameRange(0, morph);
 		mesh.duration = morph * 24 / 1000;
 	} else if (animation) {
 		mesh.updateAnimation = function() {
-				
+			
 		}
 	}
 	data.fn && data.fn(mesh);
-	
+
 	return mesh;
 }
 
@@ -146,18 +142,19 @@ Object3D.geometries = {
 		}
 	},
 	
-	sphere: {
-		init: function(data) {
-			return new THREE.SphereGeometry(data.radius || 3, data.segment || 9, data.segment || 9);
-		}
-	},
-	
 	box: {
 		init: function(data) {
 			var size = data.size || [ 5, 5, 5 ];
 			return new THREE.BoxGeometry(size[0], size[1], size[2]);
 		}
+	},
+	
+	sphere: {
+		init: function(data) {
+			return new THREE.SphereGeometry(data.radius || 3, data.segment || 9, data.segment || 9);
+		}
 	}
+		
 }
 
 Object3D.materials = {
@@ -180,6 +177,11 @@ Object3D.materials = {
 		init: function(data) {
 			return new THREE.MeshFaceMaterial(data);
 		}
+	},
+	shader: {
+		init: function(data) {
+			return new THREE.ShaderMaterial(data);
+		}
 	}
 }
 
@@ -196,13 +198,11 @@ Object3D.lights = {
 	},
 	spot: {
 		init: function(data) {
-
 			return new THREE.SpotLight(data.color);
 		}
 	},
 	direct: {
 		init: function(data) {
-
 			return new THREE.DirectionalLight(data.color, data.intensity);
 		}
 	},
@@ -210,7 +210,7 @@ Object3D.lights = {
 		init: function(data) {
 			return new THREE.AmbientLight(data.color);
 		}
-	}, 
+	},
 	hemisphere: {
 		init: function(data) {
 			return new THREE.HemisphereLight(data.color, data.groundColor || 0x888888, data.intensity);
