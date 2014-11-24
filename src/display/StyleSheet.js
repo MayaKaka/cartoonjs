@@ -403,20 +403,20 @@ StyleSheet.styles = {
 			return this.fillColor || this.fillGradient || this.fillImage;
 		},
 		set: function(key, value) {
-			if (regexpColor.test(value)) {		
-				this.style('fillColor', value);
-			} else if (regexpGradient.test(value)) {
-				this.style('fillGradient', value);
-			} else if (regexpImage.test(value)) { 
-				this.style('fillImage', value);
+			key = regexpColor.test(value) ? 'fillColor' : 
+				  regexpGradient.test(value) ? 'fillGradient' :
+				  regexpImage.test(value) ? 'fillImage' : null;
+			if (key) {
+				StyleSheet.set(this, key, value);
 			}
+			
 		},
 		step: function(key, fx) {
 			var value = fx.end;
-			if (regexpColor.test(value)) {		
-				this._stepStyle('fillColor', fx);
-			} else if (regexpGradient.test(value)) {
-				this._stepStyle('fillGradient', fx);
+			key = regexpColor.test(value) ? 'fillColor' : 
+				  regexpGradient.test(value) ? 'fillGradient' : null;
+			if (key) {
+				StyleSheet.step(this, key, fx);
 			}
 		}
 	},
@@ -493,10 +493,11 @@ StyleSheet.styles = {
 			return this.strokeColor;
 		},
 		set: function(key, value) {
-			this.style('strokeColor', value);
+			StyleSheet.set(this, 'strokeColor', value);
+
 		},
 		step: function(key, fx) {
-			this._stepStyle('strokeColor', fx);
+			StyleSheet.step(this, 'strokeColor', fx);
 		}
 	},
 	
@@ -527,7 +528,6 @@ StyleSheet.styles = {
 	radius: { // 圆半径
 		set: function(key, value) {
 			if (typeof(value) === 'object') {
-				if (this[key]) this[key] = { x: 0, y: 0};
 				for (var i in value) {
 					this[key][i] = value[i];
 				}
@@ -548,29 +548,6 @@ StyleSheet.styles = {
 	},
 	
 	angle: {}, // 圆角度
-	
-	radiusXY: { // 椭圆半径
-		get: function(key) {
-			return { radiusX: this.radiusX, radiusY: this.radiusY };
-		},
-		set: function(key, value) {
-			if (value.radiusX !== undefined) {
-				this.radiusX = value.radiusX;
-				this.width = this.radiusX * 2;
-			}
-			if (value.radiusY !== undefined) {
-				this.radiusY = value.radiusY;
-				this.height = this.radiusY * 2;
-			}
-			if (this.renderMode === 0) {
-				var style = this.elemStyle;
-				style.borderRadius = '50%';
-				style.width = this.width + 'px';
-				style.height = this.height + 'px';
-			}
-		},
-		step: StyleSheet.commonSteps
-	},
 	
 	font: {},  // 字体
 

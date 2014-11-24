@@ -9,7 +9,7 @@ var Canvas = DisplayObject.extend({
 	
 	type: 'Canvas',
 	renderMode: 0,
-	autoUpdate: false,
+	autoUpdate: true,
 	useElemSize: true,
 	
 	_tagName: 'canvas',
@@ -26,7 +26,9 @@ var Canvas = DisplayObject.extend({
 	},
 
 	update: function(delta) {
-		this._eachUpdaters(delta);
+		if (this.autoUpdate) {
+			this._eachUpdaters(delta);
+		}
 			
 		var ctx = this._context2d;
 		// 重绘画布

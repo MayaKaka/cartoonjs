@@ -38,9 +38,8 @@ var DisplayObject = EventDispatcher.extend({
 	blendMode: 'source-over',
 	mouseEnabled: true,
 	
-	updaters: null,
-	
 	_tagName: 'div', // 私有属性
+	_updaters: null,
 	_matrix2d: null,
 	_userData: null,
 
@@ -75,7 +74,7 @@ var DisplayObject = EventDispatcher.extend({
 		}
 		// 初始化属性
 		this.children = [];
-		this.updaters = [];
+		this._updaters = [];
 	    this._matrix2d = new Matrix2D();
 		this._userData = new UserData();
 		// 初始化样式
@@ -230,9 +229,13 @@ var DisplayObject = EventDispatcher.extend({
 		this._cacheCanvas = null;
 	},
 
-	_stepStyle: function(key, fx) {
+	_stepTween: function(key, fx) {
 		// 补间动画逐帧更新样式
-		StyleSheet.step(this, key, fx);
+		if (key === 'data') {
+			UserData.step(this, fx);
+		} else {
+			StyleSheet.step(this, key, fx);
+		}
 	},
 	
 	_isUpdater: function(obj) {
@@ -245,20 +248,20 @@ var DisplayObject = EventDispatcher.extend({
 	_addUpdater: function(child) {
 		// 当子节点为更新器时，添加到集合
 		if (this._isUpdater(child)) {
-			this.updaters.push(child);
+			this._updaters.push(child);
 		}
 	},
 	
 	_removeUpdater: function(child) {
 		if (this._isUpdater(child)) {
-			var updaters = this.updaters,
+			var updaters = this._updaters,
 				index = updaters.indexOf(child);
 			updaters.splice(index, 1);	
 		}
 	},
 
 	_eachUpdaters: function(delta) {
-		var updaters = this.updaters,
+		var updaters = this._updaters,
 			updater;
 		for (var i = 0, len = updaters.length; i < len; i++) {
 			updater = updaters[i];
@@ -267,7 +270,7 @@ var DisplayObject = EventDispatcher.extend({
 				if (updater.hasEventListener('update')) {
 					updater.trigger({ type: 'update', delta: delta });
 				}
-						
+
 				if (updater.update) {
 					updater.update(delta);	
 				} 

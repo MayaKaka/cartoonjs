@@ -7,18 +7,17 @@ var Class = require('core/Class'),
 	
 var Tween = Class.extend({
 	
-	_done: false,
-
+	from: 0,
+	to: 0,
+	start: null,
+	end: null,
+	easing: null,
+	callback: null,
+	onframe: null,
+	
+	_paused: true,
 	_target: null,
 	_deltaTime: -1,
-	
-	_start: null,
-	_end: null,
-	
-	_duration: null,
-	_easing: null,
-	_callback: null,
-	_onframe: null,
 	
 	init: function(target, props) {
 		this._target = target;
@@ -26,49 +25,62 @@ var Tween = Class.extend({
 		// 设置开始状态和结束状态
 		var start = props.start,
 			end = props.end;
+		// 初始化样式
 		if (start) {
-			// 初始化样式
 			target.style(start);
+			start.data && target.data(start.data);
 		} else {
 			start = {};
 			for (var i in end) {
-				start[i] = this._clone(target.style(i));
+				if (i === 'data') {
+					start[i] = this._clone(target._userData);
+				} else {
+					start[i] = this._clone(target.style(i));	
+				}
 			}
 		}
-		this._start = start;
-		this._end = end;
+		this.start = start;
+		this.end = end;
 		// 设置过渡参数
-		this._duration = props.duration;
-		this._easing = Ease.get(props.easing);
-		this._callback = props.callback;
-		this._onframe = props.onframe;
+		this.from = props.from;
+		this.to = props.to;
+		this.easing = Ease.get(props.easing);
+		this.callback = props.callback;
+		this.onframe = props.onframe;
+	},
+	
+	play: function() {
+		this._paused = false;
+		Tween._tweens.push(this);
+	},
+	
+	stop: function() {
+		this._paused = true;
 	},
 	
 	update: function(delta) {
-		if (this._done) return;
+		if (this._paused) return;
 		// 获取过渡参数
 		var target = this._target,
-			start = this._start,
-			end = this._end,
-			duration = this._duration,
-			easing = this._easing;
+			start = this.start,
+			end = this.end,
+			duration = this.to - this.from,
+			easing = this.easing;
 		// 计算时间百分比	
 		var	now = this._deltaTime,
 			percent =  now / duration,
 			pos = easing(percent, percent, 0, 1, 1);
 		// 设置过渡样式
 		for (var i in end) {
-			target._stepStyle(i, {
-				pos: pos, start: start[i], end: end[i]
-			});
+			target._stepTween(i, { pos: pos, start: start[i], end: end[i] });
 		}
 		// 执行每帧完成回调
-		if (this._onframe) this._onframe(percent, pos);
+		if (this.onframe) this.onframe(percent, pos);
 		// 判断动画是否结束
 		if (now === duration) {
-			this._done = true;
 			// 执行动画完成回调
-			if (this._callback) this._callback();
+			this.stop();
+			this.callback && this.callback();
 		} else {
 			// 更新执行时间
 			var nextTime = now + delta;
@@ -85,7 +97,7 @@ var Tween = Class.extend({
 			}
  		} else {
 			temp = origin;
-		}		
+		}
 		return temp;
 	}
 	
@@ -98,7 +110,7 @@ Tween.update = function(delta) {
 	var tweens = this._tweens;
 	// 移除已经完成的动画
 	for (var i=tweens.length-1; i>=0; i--) {
-		if (tweens[i]._done) {
+		if (tweens[i]._paused) {
 			tweens.splice(i, 1);
 		}
 	}
@@ -115,39 +127,72 @@ Tween.get = function(target) {
 }
 
 Tween.has = function(target) {
-	return !!target.data('fx_queue');
+	return !!target._fxQueue;
 }
+
+Tween.exec = function(fnName) {
+	var target = this._currentTarget;
+	switch (fnName) {
+		case 'shift':
+			if (target._fxTween) {
+				target._fxTween.stop();
+				target._fxTween.callback();
+			} else {
+				target._fxQueue && target._fxQueue.shift();	
+			}
+			break;
+		case 'pop':
+			target._fxQueue && target._fxQueue.pop();
+			break;
+		case 'stop':
+			target._fxTween && target._fxTween.stop();
+			target._fxQueue = target._fxTween = null;
+			break;
+		case 'fadeIn':
+			this.addTween({ alpha: 1 });
+			break;
+		case 'fadeOut':
+			this.addTween({ alpha: 0 });
+			break;
+	}
+}
+
 
 Tween.addTween = function(props, duration, easing, callback, onframe) {
 	var target = this._currentTarget,
-		queue = target.data('fx_queue');
+		queue = target._fxQueue;
 	// 延迟动画，如 obj.to(500, callback)
 	if (typeof(props) === 'number') {
 		callback = duration;
 		duration = props;
 		props = {};
 		easing = 'none';
+	} else if (typeof(props) === 'string') {
+		this.exec(props);
 	}
+	
 	var nextAnimation = function() {
 		if (callback) callback();
 		// 执行下一个动画
-		queue = target.data('fx_queue');
+		queue = target._fxQueue;
 		if (queue && queue.length > 0) {
 			queue.shift()();
 		} else {
-			target.data('fx_queue', null);
+			target._fxQueue = target._fxTween = null;
+			target.trigger({ type: 'tweenend' });
 		}
 	}
 	// 创建补间动画
 	var doAnimation = function() {
 		var tween = new Tween(target, {
+			from: 0, to: duration || 300,
 			start: null, end: props,
-			duration: duration || 300,
 			easing: easing || 'linear',
 			callback: nextAnimation,
 			onframe: onframe
 		});
-		Tween._tweens.push(tween);
+		tween.play();
+		target._fxTween = tween;
 	};
 	
 	if (queue) {
@@ -156,7 +201,7 @@ Tween.addTween = function(props, duration, easing, callback, onframe) {
 	} else {
 		// 执行补间动画
 		doAnimation();
-		target.data('fx_queue', []);
+		target._fxQueue = [];
 	}
 }
 

@@ -24,5 +24,16 @@ var UserData = Class.extend({
 	
 });
 
+UserData.step = function(target, fx) {
+	var pos = fx.pos,
+		start = fx.start,
+		end = fx.end,
+		data = target._userData;
+
+	for (var i in end) {
+		data[i] = (end[i] - start[i]) * pos + start[i];
+	}
+}
+
 return UserData;
 });

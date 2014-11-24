@@ -114,7 +114,10 @@ var SkeletalAnimation = DisplayObject.extend({
 				timeline.addKeyframe(frame, frame.time);
 			}
 		}
-
+		var self = this;
+		timeline.on('timelineend', function() {
+			self.trigger({ type: 'animationend', timeline: timeline });
+		})
 		return timeline;
 	}
 	

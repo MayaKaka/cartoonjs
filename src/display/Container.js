@@ -8,6 +8,7 @@ var Container = DisplayObject.extend({
 
 	type: 'Container',
 	renderMode: 0,
+	autoUpdate: true,
 	
 	init: function(props) {
 		this._super(props);
@@ -15,7 +16,9 @@ var Container = DisplayObject.extend({
 	},
 	
 	update: function (delta) {
-		this._eachUpdaters(delta);
+		if (this.autoUpdate) {
+			this._eachUpdaters(delta);
+		}
 	},
 	
 	_initEvents: function() {

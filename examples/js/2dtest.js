@@ -11,11 +11,11 @@ var test2d = {
 			});
 			var circle_dom = new ct.Shape({
 				x: 200, y: 20,
-				graphics: { type: 'circle', fill: 'center,#FF0000,#FFFF00', radius: 52 }
+				graphics: { type: 'circle', fill: '#FFFF00', radius: 52 }
 			});
 			var ellipse_dom = new ct.Shape({
 				x: 360, y: 30,
-				graphics: { type: 'ellipse', stroke: '#0000FF', fill: '#FF00FF', radiusX: 60, radiusY: 40 }
+				graphics: { type: 'ellipse', stroke: '#0000FF', fill: '#FF00FF', radius: { x: 60, y: 40 } }
 			});
 			dom.add(rect_dom);
 			dom.add(circle_dom);
@@ -37,7 +37,7 @@ var test2d = {
 			});
 			var ellipse = new ct.Shape({
 				x: 360, y: 30,
-				graphics: { type: 'ellipse', stroke: '#00F', fill: '#F0F', radiusX: 60, radiusY: 40 }
+				graphics: { type: 'ellipse', stroke: '#00F', fill: '#F0F', radius: { x: 60, y: 40 } }
 			});
 			var line = new ct.Shape({
 				x: 40, y: 180, width: 120, height: 90,
@@ -244,16 +244,16 @@ var test2d = {
 				rect.to(400).to({ pos: { x: 200, y: 200 } }, 400)
 					.to(400).to({ width: 150 }, 400)
 					.to(400).to({ height: 150 }, 400)
-					.to(400).to({ alpha: 0 }, 400)
-					.to(400).to({ alpha: 1 }, 400)
+					.to(400).to('fadeOut')
+					.to(400).to('fadeIn')
 					.to(400).to({ fill: 'top,#FFDD00,#FF2200' }, 600)
 					.to(400).to({ fill: 'top,#00FFDD,#00FF22' }, 600);
 				
 				rect_cvs.to(400).to({ pos: { x: 200, y: 200 } }, 400)
 					.to(400).to({ width: 150 }, 400)
 					.to(400).to({ height: 150 }, 400)
-					.to(400).to({ alpha: 0 }, 400)
-					.to(400).to({ alpha: 1 }, 400)
+					.to(400).to('fadeOut')
+					.to(400).to('fadeIn')
 					.to(400).to({ fill: 'top,#FFDD00,#FF2200' }, 600)
 					.to(400).to({ fill: 'top,#00FFDD,#00FF22' }, 600);
 			}

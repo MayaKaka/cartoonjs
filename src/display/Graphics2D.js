@@ -73,14 +73,15 @@ Graphics2D.shapes = {
 	ellipse: {
 		type: 'ellipse',
 		init: function(data) {
-			this.style('radiusXY', data);
+			this.radius = { x: 0, y: 0 };
+			this.style('radius', data.radius);
 			// 设置通用样式
 			Graphics2D.commonStyle(this, data);
 		},
 		draw: function(ctx) {
 			var k = 0.5522848,
-				rx = this.radiusX,
-				ry = this.radiusY,
+				rx = this.radius.x,
+				ry = this.radius.y,
 				kx = rx * k,
 				ky = ry * k,
 				w = rx * 2,

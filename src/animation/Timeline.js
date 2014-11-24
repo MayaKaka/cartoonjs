@@ -48,7 +48,7 @@ var Timeline = EventDispatcher.extend({
 	has: function(target) {
 		var targets = this._targets;
 		// 判断是否存在执行对象
-        for (var i=targets.length-1; i>=0; i--) {
+        for (var i = targets.length-1; i>=0; i--) {
         	if(targets[i] === target) {
             	return true;
             }
@@ -60,8 +60,8 @@ var Timeline = EventDispatcher.extend({
 		if (!this.has(target)) {
 			// 初始化对象的动画参数
 			this.removeKeyframes(target);
-			target.data('tl_queue', []);
-			target.data('tl_start', {});
+			target._tlSteps = [];
+			target._tlStart = {};
 			// 添加对象到集合
 			this._targets.push(target);
 		}
@@ -78,26 +78,26 @@ var Timeline = EventDispatcher.extend({
 		
 	addKeyframe: function(props, timepoint, easing, callback) {
 		var target = this._currentTarget,
-			queue = target.data('tl_queue'),
-			start = target.data('tl_start');
+			steps = target._tlSteps,
+			start = target._tlStart;
 		// 获取初始状态
 		for (var i in props) {
 			start[i] = this._clone(target.style(i));
 		}
 		// 添加参数到队列
-		queue.push([props, timepoint, easing || 'linear', callback]);
-		queue.sort(function(a, b) {
+		steps.push([props, timepoint, easing || 'linear', callback]);
+		steps.sort(function(a, b) {
 			return a[1] - b[1];
 		});
-		
-		var steps = [],
-			step,
+
+		var step,
+			queue = [],
 			from = 0;
 		// 创建动画过程
-		for (var i=0, l=queue.length; i<l; i++) {
-			step = queue[i];
-			// 添加新的动画过程
-			steps.push({
+		for (var i=0, l=steps.length; i<l; i++) {
+			step = steps[i];
+			// 添加新的动画
+			queue.push({
 				from: from, to: step[1], // 开始时间和结束时间
 				start: start, end: step[0], // 开始状态和结束状态
 				easing: step[2], callback: step[3] // 过渡函数和回调函数
@@ -110,17 +110,17 @@ var Timeline = EventDispatcher.extend({
 		if (this._duration < from) {
 			this._duration = from;
 		}
-		target.data('tl_steps', steps);
+		target._tlQueue = queue;
 
 		return this;
 	},
 	
 	removeKeyframes: function(target) {
 		// 移除所有关键帧
-		target.data('tl_queue', null);
-		target.data('tl_start', null);
-		target.data('tl_steps', null);
-		target.data('tl_cur_step', null);
+		target._tlSteps =
+		target._tlStart =
+		target._tlQueue =
+		target._tlTween = null;
 	},
 	
 	update: function(delta) {
@@ -128,7 +128,7 @@ var Timeline = EventDispatcher.extend({
 		
 		var targets = this._targets,
 			target,
-			step;
+			tween;
 		// 获取动画参数	
 		var now = this._deltaTime,
 			duration = this._duration;
@@ -136,13 +136,13 @@ var Timeline = EventDispatcher.extend({
 		for (var i=0, l=targets.length; i<l; i++) {
 			target = targets[i];
 			// 获取当前过渡动画
-			step = this._getStep(target, now);
+			tween = this._getTween(target, now);
 			// 更新当前过渡动画
-			if (step) {
-				this._updateStep(target, step, now);
+			if (tween) {
+				this._stepTween(target, tween, now);
 				// 动画结束时执行最后帧的回调
-				if (now === duration && step.to === duration && step.callback) {
-					step.callback(now);
+				if (now === duration && tween.to === duration && tween.callback) {
+					tween.callback(now);
 				}
 			}
 		}
@@ -154,7 +154,7 @@ var Timeline = EventDispatcher.extend({
 				this.stop();
 			}
 			// 触发动画结束事件
-			this.trigger({ type: 'animationend' });
+			this.trigger({ type: 'timelineend' });
 		} else {
 			// 更新执行时间
 			var nextTime = now + delta;
@@ -162,31 +162,30 @@ var Timeline = EventDispatcher.extend({
 		}
 	},
 	
-	_getStep: function(target, now) {
-		var curStep = target.data('tl_cur_step');
+	_getTween: function(target, now) {
+		var tween = target._tlTween;
 		// 判断时间是否超出动画区间
-		if (curStep) {
-			if (now >= curStep.from && now <= curStep.to) {
-				return curStep; // 没有超出返回当前动画
+		if (tween) {
+			if (now >= tween.from && now <= tween.to) {
+				return tween; // 没有超出返回当前动画
 			} else {
-				if (now > curStep.to && curStep.callback) {
-					curStep.callback(now); // 执行回调
+				if (now > tween.to && tween.callback) {
+					tween.callback(now); // 执行回调
 				}
-				target.data('tl_cur_step', null);
+				target._tlTween = null;
 			}
 		}
 	
-		var steps = target.data('tl_steps'),
-			duration = steps[steps.length - 1].to,
-			step;
+		var queue = target._tlQueue,
+			duration = queue[queue.length - 1].to;		
 		// 获取当前过渡动画	
 		if (now <= duration) {
-			for (var i=0, l=steps.length; i<l; i++) {
-				step = steps[i];
-				if (now >= step.from && now <= step.to) {
-					target.style(step.start); // 初始化样式
-					target.data('tl_cur_step', step);
-					return step;
+			for (var i=0, l = queue.length; i<l; i++) {
+				tween = queue[i];
+				if (now >= tween.from && now <= tween.to) {
+					target.style(tween.start); // 初始化样式
+					target._tlTween = tween;
+					return tween;
 				}
 			}
 		}
@@ -194,21 +193,21 @@ var Timeline = EventDispatcher.extend({
 		return null;
 	},
 	
-	_updateStep: function(target, step, now) {
-		if (step.to === step.from) {
+	_stepTween: function(target, tween, now) {
+		if (tween.to === tween.from) {
 			// 当动画为单帧时，直接更新样式
-			target.style(step.end);
+			target.style(tween.end);
 			return;
 		}
-		var duration = step.to - step.from,
-			easing = Ease.get(step.easing),
-			percent = (now - step.from) / duration,
+		var duration = tween.to - tween.from,
+			easing = Ease.get(tween.easing),
+			percent = (now - tween.from) / duration,
 			pos = easing(percent, percent, 0, 1, 1),
-			start = step.start,
-			end = step.end;
+			start = tween.start,
+			end = tween.end;
 		// 设置过渡样式
 		for (var i in end) {
-			target._stepStyle(i, {
+			target._stepTween(i, {
 				pos: pos, start: start[i], end: end[i]
 			});
 		}
