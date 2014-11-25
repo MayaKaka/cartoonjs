@@ -135,15 +135,19 @@ StyleSheet.toColor = function(rgba) {
 	return '#'+r+g+b;
 };
 
-StyleSheet.toGradient = function(gradient) {
-	if (typeof(gradient) === 'string') {
-		gradient = gradient.split(/\,#|\,rgb/);
+StyleSheet.toGradient = function(value) {
+	var result;
+	if (typeof(value) === 'string') {
+		value = value.split(/\,#|\,rgb/);
 		// 将渐变样式转换成数组格式
-		for (var i=1,l=gradient.length; i<l; i++) {
-			gradient[i] = (gradient[i].indexOf('(')>-1?'rgb':'#') + gradient[i];
+		for (var i = 1, len = value.length; i < len; i++) {
+			value[i] = (value[i].indexOf('(')>-1?'rgb':'#') + value[i];
 		}
+		result = { type: value[0], from: value[1], to: value[2] };
+	} else {
+		result = value;
 	}
-	return gradient;
+	return result;
 };
 
 StyleSheet.stepColor = function(pos, start, end) {
@@ -188,23 +192,6 @@ StyleSheet.styles = {
 			this.style('transform3d', { perspective: value });
 		},
 		step: StyleSheet.commonStep
-	},
-	
-	pos: { // xy坐标
-		get: function(key) {
-			return { x: this.x, y: this.y };
-		},
-		set: function(key, value) {
-			if (value.x !== undefined) this.x = value.x;
-			if (value.y !== undefined) this.y = value.y;
-			if (this.renderMode === 0) {
-				var style = this.elemStyle;
-				style.position = 'absolute';
-				style.left = this.x + 'px';
-				style.top = this.y + 'px';
-			}
-		},
-		step: StyleSheet.commonSteps
 	},
 	
 	width: { // 宽度
@@ -441,18 +428,18 @@ StyleSheet.styles = {
 			this[key] = value = StyleSheet.toGradient(value);
 			if (this.renderMode === 0) {
 				var style = this.elemStyle, text;
+				// ie6-8下使用gradient filter
 				if (supportIE6Filter || isIE9) {
-					// ie6-8下使用gradient filter
 					var filter = style.filter,
 						regexp = /gradient([^)]*)/;
-					text = 'gradient(GradientType=0,startColorstr=\''+value[1]+'\', endColorstr=\''+value[2]+'\'';
+					text = 'gradient(GradientType=0,startColorstr=\''+value.from+'\', endColorstr=\''+value.to+'\'';
 					style.filter = regexp.test(filter) ? filter.replace(regexp, text) : (filter + ' progid:DXImageTransform.Microsoft.'+text+')');
 				} else {
 					// 设置css3样式
-					if (value[0]==='center') {
-						text = 'radial-gradient(circle,'+value[1]+','+value[2]+')';
+					if (value.type === 'center') {
+						text = 'radial-gradient(circle,' + value.from + ',' + value.to + ')';
 					} else {
-						text = 'linear-gradient('+value[0]+','+value[1]+','+value[2]+')';
+						text = 'linear-gradient('+ value.type + ',' + value.from + ',' + value.to +')';
 					}
 					style.backgroundImage = '-webkit-' + text;
 					style.backgroundImage = '-ms-' + text;
@@ -465,10 +452,10 @@ StyleSheet.styles = {
 				end = fx.end,
 				end = StyleSheet.toGradient(end),
 				pos = fx.pos,
-				result = [end[0]];
+				result = { type: end.type };
 			// 设置渐变颜色过渡
-			result.push(StyleSheet.stepColor(pos, start[1], end[1]));
-			result.push(StyleSheet.stepColor(pos, start[2], end[2]));
+			result.from = StyleSheet.stepColor(pos, start.from, end.from);
+			result.to = StyleSheet.stepColor(pos, start.to, end.to);
 			this.style(key, result);
 		}
 	},
@@ -551,8 +538,13 @@ StyleSheet.styles = {
 	
 	font: {},  // 字体
 
-	textColor: {} // 文字颜色
-
+	textColor: {}, // 文字颜色
+	
+	position: {},
+	
+	rotation: {},
+	
+	scale: {}
 }
 
 return StyleSheet;

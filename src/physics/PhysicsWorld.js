@@ -143,7 +143,7 @@ var PhysicsWorld = DisplayObject.extend({
 	          		x = xf.position.x * scale;
 	          		y = xf.position.y * scale;
 	          		r = Math.round(((f.m_body.m_sweep.a + PI2) % PI2) * R2D * 100) / 100;
-	          		obj.style({ pos: { x: x, y: y }, transform: { rotate: r } });
+	          		obj.style({ x: x, y: y, transform: { rotate: r } });
 	        	}
 	        	f = f.m_next;
 	      	}

@@ -35,7 +35,7 @@ var Shape = DisplayObject.extend({
 			}
 		} else if (gradient) {
 			// 使用渐变填充
-			switch (gradient[0]) {
+			switch (gradient.type) {
 				case 'top': case 'bottom':
 					style = ctx.createLinearGradient(0, 0, 0, this.height);
 					break;
@@ -54,8 +54,8 @@ var Shape = DisplayObject.extend({
 					style = ctx.createRadialGradient(radiusX, radiusY, 0, radiusX, radiusY, radiusX>radiusY ? radiusX : radiusY);
 					break;
 			}
-			style.addColorStop(0.0, gradient[1]);
-			style.addColorStop(1.0, gradient[2]);
+			style.addColorStop(0.0, gradient.from);
+			style.addColorStop(1.0, gradient.to);
 		}
 		// 设置fillStyle
 		if (style) {

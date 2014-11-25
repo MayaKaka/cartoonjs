@@ -12,7 +12,8 @@ var Object3D = OriginObject3D,
 	p = Object3D.prototype;
 
 var blendings = [ "NoBlending", "NormalBlending", "AdditiveBlending", "SubtractiveBlending", "MultiplyBlending", "AdditiveAlphaBlending" ];
-	
+
+p.type = 'Object3D';
 p.renderMode = 2; // 渲染模式 WebGL
 
 p.on = p.addEventListener;

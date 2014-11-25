@@ -5,6 +5,7 @@ define( function ( require, exports, module ) {
 var EventDispatcher = require('core/EventDispatcher'),
 	UserData = require('core/UserData'),
 	Matrix2D = require('core/Matrix2D'),
+	TagCollection = require('core/TagCollection'),
 	StyleSheet = require('display/StyleSheet'),
 	Tween = require('animation/Tween');
    
@@ -89,7 +90,7 @@ var DisplayObject = EventDispatcher.extend({
 		}
 	},
 	
-	add: function(child) {
+	add: function(child, tag) {
 		if (child.parent) {
 			child.parent.remove(child);
 		}
@@ -102,9 +103,17 @@ var DisplayObject = EventDispatcher.extend({
 		}
 		
 		this._addUpdater(child);
+		
+		if (tag) {
+			TagCollection.set(this, 'child.' + tag, child);
+		}
 	},
 	
 	remove: function(child) {
+		if (typeof(child) === 'string') { 
+			child = TagCollection.get(this, 'child.' + child);
+		}
+		
 		if (child.parent === this) {
 			child.parent = null;
 			// 移除子节点

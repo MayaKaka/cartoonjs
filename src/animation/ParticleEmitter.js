@@ -1,8 +1,10 @@
 define( function ( require, exports, module ) {
 	"use strict";
 	
-var	Shape = require('display/Shape'),
-	Bitmap = require('display/Bitmap');
+var	base = require('base'),
+	Shape = require('display/Shape'),
+	Bitmap = require('display/Bitmap'),
+	random = base.random;
 	   
 var ParticleEmitter = function() {};
 
@@ -25,14 +27,14 @@ ParticleEmitter.particles = {
 			for(var i=0, l=data.num||60; i<l; i++) {
 				particle = new Shape({
 					renderMode: this.renderMode,
-					pos: { x: Math.floor(Math.random()*width), y: -Math.floor(Math.random()*height) },
+					x: random(0, width), y: -random(0, height),
 					graphics: {
 						type: 'rect', width: i%6===0?3:2, height: i%3===0?28:20, fill: '#FFF'
 					},
-					alpha: Math.floor(Math.random()*3)/10+0.2
+					alpha: random(0, 3)/10+0.2
 				});
 				
-				particle.data('fall_speed', Math.floor(Math.random()*25)/100+0.25);
+				particle.data('fall_speed', random(0, 25)/100+0.25);
 				this.particles.push(particle);
 				this.add(particle);
 			}
@@ -48,7 +50,7 @@ ParticleEmitter.particles = {
 				dis = particle.data('fall_speed')*delta;
 				y = particle.y;
 				if (y > height) {
-					y = -Math.floor(Math.random()*height);
+					y = -random(0, height);
 				}
 				particle.style('y', y+dis);
 			}
@@ -62,32 +64,33 @@ ParticleEmitter.particles = {
 				height = data.height,
 				image = data.image,
 				particle,
-				radius, pos, alpha;
+				radius, x, y, alpha;
 
 			this.particles = [];
 			this.data('fall_width', width);
 			this.data('fall_height', height);
 			// 初始化雪花粒子
 			for (var i=0, l=data.num||60; i<l; i++) {
-				pos = { x: Math.floor(Math.random()*width), y: -Math.floor(Math.random()*height) };
-				radius = Math.floor(Math.random()*10)+15;
-				alpha = Math.floor(Math.random()*4)/10+0.6;
-				
+				x = random(0, width);
+				y = -random(0, height);
+				radius = random(15, 25);
+				alpha = random(6, 10)/10;
+
 				particle = image ? new Bitmap({
 					renderMode: this.renderMode,
-					pos: pos, width: radius, height: radius, scaleToFit: true,
+					x: x, y: y, width: radius, height: radius, scaleToFit: true,
 					image: image, alpha: alpha
 				}) : new Shape({
 					renderMode: this.renderMode,
-					pos: pos, alpha: Math.floor(Math.random()*5)/10 + 0.3,
+					x: x, y: y, alpha: random(5, 8)/10,
 					graphics: {
-						type: 'circle', radius: Math.floor(Math.random()*3) + 4, fill: '#FFF', angle: 360
+						type: 'circle', radius: random(4, 7), fill: '#FFF', angle: 360
 					}
 				});
 				
 				particle.data('fall_x', particle.x);
-				particle.data('fall_width', Math.floor(Math.random()*10 + 10));
-				particle.data('fall_speed', Math.floor(Math.random()*15 + 15)/1000);
+				particle.data('fall_width', random(10, 20));
+				particle.data('fall_speed', random(15, 30)/1000);
 				this.particles.push(particle);
 				this.add(particle);
 			}
@@ -106,9 +109,9 @@ ParticleEmitter.particles = {
 				y = particle.y;
 				if (y > height) {
 					particle.fallTime = 0;
-					y = -Math.floor(Math.random()*height);
+					y = -random(0, height);
 				}
-				particle.style('pos', { x: x + Math.sin(y / (spd*2000)) * particle.data('fall_width'), y: y + dis });
+				particle.style({ x: x + Math.sin(y / (spd*2000)) * particle.data('fall_width'), y: y + dis });
 			}
 		}
 	},

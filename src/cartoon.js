@@ -9,6 +9,7 @@ cartoon.expand({
 	// 基础组件
 	Class: require('core/Class'),
 	Ticker: require('core/Ticker'),
+	TagCollection: require('core/TagCollection'),
 	EventDispatcher: require('core/EventDispatcher'),
 	Loader: require('core/Loader'),
 	Preload: require('core/Preload'),

@@ -66,7 +66,7 @@ var Ticker = Class.extend({
         return false;
    	},
 	
-	add: function(target) {
+	add: function(target, tag) {
 		if (target.update instanceof Function) {
 			// 当执行对象为动画实例时，绑定计时器
 			if (target._ticker) {
@@ -76,9 +76,17 @@ var Ticker = Class.extend({
 		}
 		// 添加执行对象
         this._targets.push(target);
+        
+        if (tag) {
+			TagCollection.set(this, 'tick.' + tag, target);
+		}
 	},
     
     remove: function(target) {
+    	if (typeof(target) === 'string') { 
+			target = TagCollection.get(this, 'tick.' + target);
+		}
+		
     	var targets = this._targets;
     	// 移除执行对象
         for (var i=targets.length-1; i>=0; i--) {

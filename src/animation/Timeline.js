@@ -3,7 +3,8 @@ define( function ( require, exports, module ) {
 	"use strict";
 	   
 var EventDispatcher = require('core/EventDispatcher'),
-	Ease = require('animation/Ease');
+	Ease = require('animation/Ease'),
+	Tween = require('animation/Tween');
 
 var Timeline = EventDispatcher.extend({
 	
@@ -106,7 +107,7 @@ var Timeline = EventDispatcher.extend({
 			from = step[1];
 			start = this._merge(start, step[0]);
 		}
-		// 设置动画持续时间		
+		// 设置动画持续时间
 		if (this._duration < from) {
 			this._duration = from;
 		}

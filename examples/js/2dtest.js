@@ -134,8 +134,8 @@ var test2d = {
 					.to({ y: 200 }, 400, null, fn)
 					.to({ x: 200 }, 400, null, fn)
 					.to(400, fn).to({ transform: { scale: 3 } }, 800, null, fn)
-					.to(400, fn).to({ pos: { x: 400 }, transform: { rotate: 360 } }, 800, null, fn)
-					.to(400, fn).to({ pos: { x: 200 }, transform: { rotate: 0 } }, 800, null, fn)
+					.to(400, fn).to({ x: 400, transform: { rotate: 360 } }, 800, null, fn)
+					.to(400, fn).to({ x: 200, transform: { rotate: 0 } }, 800, null, fn)
 					.to(400, fn).to({ transform: { scale: 1 } }, 800, null, fn);
 				
 				rect_cvs.to(400).to({ x: 400 }, 400)
@@ -190,14 +190,14 @@ var test2d = {
 						// console.log(nt - t);
 						t = nt;
 					}
-				rect.to(400, fn).to({ pos: { x: 200, y: 200 } }, 800, null, fn)
+				rect.to(400, fn).to({ x: 200, y: 200 }, 800, null, fn)
 					.to(400, fn).to({ transform3d: { scaleX: 3, scaleY: 3 } }, 800, null, fn)
 					.to(400, fn).to({ transform3d: { rotateX: 360 } }, 800, null, fn)
 					.to(400, fn).to({ transform3d: { rotateZ: 360 } }, 800, null, fn)
 					.to(400, fn).to({ transform3d: { rotateY: 360 } }, 800, null, fn)
 					.to(400, fn).to({ transform3d: { rotateX: 0, rotateY: 0, rotateZ: 0, scaleX: 1, scaleY: 1 } }, 1600, null, fn);
 				
-				rect_cvs.to(400).to({ pos: { x: 200, y: 200 } }, 800)
+				rect_cvs.to(400).to({ x: 200, y: 200 }, 800)
 					.to(400).to({ transform3d: { scaleX: 3, scaleY: 3 } }, 800)
 					.to(400).to({ transform3d: { rotateX: 360 } }, 800)
 					.to(400).to({ transform3d: { rotateZ: 360 } }, 800)
@@ -241,7 +241,7 @@ var test2d = {
 			cvs.add(rect_cvs);
 			
 			var animate = function() {
-				rect.to(400).to({ pos: { x: 200, y: 200 } }, 400)
+				rect.to(400).to({ x: 200, y: 200 }, 400)
 					.to(400).to({ width: 150 }, 400)
 					.to(400).to({ height: 150 }, 400)
 					.to(400).to('fadeOut')
@@ -249,7 +249,7 @@ var test2d = {
 					.to(400).to({ fill: 'top,#FFDD00,#FF2200' }, 600)
 					.to(400).to({ fill: 'top,#00FFDD,#00FF22' }, 600);
 				
-				rect_cvs.to(400).to({ pos: { x: 200, y: 200 } }, 400)
+				rect_cvs.to(400).to({ x: 200, y: 200 }, 400)
 					.to(400).to({ width: 150 }, 400)
 					.to(400).to({ height: 150 }, 400)
 					.to(400).to('fadeOut')
@@ -554,87 +554,87 @@ var test2d = {
 			var animations = {
 					idle: [
 						{ tag: 'body', frames: [
-							{ time: 0, pos: { x: 0, y: 0 }, transform: { rotate: 0 } },
-							{ time: 600, pos: { y: 3 } },
-							{ time: 1200, pos: { y: 0 } }
+							{ time: 0, x: 0, y: 0, transform: { rotate: 0 } },
+							{ time: 600, y: 3 },
+							{ time: 1200, y: 0 }
 						]},
 						{ tag: 'head', frames: [
-							{ time: 0, pos: { x: -27, y: -55 }, transform: { rotate: 0, originX: 0.4, originY: 0.7 } },
+							{ time: 0, x: -27, y: -55, transform: { rotate: 0, originX: 0.4, originY: 0.7 } },
 						]},
 						{ tag: 'left_hand', frames: [
-							{ time: 0, pos: { x: 10, y: 20 }, transform: { rotate: -40 } },
+							{ time: 0, x: 10, y: 20, transform: { rotate: -40 } },
 							{ time: 600, transform: { rotate: -30 } },
 							{ time: 1200, transform: { rotate: -40 } }
 						]},
 						{ tag: 'left_hand_1', frames: [
-							{ time: 0, pos: { x: -39, y: 24 }, transform: { rotate: 0, originX: 0.9, originY: 0.0 } },
+							{ time: 0, x: -39, y: 24, transform: { rotate: 0, originX: 0.9, originY: 0.0 } },
 							{ time: 600, transform: { rotate: 5 } },
 							{ time: 1200, transform: { rotate: 0 } }
 						]},
 						{ tag: 'right_hand', frames: [ 
-							{ time: 0, pos: { x: -35, y: 35 }, transform: { rotate: -40, originX: 1, originY: 0 } },
+							{ time: 0, x: -35, y: 35, transform: { rotate: -40, originX: 1, originY: 0 } },
 							{ time: 600, pos: { y: 38 }, transform: { rotate: -20 } },
 							{ time: 1200, pos: { y: 35 }, transform: { rotate: -40 } }
 						]},
 						{ tag: 'right_foot', frames: [
-							{ time: 0, pos: { x: 17, y: 54 }, transform: { rotate: 0, originX: 0.45, originY: 0.2 } },
-							{ time: 600, pos: { x: 15, y: 55 }, transform: { rotate: -5 } },
-							{ time: 1200, pos: { x: 17, y: 54 }, transform: { rotate: 0 } }
+							{ time: 0, x: 17, y: 54, transform: { rotate: 0, originX: 0.45, originY: 0.2 } },
+							{ time: 600, x: 15, y: 55, transform: { rotate: -5 } },
+							{ time: 1200, x: 17, y: 54, transform: { rotate: 0 } }
 						]},
 						{ tag: 'right_foot_1', frames: [ 
-							{ time: 0, pos: { x: -14, y: 38 }, transform: { rotate: 0, originX: 0.75, originY: 0.2 } },
+							{ time: 0, x: -14, y: 38, transform: { rotate: 0, originX: 0.75, originY: 0.2 } },
 							{ time: 600, transform: { rotate: 5 } },
 							{ time: 1200, transform: { rotate: 0 } }
 						]},
 						{ tag: 'left_foot', frames: [
-							{ time: 0, pos: { x: 40, y: 45 }, transform: { rotate: 0, originX: 0.5, originY: 0.2 } },
-							{ time: 600, pos: { x: 43 }, transform: { rotate: 5 } },
-							{ time: 1200, pos: { x: 40 }, transform: { rotate: 0 } }
+							{ time: 0, x: 40, y: 45, transform: { rotate: 0, originX: 0.5, originY: 0.2 } },
+							{ time: 600, x: 43, transform: { rotate: 5 } },
+							{ time: 1200, x: 40, transform: { rotate: 0 } }
 						]},
 						{ tag: 'left_foot_1', frames: [
-							{ time: 0,  pos: { x: -17, y: 58 }, transform: { rotate: 0, originX: 0.55, originY: 0.1 } },
+							{ time: 0,  x: -17, y: 58, transform: { rotate: 0, originX: 0.55, originY: 0.1 } },
 							{ time: 600, transform: { rotate: -5 } },
 							{ time: 1200, transform: { rotate: 0 } }
 						]}
 					],
 					walk: [
 						{ tag: 'body', frames: [
-							{ time: 0, pos: { x: 0, y: 0 }, transform: { rotate: 0 } },
+							{ time: 0, x: 0, y: 0, transform: { rotate: 0 } },
 							{ time: 400, transform: { rotate: -10 } },
 							{ time: 800, transform: { rotate: 0 } },
 							{ time: 1200, transform: { rotate: 10 } },
 							{ time: 1600, transform: { rotate: 0 } } 
 						]},
 						{ tag: 'head', frames: [
-							{ time: 0, pos: { x: -27, y: -55 }, transform: { rotate: 0, originX: 0.4, originY: 0.7 } },
+							{ time: 0, x: -27, y: -55, transform: { rotate: 0, originX: 0.4, originY: 0.7 } },
 							{ time: 400, transform: { rotate: -10 } },
 							{ time: 800, transform: { rotate: 0 } },
 							{ time: 1200, transform: { rotate: 10 } },
 							{ time: 1600, transform: { rotate: 0 } }
 						]},
 						{ tag: 'left_hand', frames: [
-							{ time: 0, pos: { x: 10, y: 20 }, transform: { rotate: 0 } },
+							{ time: 0, x: 10, y: 20, transform: { rotate: 0 } },
 							{ time: 400, transform: { rotate: 20 } },
 							{ time: 800, transform: { rotate: 0 } },
 							{ time: 1200, transform: { rotate: -20 } },
 							{ time: 1600, transform: { rotate: 0 } } 
 						]},
 						{ tag: 'left_hand_1', frames: [
-							{ time: 0, pos: { x: -39, y: 24 }, transform: { rotate: 0, originX: 0.9, originY: 0.0 } },
+							{ time: 0, x: -39, y: 24, transform: { rotate: 0, originX: 0.9, originY: 0.0 } },
 							{ time: 400, transform: { rotate: 10 } },
 							{ time: 800, transform: { rotate: 0 } },
 							{ time: 1200, transform: { rotate: -10 } },
 							{ time: 1600, transform: { rotate: 0 } } 
 						]},
 						{ tag: 'right_hand', frames: [ 
-							{ time: 0, pos: { x: -35, y: 35 }, transform: { rotate: 0, originX: 1, originY: 0 } },
+							{ time: 0, x: -35, y: 35, transform: { rotate: 0, originX: 1, originY: 0 } },
 							{ time: 400, transform: { rotate: -20 } },
 							{ time: 800, transform: { rotate: 0 } },
 							{ time: 1200, transform: { rotate: 20 } },
 							{ time: 1600, transform: { rotate: 0 } } 
 						]},
 						{ tag: 'right_foot', frames: [
-							{ time: 0, pos: { x: 17, y: 54 }, transform: { rotate: 0, originX: 0.45, originY: 0.2 } },
+							{ time: 0, x: 17, y: 54, transform: { rotate: 0, originX: 0.45, originY: 0.2 } },
 							{ time: 400, transform: { rotate: 20 } },
 							{ time: 800, transform: { rotate: 0 } },
 							{ time: 1000, transform: { rotate: -20 } },
@@ -642,7 +642,7 @@ var test2d = {
 							{ time: 1600, transform: { rotate: 0 } }
 						]},
 						{ tag: 'right_foot_1', frames: [ 
-							{ time: 0, pos: { x: -14, y: 38 }, transform: { rotate: 0, originX: 0.75, originY: 0.2 } },
+							{ time: 0, x: -14, y: 38, transform: { rotate: 0, originX: 0.75, originY: 0.2 } },
 							{ time: 400, transform: { rotate: -30 } },
 							{ time: 800, transform: { rotate: 0 } },
 							{ time: 1050, transform: { rotate: 0 } },
@@ -650,14 +650,14 @@ var test2d = {
 							{ time: 1600, transform: { rotate: 0 } }
 						]},
 						{ tag: 'left_foot', frames: [
-							{ time: 0, pos: { x: 40, y: 45 }, transform: { rotate: 0, originX: 0.5, originY: 0.2 } },
+							{ time: 0, x: 40, y: 45, transform: { rotate: 0, originX: 0.5, originY: 0.2 } },
 							{ time: 400, transform: { rotate: -30 } },
 							{ time: 800,  transform: { rotate: 0 } },
 							{ time: 1200, transform: { rotate: 30 } },
 							{ time: 1600, transform: { rotate: 0 } }
 						]},
 						{ tag: 'left_foot_1', frames: [
-							{ time: 0,  pos: { x: -17, y: 58 }, transform: { rotate: 0, originX: 0.55, originY: 0.1 } },
+							{ time: 0, x: -17, y: 58, transform: { rotate: 0, originX: 0.55, originY: 0.1 } },
 							{ time: 400, transform: { rotate: 30 } },
 							{ time: 800, transform: { rotate: 0 } },
 							{ time: 1200, transform: { rotate: -30 } },

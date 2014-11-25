@@ -2,7 +2,8 @@
 define( function ( require, exports, module ) {
 	"use strict";
 	 
-var Class = require('core/Class');
+var Class = require('core/Class'),
+	TagCollection = require('core/TagCollection');
 
 // 事件派发器，参见 https://github.com/mrdoob/eventdispatcher.js
 var EventDispatcher = Class.extend({
@@ -13,23 +14,17 @@ var EventDispatcher = Class.extend({
 		// 绑定事件
 		this.addEventListener(type, listener);
 		// 添加监听器标签
-		if (typeof(tag) === 'string') {
-			this._listeners['@' + type + '.' + tag] = [ listener ];
+		if (tag) {
+			TagCollection.set(this, 'event.' + type + '.' + tag, listener);
 		}
 	},
 	
-	off: function(type, tag) {
-		// 解绑事件
-		var listener;
+	off: function(type, listener) {
 		// 通过标签查找监听器
-		if (typeof(tag) === 'string') {
-			tag = '@' + type + '.' + tag;
-			listener = this._listeners[tag][0];
-			delete this._listeners[tag];
-		} else {
-			listener = tag;
+		if (typeof(listener) === 'string') {
+			listener = TagCollection.get(this, 'event.' + type + '.' + listener);
 		}
-		
+		// 解绑事件
 		this.removeEventListener(type, listener);
 	},
 	
