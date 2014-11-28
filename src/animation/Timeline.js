@@ -203,7 +203,7 @@ var Timeline = EventDispatcher.extend({
 		var duration = tween.to - tween.from,
 			easing = Ease.get(tween.easing),
 			percent = (now - tween.from) / duration,
-			pos = easing(percent, percent, 0, 1, 1),
+			pos = (percent === 0 || percent === 1 ) ? percent : easing(percent, percent, 0, 1, 1),
 			start = tween.start,
 			end = tween.end;
 		// 设置过渡样式

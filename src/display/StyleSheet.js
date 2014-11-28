@@ -540,6 +540,8 @@ StyleSheet.styles = {
 
 	textColor: {}, // 文字颜色
 	
+	cursor: {},
+	
 	position: {},
 	
 	rotation: {},

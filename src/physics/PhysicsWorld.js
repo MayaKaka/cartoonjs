@@ -10,6 +10,8 @@ var b2Vec2 = Box2D.Common.Math.b2Vec2,
 	b2Body = Box2D.Dynamics.b2Body,
 	b2FixtureDef = Box2D.Dynamics.b2FixtureDef,
     b2Fixture = Box2D.Dynamics.b2Fixture,
+    b2RevoluteJointDef = Box2D.Dynamics.Joints.b2RevoluteJointDef,
+    b2DistanceJointDef = Box2D.Dynamics.Joints.b2DistanceJointDef,
 	b2World = Box2D.Dynamics.b2World,
 	b2MassData = Box2D.Collision.Shapes.b2MassData,
     b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape,
@@ -19,7 +21,10 @@ var b2Vec2 = Box2D.Common.Math.b2Vec2,
 var PhysicsWorld = DisplayObject.extend({
 	
 	type: 'PhysicsWorld',
-		
+	
+	debug: false,
+	
+	_debugCtx: null,
 	_world: null,
 	_scale: -1,
 	_worldSize: null,
@@ -29,7 +34,7 @@ var PhysicsWorld = DisplayObject.extend({
 		this._initWorld({ width: props.worldWidth, height: props.worldHeight }, props.scale || 50);
 		this._initGround();
 	},
-		
+
 	update: function(delta) {
 		var world = this._world;
 
@@ -38,8 +43,6 @@ var PhysicsWorld = DisplayObject.extend({
 		
 		this._updateObjects();
 	},
-	
-
 	
 	add: function(child, data) {
 		if (!data) data = {};
@@ -55,9 +58,9 @@ var PhysicsWorld = DisplayObject.extend({
         bodyDef.type = data.type === 'static' ? b2Body.b2_staticBody : b2Body.b2_dynamicBody;
         bodyDef.position.x = child.x / scale;
         bodyDef.position.y = child.y / scale;
-       
+
         var fixDef = new b2FixtureDef();
-        fixDef.density = data.density || 1.0;
+        fixDef.density = data.density || 1;
         fixDef.friction = data.friction || 0.5;
         fixDef.restitution = data.restitution || 0.2;
         
@@ -75,24 +78,32 @@ var PhysicsWorld = DisplayObject.extend({
          
         var body = world.CreateBody(bodyDef).CreateFixture(fixDef);
         body.m_userData = { displayObj: child };
+        child._box2dBody = body;
 	},
 	
-	drawDebug: function() {
-		this._world.DrawDebugData();
+	addJoint: function(obj01, obj02) {
+		var world = this._world,
+			body01 = obj01._box2dBody.m_body,
+			body02 = obj02._box2dBody.m_body;
+
+		var jointDef = new b2RevoluteJointDef();
+
+		jointDef.Initialize(body01, body02, body01.GetWorldCenter(), body01.GetWorldCenter());
+		
+		var joint = world.CreateJoint(jointDef);
 	},
 	
 	getWorld: function() {
 		return this._world;
 	},
 	
-	_initWorld: function(size, scale) {
-		this._world = new b2World(new b2Vec2(0, 10), true);
-		this._scale = scale;
-		this._worldSize = { width: size.width / scale, height: size.height / scale };
-		
-		return;
-		var debugDraw = new b2DebugDraw();
-		debugDraw.SetSprite(canvas._context2d);
+	openDebug: function(ctx) {
+		this.debug = true;
+		window.B = Box2D;
+		var debugDraw = new b2DebugDraw(),
+			scale = this._scale;
+			
+		debugDraw.SetSprite(ctx);
 		debugDraw.SetDrawScale(scale);
 		debugDraw.SetFillAlpha(0.3);
 		debugDraw.SetLineThickness(1.0);
@@ -100,6 +111,19 @@ var PhysicsWorld = DisplayObject.extend({
 		debugDraw.m_sprite.graphics.clear = function(){};
 	
 		this._world.SetDebugDraw(debugDraw);
+	},
+	
+	drawDebug: function() {
+		if (this.debug) {
+			this._world.DrawDebugData();
+		}
+	},
+	
+	_initWorld: function(size, scale) {
+		this._world = new b2World(new b2Vec2(0, 10), true);
+		this._scale = scale;
+		this._worldSize = { width: size.width / scale, height: size.height / scale };
+
 	},
 	
 	_initGround: function() {
@@ -120,7 +144,7 @@ var PhysicsWorld = DisplayObject.extend({
         
         world.CreateBody(bodyDef).CreateFixture(fixDef);
 	},
-	
+
 	_updateObjects: function() {
 		var world = this._world,
 			scale = this._scale,
@@ -150,7 +174,7 @@ var PhysicsWorld = DisplayObject.extend({
 	      	b = b.m_next;
 	    }
 	}
-	
+
 });
 
 return PhysicsWorld;

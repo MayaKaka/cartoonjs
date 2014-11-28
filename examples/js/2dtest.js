@@ -1095,12 +1095,14 @@ var test2d = {
 				return min+Math.floor(Math.random()*scope);
 			};
 			var swpan = function(evt, renderMode) {
-				(renderMode ? world_cvs : world).add(new ct.Shape({
+				var obj = new ct.Shape({
 					renderMode: renderMode, x: evt.mouseX, y: evt.mouseY+30,
-					graphics: { type: (Math.random() > 0.5 ? 'circle' : 'rect'), width: 40, height: 20, radius: 15, fill: 'rgb('+random(0,256)+','+random(0,256)+','+random(0,256)+')' }
-				}), {
+					g: { type: (Math.random() > 0.5 ? 'circle' : 'rect'), width: 40, height: 20, radius: 15, fill: 'rgb('+random(0,256)+','+random(0,256)+','+random(0,256)+')' }
+				});
+				(renderMode ? world_cvs : world).add(obj, {
 					type: 'dynamic', density: 0.1, friction: 1, restitution: 0
 				});
+				return obj;
 			}
 			world.on('click', function(evt){
 				swpan(evt, 0);
@@ -1108,11 +1110,35 @@ var test2d = {
 			world_cvs.on('click', function(evt){
 				swpan(evt, 1);
 			});
+			// world_cvs.openDebug(cvs._context2d);
+			var x = 400, y = 0;
+			var obj01 = new ct.Shape({
+				renderMode: 1, x: x, y: y,
+				g: { type: 'rect', width: 1, height: 1, fill: 'rgb('+random(0,256)+','+random(0,256)+','+random(0,256)+')' }
+			});
+			var obj02;
+
+			world_cvs .add(obj01, { type: 'static' });
+			
+			for (var i=0; i < 50; i++) {
+				obj02 = new ct.Shape({
+					renderMode: 1, x: x, y: y+=4,
+					g: { type: 'circle', radius: i===49?10:4, fill: 'rgb('+random(0,256)+','+random(0,256)+','+random(0,256)+')' }
+				});
+				world_cvs.add(obj02, { type: 'dynamic' });
+				world_cvs.addJoint(obj01, obj02);
+				obj01 = obj02;
+			}
 			
 			ticker.add(dom);
 			ticker.add(cvs);
-			ticker.add(function(delta) { $fps.html(ticker.fps); });
+			ticker.add(function(delta) { 
+				$fps.html(ticker.fps); 
+				world_cvs.drawDebug();
+			});
 			ticker.start();
+			
+			window.w = world_cvs._world;
 			
 			this.dispose = function() {
 				ticker.stop();

@@ -69,7 +69,7 @@ var Tween = Class.extend({
 		// 计算时间百分比	
 		var	now = this._deltaTime,
 			percent =  now / duration,
-			pos = easing(percent, percent, 0, 1, 1);
+			pos = (percent === 0 || percent === 1 ) ? percent : easing(percent, percent, 0, 1, 1);
 		// 设置过渡样式
 		for (var i in end) {
 			target._stepTween(i, { pos: pos, start: start[i], end: end[i] });
@@ -105,6 +105,10 @@ var Tween = Class.extend({
 
 Tween._tweens = [];
 Tween._currentTarget = null;
+
+Tween.destroyAll = function() {
+	this._tweens = [];
+}
 
 Tween.update = function(delta) {
 	var tweens = this._tweens;
