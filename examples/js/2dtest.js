@@ -95,7 +95,7 @@ var test2d = {
 		}
 	},
 	
-	transform2d: {
+	transform: {
 		init: function(ct, dom, cvs, $fps) {
 			var ticker = new ct.Ticker();
 			
@@ -129,80 +129,29 @@ var test2d = {
 						var nt = new Date().getTime();
 						// console.log(nt - t);
 						t = nt;
-					}
-				rect.to(400, fn).to({ x: 400 }, 400, null, fn)
-					.to({ y: 200 }, 400, null, fn)
-					.to({ x: 200 }, 400, null, fn)
-					.to(400, fn).to({ transform: { scale: 3 } }, 800, null, fn)
-					.to(400, fn).to({ x: 400, transform: { rotate: 360 } }, 800, null, fn)
-					.to(400, fn).to({ x: 200, transform: { rotate: 0 } }, 800, null, fn)
-					.to(400, fn).to({ transform: { scale: 1 } }, 800, null, fn);
+					};
+				rect.to(400, fn).to({ x: 400, y: 300 }, 300, null, fn)
+					.to({ y: 200 }, 300, null, fn)
+					.to({ x: 200 }, 300, null, fn)
+					.to(400, fn).to({ transform: { scale: 3 } }, 600, null, fn)
+					.to(400, fn).to({ x: 400, transform: { rotate: 360 } }, 600, null, fn)
+					.to(400, fn).to({ x: 200, transform: { rotate: 0 } }, 600, null, fn)
+					.to(400, fn).to({ transform: { scale: 1 } }, 600, null, fn)
+					.to(400, fn).to({ x: 200, y: 200 }, 600, null, function() {
+						rect.style({ z: 300 });
+					}).to({ transform3d: { scaleX: 3, scaleY: 3 } }, 600, null, fn)
+					.to(400, fn).to({ transform3d: { rotateX: 360 } }, 600, null, fn)
+					.to(400, fn).to({ transform3d: { rotateZ: 360 } }, 600, null, fn)
+					.to(400, fn).to({ transform3d: { rotateY: 360 } }, 600, null, fn)
+					.to(400, fn).to({ transform3d: { rotateX: 0, rotateY: 0, rotateZ: 0, scaleX: 1, scaleY: 1 } }, 1600, null, fn);
 				
 				rect_cvs.to(400).to({ x: 400 }, 400)
 					.to({ y: 200 }, 400)
 					.to({ x: 200 }, 400)
 					.to(400).to({ transform: { scale: 3 } }, 800)
-					.to(400).to({ transform: { rotate: 360 } }, 800)
-					.to(400).to({ transform: { rotate: 0 } }, 800)
+					.to(400).to({ x: 100, transform: { rotate: 360 } }, 800)
+					.to(400).to({ x: 200, transform: { rotate: 0 } }, 800)
 					.to(400).to({ transform: { scale: 1 } }, 800);
-			}
-			
-			ticker.add(ct.Tween);
-			ticker.add(cvs);
-			ticker.add(function() { $fps.html(ticker.fps); });
-			ticker.start();
-			
-			animate();
-			
-			this.dispose = function() {
-				ticker.stop();
-				dom.removeAll();
-				cvs.removeAll();
-			}
-		}
-	},
-		
-	transform3d: {
-		init: function(ct, dom, cvs, $fps) {
-			var ticker = new ct.Ticker();
-			
-			ct.DisplayObject.setRenderMode('dom');
-			
-			var	rect = new ct.Shape({
-				x: 10, y: 36, z: 500,
-				graphics: { type: 'rect', fill: 'top,#0022FF,#00DDFF', width: 60, height: 60 } 
-			});	
-			dom.add(rect);
-			
-			ct.DisplayObject.setRenderMode('canvas');
-			
-			var rect_cvs = new ct.Shape({
-				x: 10, y: 36, z: 500,
-				graphics: { type: 'rect', fill: 'top,#0022FF,#00DDFF', width: 60, height: 60 } 
-			});
-			cvs.add(rect_cvs);
-			
-			
-			var animate = function() {
-				var t = new Date().getTime(),
-					fn = function() {
-						var nt = new Date().getTime();
-						// console.log(nt - t);
-						t = nt;
-					}
-				rect.to(400, fn).to({ x: 200, y: 200 }, 800, null, fn)
-					.to(400, fn).to({ transform3d: { scaleX: 3, scaleY: 3 } }, 800, null, fn)
-					.to(400, fn).to({ transform3d: { rotateX: 360 } }, 800, null, fn)
-					.to(400, fn).to({ transform3d: { rotateZ: 360 } }, 800, null, fn)
-					.to(400, fn).to({ transform3d: { rotateY: 360 } }, 800, null, fn)
-					.to(400, fn).to({ transform3d: { rotateX: 0, rotateY: 0, rotateZ: 0, scaleX: 1, scaleY: 1 } }, 1600, null, fn);
-				
-				rect_cvs.to(400).to({ x: 200, y: 200 }, 800)
-					.to(400).to({ transform3d: { scaleX: 3, scaleY: 3 } }, 800)
-					.to(400).to({ transform3d: { rotateX: 360 } }, 800)
-					.to(400).to({ transform3d: { rotateZ: 360 } }, 800)
-					.to(400).to({ transform3d: { rotateY: 360 } }, 800)
-					.to(400).to({ transform3d: { rotateX: 0, rotateY: 0, rotateZ: 0, scaleX: 1, scaleY: 1 } }, 1600);
 			}
 			
 			ticker.add(ct.Tween);
@@ -1139,6 +1088,85 @@ var test2d = {
 			ticker.start();
 			
 			window.w = world_cvs._world;
+			
+			this.dispose = function() {
+				ticker.stop();
+				dom.removeAll();
+				cvs.removeAll();
+			}
+		}
+	},
+	
+	move: {
+		init: function(ct, dom, cvs, $fps) {
+			var ticker = new ct.Ticker();
+			
+			ct.DisplayObject.setRenderMode('canvas');
+			
+			var c0 = new ct.Shape({
+				x: 170, y: 540,
+				g: { type: 'circle', radius: 16, fill: '#F00' }
+			});
+			var c1 = new ct.Shape({
+				x: 370, y: 540,
+				g: { type: 'circle', radius: 16, fill: '#0F0' }
+			});
+			var c2 = new ct.Shape({
+				x: 270, y: 540,
+				g: { type: 'circle', radius: 16, fill: '#00F' }
+			});
+			c0.move({
+				vx: -0.3, ax: 0.0005, vy: -0.8, ay: 0.0006, fn: function(t, x, y) {
+					if (t > 1400) return true;
+				}
+			});
+			c0.to({ transform: { scale: 0.3 }}, 1400);
+			c1.move({
+				vx: 0.3, ax: -0.0005, vy: -0.8, ay: 0.0006, fn: function(t, x, y) {
+					if (t > 1400) return true;
+				}
+			});
+			c1.to({ transform: { scale: 0.3 }}, 1400);
+			c2.move({
+				vy: -0.8, ay: 0.0006, fn: function(t, x, y) {
+					if (t > 1600) return true;
+				}
+			});
+			c2.to({ transform: { scale: 0.3 }}, 1600);
+			
+			var c3 = new ct.Shape({
+				x: 270, y: 240,
+				g: { type: 'circle', radius: 8, fill: '#0FF' }
+			});
+			c3.move({
+				type: 'circle', r: 60, ox: 270, oy: 240, vdeg: 0.14
+			});
+			var c4 = new ct.Shape({
+				x: 270, y: 240,
+				g: { type: 'circle', radius: 8, fill: '#F0F' }
+			});
+			c4.move({
+				type: 'circle', r: 60, ox: 270, oy: 240, vdeg: 0.05, sdeg: 180, scx: 1.2, scy: 2
+			});
+			var c5 = new ct.Shape({
+				x: 270, y: 240,
+				g: { type: 'circle', radius: 16, fill: '#FF0' }
+			});
+			
+			cvs.add(c0);
+			cvs.add(c1);
+			cvs.add(c2);
+			cvs.add(c3);
+			cvs.add(c4);
+			cvs.add(c5);
+			
+			ticker.add(ct.Movement);
+			ticker.add(ct.Tween);
+			ticker.add(cvs);
+			ticker.add(function() {
+				$fps.html(ticker.fps);
+			});
+			ticker.start();
 			
 			this.dispose = function() {
 				ticker.stop();

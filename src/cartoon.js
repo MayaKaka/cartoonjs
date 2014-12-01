@@ -29,6 +29,7 @@ cartoon.expand({
 	Ease: require('animation/Ease'),
 	Tween: require('animation/Tween'),
 	Sprite: require('animation/Sprite'),
+	Movement: require('animation/Movement'),
 	ParticleEmitter: require('animation/ParticleEmitter'),
 	ParticleSystem: require('animation/ParticleSystem'),
 	Timeline:  require('animation/Timeline'),

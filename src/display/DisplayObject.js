@@ -7,8 +7,9 @@ var EventDispatcher = require('core/EventDispatcher'),
 	Matrix2D = require('core/Matrix2D'),
 	TagCollection = require('core/TagCollection'),
 	StyleSheet = require('display/StyleSheet'),
-	Tween = require('animation/Tween');
-   
+	Tween = require('animation/Tween'),
+   	Movement = require('animation/Movement');
+   	
 var tempDiv = document.createElement('div'),
 	supportCanvas = !!document.createElement('canvas').getContext;
    	
@@ -200,7 +201,11 @@ var DisplayObject = EventDispatcher.extend({
 		
 		return this;
 	},
-
+	
+	move: function(data) {
+		Movement.get(this).addMovement(data);
+	},
+	
 	draw: function(ctx) {
 		// canvas模式下绘制自己
 		if (!this.children.length) return;
