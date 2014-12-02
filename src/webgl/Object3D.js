@@ -2,49 +2,31 @@
 define( function ( require, exports, module ) {
 	"use strict";
 
-var THREE = require('webgl/THREE'),
+var 
+	THREE = require('webgl/THREE'),
+	Style3D = require('webgl/StyleSheet3D'),
 	Preload = require('core/Preload'),
+	DisplayObject = require('display/DisplayObject'),
 	Tween = require('animation/Tween'),
 	OriginObject3D = THREE.Object3D,
 	JSONLoader = THREE.JSONLoader;
 
 var Object3D = OriginObject3D,
+	dp = DisplayObject.prototype,
 	p = Object3D.prototype;
-
+	
 var blendings = [ "NoBlending", "NormalBlending", "AdditiveBlending", "SubtractiveBlending", "MultiplyBlending", "AdditiveAlphaBlending" ];
 
 p.type = 'Object3D';
 p.renderMode = 2; // 渲染模式 WebGL
 
-p.on = p.addEventListener;
+p.on = dp.on;
+p.off = dp.off;
+p.trigger = dp.trigger;
 
-p.off = p.removeEventListener;
-
-p.trigger = p.dispatchEvent;
-
-p.removeAll = function() {
-
-}
-
-p.each = function(fn) {
-	var children = this.children;
-
-	for (var i = 0, len = children.length; i < len; i++) {
-		fn(children[i], i);
-	}
-}
-
-p.style = function() {
-		
-}
-
-p.data = function() {
-	
-}
-
-p.to = function() {
-	
-}
+p.style = dp.style;
+p._stepTween = dp._stepTween;
+p.to = dp.to;
 
 Object3D.create = function(data) {
 	var geo = data.geometry || data.g || {},
@@ -55,7 +37,14 @@ Object3D.create = function(data) {
 		mesh;
 
 	if (typeof(mat.map) === 'string') {
-		mat.map = new THREE.Texture(Preload.getItem(mat.map));
+		var map = Preload.getItem(mat.map);
+		
+		if (map) {
+			mat.map = new THREE.Texture(map);
+		} else {
+			mat.map = THREE.ImageUtils.loadTexture(mat.map);
+		}
+		
 		mat.map.needsUpdate = true;
 	}
 	

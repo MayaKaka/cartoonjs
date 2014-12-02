@@ -1107,23 +1107,29 @@ var test2d = {
 				x: 170, y: 540,
 				g: { type: 'circle', radius: 16, fill: '#F00' }
 			});
+			var l1 = new ct.Shape({
+				x: 0, y: 0,
+				g: { type: 'line', stroke: '#dd1144', lineWidth: 1, path: [] }
+			});
 			var c1 = new ct.Shape({
-				x: 370, y: 540,
+				x: 470, y: 540, transform: { translateX: -16, translateY: -16 },
 				g: { type: 'circle', radius: 16, fill: '#0F0' }
 			});
+			
 			var c2 = new ct.Shape({
 				x: 270, y: 540,
 				g: { type: 'circle', radius: 16, fill: '#00F' }
 			});
 			c0.move({
-				vx: -0.3, ax: 0.0005, vy: -0.8, ay: 0.0006, fn: function(t, x, y) {
-					if (t > 1400) return true;
+				vx: 0.06, vy: -0.8, ay: 0.0006, fn: function(t, x, y) {
+					if (t > 2500) return true;
 				}
 			});
 			c0.to({ transform: { scale: 0.3 }}, 1400);
 			c1.move({
-				vx: 0.3, ax: -0.0005, vy: -0.8, ay: 0.0006, fn: function(t, x, y) {
-					if (t > 1400) return true;
+				vx: -0.06, ax:-0.0001, vy: -0.8, ay: 0.0006, fn: function(t, x, y) {
+					l1.path.push([x, y]);
+					if (t > 2500) return true;
 				}
 			});
 			c1.to({ transform: { scale: 0.3 }}, 1400);
@@ -1141,24 +1147,52 @@ var test2d = {
 			c3.move({
 				type: 'circle', r: 60, ox: 270, oy: 240, vdeg: 0.14
 			});
+			var l4 = new ct.Shape({
+				x: 0, y: 0,
+				g: { type: 'line', stroke: '#11dd44', lineWidth: 1, path: [] }
+			});
 			var c4 = new ct.Shape({
-				x: 270, y: 240,
+				x: 270, y: 240, transform: { translateX: -8, translateY: -8 },
 				g: { type: 'circle', radius: 8, fill: '#F0F' }
 			});
 			c4.move({
-				type: 'circle', r: 60, ox: 270, oy: 240, vdeg: 0.05, sdeg: 180, scx: 1.2, scy: 2
+				type: 'circle', r: 60, ox: 270, oy: 240, vdeg: 0.05, sdeg: 180, scx: 1.2, scy: 2,
+				fn: function(t, deg, x, y) {
+					l4.path.push([x, y]);
+				}
 			});
 			var c5 = new ct.Shape({
 				x: 270, y: 240,
 				g: { type: 'circle', radius: 16, fill: '#FF0' }
 			});
 			
+			var l6 = new ct.Shape({
+				x: 0, y: 0,
+				g: { type: 'line', stroke: '#000000', lineWidth: 1, path: [] }
+			});
+			var c6 = new ct.Shape({
+				x: 0, y: 440, transform: { translateX: -16, translateY: -16 },
+				g: { type: 'circle', radius: 16, fill: '#F80' }
+			});
+			c6.move({
+				type: 'bezier', p0: { x: 160, y: 540 }, p1: { x: 80, y: 0 }, p2: { x: 480, y: 200 },
+				duration: 1200,
+				fn: function(p, x, y) {
+					l6.path.push([x, y]);
+					if (p >= 1) return true;
+				}
+			});
+			
 			cvs.add(c0);
 			cvs.add(c1);
+			cvs.add(l1);
 			cvs.add(c2);
 			cvs.add(c3);
 			cvs.add(c4);
+			cvs.add(l4);
 			cvs.add(c5);
+			cvs.add(c6);
+			cvs.add(l6);
 			
 			ticker.add(ct.Movement);
 			ticker.add(ct.Tween);

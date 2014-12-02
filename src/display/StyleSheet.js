@@ -16,13 +16,23 @@ var divStyle = document.createElement('div').style,
     
 var StyleSheet = function() {};
 
+var match = function(target) {
+	return target.type === 'Object3D' ? StyleSheet.styles3d : StyleSheet.styles;
+}
+
+var css3 = function(style, key, value) {
+	// 通用设置css3样式
+	var suffix = key.charAt(0).toUpperCase() + key.substring(1, key.length);
+	style[prefix+suffix] = value;
+};
+
 StyleSheet.has = function(key) {
 	// 判断是否存在样式
 	return !!StyleSheet.styles[key];
 }
 
 StyleSheet.init = function(target, key) {
-	var style = StyleSheet.styles[key];
+	var style = match(target)[key];
 	// 初始化样式
 	if (style && style.init) {
 		return style.init.call(target, key);
@@ -30,48 +40,42 @@ StyleSheet.init = function(target, key) {
 }
 
 StyleSheet.get = function(target, key) {
-	var style = StyleSheet.styles[key];
+	var style = match(target)[key];
 	// 获取样式
 	if (style) {
-		var get = style.get || StyleSheet.commonGet;
+		var get = style.get || commonGet;
 		return get.call(target, key);
 	}
 }
 
 StyleSheet.set = function(target, key, value) {
-	var style = StyleSheet.styles[key];
+	var style = match(target)[key];
 	// 设置样式
 	if (style) {
-		var set = style.set || StyleSheet.commonSet;
+		var set = style.set || commonSet;
 		set.call(target, key, value);
 	}
 }
 
-StyleSheet.step = function(target, key, value) {
-	var style = StyleSheet.styles[key];
+StyleSheet.step = function(target, key, fx) {
+	var style = match(target)[key];
 	// 设置过渡样式
 	if (style && style.step) {
-		style.step.call(target, key, value);
+		style.step.call(target, key, fx);
 	}
 }
 
-StyleSheet.css3 = function(style, key, value) {
-	// 通用设置css3样式
-	var suffix = key.charAt(0).toUpperCase() + key.substring(1, key.length);
-	style[prefix+suffix] = value;
-};
-
-StyleSheet.commonGet = function(key) {
+var commonGet = function(key) {
 	// 通用获取样式
 	return this[key];
 };
 
-StyleSheet.commonSet = function(key, value) {
+var commonSet = function(key, value) {
 	// 通用设置样式
 	this[key] = value;
 };
 
-StyleSheet.commonStep = function(key, fx) {
+var commonStep = function(key, fx) {
 	// 通用设置过渡样式
 	var start = fx.start,
 		end = fx.end,
@@ -80,7 +84,7 @@ StyleSheet.commonStep = function(key, fx) {
 	this.style(key, result);
 };
 
-StyleSheet.commonSteps = function(key, fx) {
+var commonSteps = function(key, fx) {
 	// 通用设置过渡样式
 	var pos = fx.pos,
 		start = fx.start,
@@ -92,7 +96,7 @@ StyleSheet.commonSteps = function(key, fx) {
 	this.style(key, result);
 };
 
-StyleSheet.toRGBA = function(color){
+var toRGBA = function(color){
 	var rgba = {
 		r: 0, g: 0, b: 0, a: 1
 	};
@@ -124,7 +128,7 @@ StyleSheet.toRGBA = function(color){
 	return rgba;
 };
 
-StyleSheet.toColor = function(rgba) {
+var toColor = function(rgba) {
 	var r = rgba.r.toString(16),
 		g = rgba.g.toString(16),
 		b = rgba.b.toString(16);
@@ -135,7 +139,7 @@ StyleSheet.toColor = function(rgba) {
 	return '#'+r+g+b;
 };
 
-StyleSheet.toGradient = function(value) {
+var toGradient = function(value) {
 	var result;
 	if (typeof(value) === 'string') {
 		value = value.split(/\,#|\,rgb/);
@@ -150,15 +154,15 @@ StyleSheet.toGradient = function(value) {
 	return result;
 };
 
-StyleSheet.stepColor = function(pos, start, end) {
-	start = StyleSheet.toRGBA(start);
-	end = StyleSheet.toRGBA(end);
+var stepColor = function(pos, start, end) {
+	start = toRGBA(start);
+	end = toRGBA(end);
 	// 处理颜色过渡
 	var color = {};
 	for (var i in end) {
 		color[i] = Math.floor((end[i] - start[i]) * pos + start[i]);
 	}
-	return StyleSheet.toColor(color);
+	return toColor(color);
 }
 
 StyleSheet.styles = {
@@ -171,7 +175,7 @@ StyleSheet.styles = {
 				style.left = value + 'px';
 			}
 		},
-		step: StyleSheet.commonStep
+		step: commonStep
 	},
 	
 	y: { // y轴坐标
@@ -183,7 +187,7 @@ StyleSheet.styles = {
 				style.top = value + 'px';
 			}
 		},
-		step: StyleSheet.commonStep
+		step: commonStep
 	},
 	
 	z: { // 3d远视坐标
@@ -191,7 +195,7 @@ StyleSheet.styles = {
 			this[key] = value;
 			this.style('transform3d', { perspective: value });
 		},
-		step: StyleSheet.commonStep
+		step: commonStep
 	},
 	
 	width: { // 宽度
@@ -205,7 +209,7 @@ StyleSheet.styles = {
 				}
 			}
 		},
-		step: StyleSheet.commonStep
+		step: commonStep
 	},
 	
 	height: { // 高度
@@ -219,7 +223,7 @@ StyleSheet.styles = {
 				}
 			}
 		},
-		step: StyleSheet.commonStep
+		step: commonStep
 	},
 	
 	size: { // 尺寸
@@ -241,7 +245,7 @@ StyleSheet.styles = {
 				}
 			}
 		},
-		step: StyleSheet.commonSteps
+		step: commonSteps
 	},
 	
 	transform: { // 2d变换
@@ -281,14 +285,14 @@ StyleSheet.styles = {
 					style.marginTop = t2d.translateY + (elem.clientHeight - elem.offsetHeight) * t2d.originY + 'px';
 				} else {
 					// 设置css3样式
-					StyleSheet.css3(style, 'transform', this._mergeTransformText());
+					css3(style, 'transform', this._mergeTransformText());
 					if ('originX' in value || 'originY' in value) {
-						StyleSheet.css3(style, 'transformOrigin', t2d.originX*100+'% ' + t2d.originY*100+'%');
+						css3(style, 'transformOrigin', t2d.originX*100+'% ' + t2d.originY*100+'%');
 					}
 				}
 			}
 		},
-		step: StyleSheet.commonSteps
+		step: commonSteps
 	},
 	
 	transform3d: { // 3d变换
@@ -302,8 +306,8 @@ StyleSheet.styles = {
 			};
 			if (this.renderMode === 0) {
 				var style = this.elemStyle;
-				StyleSheet.css3(style, 'transformStyle', 'preserve-3d');
-				StyleSheet.css3(style, 'backfaceVisibility', 'visible');
+				css3(style, 'transformStyle', 'preserve-3d');
+				css3(style, 'backfaceVisibility', 'visible');
 			}
 			return this.transform3d;
 		},
@@ -318,13 +322,13 @@ StyleSheet.styles = {
 			if (this.renderMode === 0) {
 				// 设置css3样式
 				var style = this.elemStyle;
-				StyleSheet.css3(style, 'transform', this._mergeTransform3DText());
+				css3(style, 'transform', this._mergeTransform3DText());
 				if ('originX' in value || 'originY' in value || 'originZ' in value) {
-					StyleSheet.css3(style, 'transformOrigin', t3d.originX*100+'% ' + t3d.originY*100+'%');
+					css3(style, 'transformOrigin', t3d.originX*100+'% ' + t3d.originY*100+'%');
 				}
 			};
 		},
-		step: StyleSheet.commonSteps
+		step: commonSteps
 	},
 	
 	visible: { // 是否可见
@@ -363,7 +367,7 @@ StyleSheet.styles = {
 				}
 			}
 		},
-		step: StyleSheet.commonStep
+		step: commonStep
 	},
 	
 	shadow: { // 阴影
@@ -382,7 +386,7 @@ StyleSheet.styles = {
 				this.elemStyle.boxShadow = value.offsetX+'px ' + value.offsetY+'px ' + value.blur+'px ' + value.color;
 			}
 		},
-		step: StyleSheet.commonSteps
+		step: commonSteps
 	},
 	
 	fill: { // 填充样式
@@ -418,14 +422,14 @@ StyleSheet.styles = {
 			}
 		},
 		step: function(key, fx) {
-			this.style(key, StyleSheet.stepColor(fx.pos, fx.start, fx.end));
+			this.style(key, stepColor(fx.pos, fx.start, fx.end));
 		}
 	},	
 	
 	fillGradient: { // 填充渐变
 		set: function(key, value) {
 			this.fillColor = this.fillImage = null;
-			this[key] = value = StyleSheet.toGradient(value);
+			this[key] = value = toGradient(value);
 			if (this.renderMode === 0) {
 				var style = this.elemStyle, text;
 				// ie6-8下使用gradient filter
@@ -450,12 +454,12 @@ StyleSheet.styles = {
 		step: function(key, fx) {
 			var start = fx.start,
 				end = fx.end,
-				end = StyleSheet.toGradient(end),
+				end = toGradient(end),
 				pos = fx.pos,
 				result = { type: end.type };
 			// 设置渐变颜色过渡
-			result.from = StyleSheet.stepColor(pos, start.from, end.from);
-			result.to = StyleSheet.stepColor(pos, start.to, end.to);
+			result.from = stepColor(pos, start.from, end.from);
+			result.to = stepColor(pos, start.to, end.to);
 			this.style(key, result);
 		}
 	},
@@ -498,7 +502,7 @@ StyleSheet.styles = {
 			}
 		},
 		step: function(key, fx) {
-			this.style(key, StyleSheet.stepColor(fx.pos, fx.start, fx.end));
+			this.style(key, stepColor(fx.pos, fx.start, fx.end));
 		}
 	},
 	
@@ -509,7 +513,7 @@ StyleSheet.styles = {
 				this.elemStyle.borderWidth = value + 'px';
 			}
 		},
-		step: StyleSheet.commonStep
+		step: commonStep
 	},
 	
 	radius: { // 圆半径
@@ -531,7 +535,7 @@ StyleSheet.styles = {
 				style.height = this.height + 'px';
 			}
 		},
-		step: StyleSheet.commonStep
+		step: commonStep
 	},
 	
 	angle: {}, // 圆角度
@@ -540,14 +544,8 @@ StyleSheet.styles = {
 
 	textColor: {}, // 文字颜色
 	
-	cursor: {},
-	
-	position: {},
-	
-	rotation: {},
-	
-	scale: {}
-}
+	cursor: {}
+};
 
 return StyleSheet;
 });

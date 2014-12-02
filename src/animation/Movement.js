@@ -80,7 +80,32 @@ var Movement = Class.extend({
 		
 		target.style({ x: x, y: y });
 		
-		if (this.fn && this.fn(t, rad)) {
+		if (this.fn && this.fn(t, deg, x, y)) {
+			this.stop();
+		} else {
+			this._deltaTime += delta;
+		}
+	},
+	
+	bezier: function(delta) {
+		var data = this.data,
+			target = this._target;
+			
+		var p = this._deltaTime / data.duration,
+			t = p > 1 ? 1 : p,
+			p0 = data.p0,
+			p1 = data.p1,
+			p2 = data.p2,
+			// 二次贝塞尔曲线公式
+			x = Math.pow((1-t),2)*p0.x+2*t*(1-t)*p1.x + Math.pow(t,2)*p2.x,
+			y = Math.pow((1-t),2)*p0.y+2*t*(1-t)*p1.y + Math.pow(t,2)*p2.y;
+            // 三次贝塞尔曲线公式
+         	// x = Math.pow((1-t),3)*p0.x + 3*p1.x*t*(1-t)*(1-t) + 3*p2.x*t*t*(1-t) + p3.x *Math.pow(t,3),
+           	// y = Math.pow((1-t),3)*p0.y + 3*p1.y*t*(1-t)*(1-t) + 3*p2.y*t*t*(1-t) + p3.y *Math.pow(t,3);
+        	
+        target.style({ x: x, y: y });
+		
+		if (this.fn && this.fn(p, x, y)) {
 			this.stop();
 		} else {
 			this._deltaTime += delta;
@@ -125,6 +150,16 @@ Movement.addMovement = function(data) {
 			scy: data.scy || 1,
 			sdeg: data.sdeg || 0,
 			vdeg: data.vdeg || 0,
+			fn: data.fn
+		});
+	} else if (data.type === 'bezier') {
+		movement = new Movement({
+			type: 'bezier',
+			target: this._currentTarget,
+			duration: data.duration || 1000,
+			p0: data.p0 || { x: 0, y: 0 },
+			p1: data.p1 || { x: 0, y: 0 },
+			p2: data.p2 || { x: 0, y: 0 },
 			fn: data.fn
 		});
 	} else {

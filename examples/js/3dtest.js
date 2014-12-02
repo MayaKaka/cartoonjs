@@ -493,5 +493,50 @@ var test3d = {
 				cvs.removeAll();
 			}
 		}
+	},
+	
+	poker: {
+		init: function(ct, cvs, $fps) {
+			var ticker = new ct.Ticker(),
+				RAD_P_DEG = Math.PI/180,
+				O3D = ct.Object3D,
+				T = ct.THREE;
+				
+			var renderer = cvs.renderer,
+				scene = cvs.scene,
+				camera = cvs.camera;
+			
+			var layer = new O3D(), poker, x, y, z;
+			for (var i=0; i<24; i++) {
+				poker = O3D.create({
+					g: { type: 'plane', width: 105, height: 150 },
+					m: { type: 'basic', map: 'images/puke/'+1+'.jpg' }
+				});
+				poker.style({ x: -600, y: -300});
+				x = (24-i)%6;
+				x = x - 6/2;
+				y = Math.floor((24-i)/6);
+				y = y - 4/2;
+				poker.to(i*250).to({ z: 80, ry: -1 }).to({ x: x*110, y: y*155, z: 0, ry: 0 }, 500);
+				layer.add(poker);
+			}
+			var look = function() {
+				camera.lookAt(new T.Vector3(0, 550, 0));
+			}
+			camera.position.set(0, 0, 900);
+			//camera.to({ y: 0 }, 5000, null, null, look);
+			cvs.add(layer);
+			ticker.add(function(delta) {
+				$fps.html(ticker.fps);
+			});
+			ticker.add(ct.Tween);
+			ticker.add(cvs);
+			ticker.start();
+			
+			this.dispose = function() {
+				ticker.stop();
+				cvs.removeAll();
+			}
+		}
 	}
 }
