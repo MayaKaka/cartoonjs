@@ -20,11 +20,44 @@ var match = function(target) {
 	return target.type === 'Object3D' ? StyleSheet.styles3d : StyleSheet.styles;
 }
 
-var css3 = function(style, key, value) {
-	// 通用设置css3样式
-	var suffix = key.charAt(0).toUpperCase() + key.substring(1, key.length);
-	style[prefix+suffix] = value;
-};
+var newStyle = StyleSheet.newStyle = function(prop, name, extra) {
+	var style;
+	
+	if (name) {
+		style = {
+			get: function(key) { return this[prop][name]; },
+			set: function(key, value) { this[prop][name] = value; }
+		}
+	} else {
+		style = {
+			get: function(key) { return this[prop]; },
+			set: function(key, value) { this[prop] = value; }
+		}
+	}
+	
+	style.step = function(key, fx) {
+		var pos = fx.pos,
+			start = fx.start, 
+			end = fx.end;
+		if (typeof(end) === 'object') {
+			var result = {};
+			for (var i in end) {
+				result[i] = (end[i] - start[i]) * pos + start[i];
+			}
+			return result;
+		} else {
+			return (end - start) * pos + start;
+		}
+	}
+
+	if (extra) {
+		for (var i in extra) {
+			style[i] = extra[i];
+		}
+	}
+	
+	return style;
+}
 
 StyleSheet.has = function(key) {
 	// 判断是否存在样式
@@ -43,8 +76,7 @@ StyleSheet.get = function(target, key) {
 	var style = match(target)[key];
 	// 获取样式
 	if (style) {
-		var get = style.get || commonGet;
-		return get.call(target, key);
+		return style.get.call(target, key);
 	}
 }
 
@@ -52,8 +84,15 @@ StyleSheet.set = function(target, key, value) {
 	var style = match(target)[key];
 	// 设置样式
 	if (style) {
-		var set = style.set || commonSet;
-		set.call(target, key, value);
+		if (style.parse) {
+			value = style.parse.call(target, value);
+		}
+
+		style.set.call(target, key, value);
+		
+		if (target.renderMode === 0 && style.css) {
+			style.css.call(target, key, value);
+		}
 	}
 }
 
@@ -61,39 +100,22 @@ StyleSheet.step = function(target, key, fx) {
 	var style = match(target)[key];
 	// 设置过渡样式
 	if (style && style.step) {
-		style.step.call(target, key, fx);
+		if (style.parse) {
+			fx.end = style.parse.call(target, fx.end);
+		}
+		
+		var value = style.step.call(target, key, fx);
+		
+		if (value !== undefined) {
+			this.set(target, key, value);
+		}
 	}
 }
 
-var commonGet = function(key) {
-	// 通用获取样式
-	return this[key];
-};
-
-var commonSet = function(key, value) {
-	// 通用设置样式
-	this[key] = value;
-};
-
-var commonStep = function(key, fx) {
-	// 通用设置过渡样式
-	var start = fx.start,
-		end = fx.end,
-		pos = fx.pos;	
-	var result = (end - start) * pos + start;
-	this.style(key, result);
-};
-
-var commonSteps = function(key, fx) {
-	// 通用设置过渡样式
-	var pos = fx.pos,
-		start = fx.start,
-		end = fx.end;
-	var result = {};
-	for (var i in end) {
-		result[i] = (end[i] - start[i]) * pos + start[i];
-	}
-	this.style(key, result);
+var css3 = function(style, key, value) {
+	// 通用设置css3样式
+	var suffix = key.charAt(0).toUpperCase() + key.substring(1, key.length);
+	style[prefix+suffix] = value;
 };
 
 var toRGBA = function(color){
@@ -139,21 +161,6 @@ var toColor = function(rgba) {
 	return '#'+r+g+b;
 };
 
-var toGradient = function(value) {
-	var result;
-	if (typeof(value) === 'string') {
-		value = value.split(/\,#|\,rgb/);
-		// 将渐变样式转换成数组格式
-		for (var i = 1, len = value.length; i < len; i++) {
-			value[i] = (value[i].indexOf('(')>-1?'rgb':'#') + value[i];
-		}
-		result = { type: value[0], from: value[1], to: value[2] };
-	} else {
-		result = value;
-	}
-	return result;
-};
-
 var stepColor = function(pos, start, end) {
 	start = toRGBA(start);
 	end = toRGBA(end);
@@ -166,89 +173,65 @@ var stepColor = function(pos, start, end) {
 }
 
 StyleSheet.styles = {
-	x: { // x轴坐标
-		set: function(key, value) {
-			this[key] = value;
-			if (this.renderMode === 0) {
-				var style = this.elemStyle;
-				style.position = 'absolute';
-				style.left = value + 'px';
+
+	x: newStyle('x', null, {
+		css: function(key, value) {
+			var style = this.elemStyle;
+			style.position = 'absolute';
+			style.left = value + 'px';
+		}
+	}),
+		
+	y: newStyle('y', null, {
+		css: function(key, value) {
+			var style = this.elemStyle;
+			style.position = 'absolute';
+			style.top = value + 'px';
+		}
+	}),
+	
+	width: newStyle('width', null, {
+		css: function(key, value) {
+			if (this.useElemSize) {
+				this.elem.width = value;
+			} else {
+				this.elemStyle.width = value + 'px';
 			}
-		},
-		step: commonStep
-	},
+		}
+	}),
 	
-	y: { // y轴坐标
-		set: function(key, value) {
-			this[key] = value;
-			if (this.renderMode === 0) {
-				var style = this.elemStyle;
-				style.position = 'absolute';
-				style.top = value + 'px';
+	height: newStyle('height', null, {
+		css: function(key, value) {
+			if (this.useElemSize) {
+				this.elem.height = value;
+			} else {
+				this.elemStyle.height = value + 'px';
 			}
-		},
-		step: commonStep
-	},
+		}
+	}),
 	
-	z: { // 3d远视坐标
-		set: function(key, value) {
-			this[key] = value;
-			this.style('transform3d', { perspective: value });
-		},
-		step: commonStep
-	},
-	
-	width: { // 宽度
-		set: function(key, value) {
-			this[key] = value;
-			if (this.renderMode === 0) {
-				if (this.useElemSize) {
-					this.elem.width = value;
-				} else {
-					this.elemStyle.width = value + 'px';
-				}
-			}
-		},
-		step: commonStep
-	},
-	
-	height: { // 高度
-		set: function(key, value) {
-			this[key] = value;
-			if (this.renderMode === 0) {
-				if (this.useElemSize) {
-					this.elem.height = value;
-				} else {
-					this.elemStyle.height = value + 'px';
-				}
-			}
-		},
-		step: commonStep
-	},
-	
-	size: { // 尺寸
+	size: newStyle('size', null, {
 		get: function(key) {
 			return { width: this.width, height: this.height };
 		},
 		set: function(key, value) {
 			if (value.width !== undefined) this.width = value.width;
 			if (value.height !== undefined) this.height = value.height;
-			if (this.renderMode === 0) {
-				if (this.useElemSize) {
-					var elem = this.elem;
-					elem.width = this.width;
-					elem.height = this.height;
-				} else {
-					var style = this.elemStyle;
-					style.width = this.width + 'px';
-					style.height = this.height + 'px';
-				}
-			}
 		},
-		step: commonSteps
-	},
+		css: function(key, value) {
+			if (this.useElemSize) {
+				var elem = this.elem;
+				elem.width = this.width;
+				elem.height = this.height;
+			} else {
+				var style = this.elemStyle;
+				style.width = this.width + 'px';
+				style.height = this.height + 'px';
+			}
+		}
+	}),
 	
-	transform: { // 2d变换
+	transform: newStyle('transform', null, {
 		init: function(key) {
 			this.transform = {
 				translateX: 0, translateY: 0,
@@ -263,39 +246,39 @@ StyleSheet.styles = {
 			return this.transform || StyleSheet.init(this, key);
 		},
 		set: function(key, value) {
-			var t2d = StyleSheet.get(this, key);
+			StyleSheet.get(this, key);
 			for (var i in value) {
 				this._updateTransform(i, value[i]);
 			}
-			if (this.renderMode === 0) {
-				var style = this.elemStyle;
-				if (supportIE6Filter) {
-					// ie6-8下使用matrix filter
-					var	elem = this.elem,
-						filter = style.filter,
-						regexp = /Matrix([^)]*)/,
-						mtx = this._updateMatrix2D(true),
-						text = [
-							'Matrix('+'M11='+mtx.a,
-							'M12='+mtx.b, 'M21='+mtx.c, 'M22='+mtx.d,
-							'SizingMethod=\'auto expand\''
-						].join(',');
-					style.filter = regexp.test(filter) ? filter.replace(regexp, text) : ('progid:DXImageTransform.Microsoft.' + text + ') ' + filter);		
-					style.marginLeft = t2d.translateX + (elem.clientWidth - elem.offsetWidth) * t2d.originX + 'px';
-					style.marginTop = t2d.translateY + (elem.clientHeight - elem.offsetHeight) * t2d.originY + 'px';
-				} else {
-					// 设置css3样式
-					css3(style, 'transform', this._mergeTransformText());
-					if ('originX' in value || 'originY' in value) {
-						css3(style, 'transformOrigin', t2d.originX*100+'% ' + t2d.originY*100+'%');
-					}
+		},
+		css: function(key, value) {
+			var style = this.elemStyle;
+			if (supportIE6Filter) {
+				// ie6-8下使用matrix filter
+				var	elem = this.elem,
+					filter = style.filter,
+					regexp = /Matrix([^)]*)/,
+					mtx = this._updateMatrix2D(true),
+					text = [
+						'Matrix('+'M11='+mtx.a,
+						'M12='+mtx.b, 'M21='+mtx.c, 'M22='+mtx.d,
+						'SizingMethod=\'auto expand\''
+					].join(',');
+				style.filter = regexp.test(filter) ? filter.replace(regexp, text) : ('progid:DXImageTransform.Microsoft.' + text + ') ' + filter);		
+				style.marginLeft = t2d.translateX + (elem.clientWidth - elem.offsetWidth) * t2d.originX + 'px';
+				style.marginTop = t2d.translateY + (elem.clientHeight - elem.offsetHeight) * t2d.originY + 'px';
+			} else {
+				// 设置css3样式
+				css3(style, 'transform', this._mergeTransformText());
+				if ('originX' in value || 'originY' in value) {
+					var t2d = this.transform;
+					css3(style, 'transformOrigin', t2d.originX*100+'% ' + t2d.originY*100+'%');
 				}
 			}
-		},
-		step: commonSteps
-	},
+		}
+	}),
 	
-	transform3d: { // 3d变换
+	transform3d: newStyle('transform3d', null, {
 		init: function(key) {
 			this.transform3d = {
 				perspective: 0,
@@ -315,63 +298,54 @@ StyleSheet.styles = {
 			return this.transform3d || StyleSheet.init(this, key);
 		},
 		set: function(key, value) {
-			var t3d = StyleSheet.get(this, key);
+			StyleSheet.get(this, key);
 			for (var i in value) {
 				this._updateTransform3D(i, value[i]);
 			}
-			if (this.renderMode === 0) {
+		},
+		css: function(key, value) {
+			var style = this.elemStyle;
+			css3(style, 'transform', this._mergeTransform3DText());
+			if ('originX' in value || 'originY' in value || 'originZ' in value) {
+				var t3d = this.transform3d;
+				css3(style, 'transformOrigin', t3d.originX*100+'% ' + t3d.originY*100+'%');
+			}
+		}
+	}),
+	
+	visible: newStyle('visible', null, {
+		css: function(key, value) {
+			this.elemStyle.display = value ? 'block' : 'none';
+		}
+	}),
+	
+	overflow: newStyle('overflow', null, {
+		css: function(key, value) {
+			this.elemStyle.overflow = value;
+		}
+	}),
+	
+	alpha: newStyle('alpha', null, {
+		parse: function(value) {
+			return value >= 0 ? value : 0;
+		},
+		css: function(key, value) {
+			var style = this.elemStyle;
+			if (supportIE6Filter) {
+				// ie6-8下使用alpha filter
+				var filter = style.filter,
+					regexp = /alpha\(opacity=([^)]*)/,
+					text = 'alpha(opacity=' + value*100;
+				style.filter = regexp.test(filter) ? filter.replace(regexp, text) : (filter + ' '+ text + ')');	
+			} else {
 				// 设置css3样式
-				var style = this.elemStyle;
-				css3(style, 'transform', this._mergeTransform3DText());
-				if ('originX' in value || 'originY' in value || 'originZ' in value) {
-					css3(style, 'transformOrigin', t3d.originX*100+'% ' + t3d.originY*100+'%');
-				}
-			};
-		},
-		step: commonSteps
-	},
-	
-	visible: { // 是否可见
-		set: function(key, value) {
-			this[key] = value;		
-			if (this.renderMode === 0) {
-				this.elemStyle.display = value ? 'block' : 'none';
+				style.opacity = value;
 			}
 		}
-	},
-		
-	overflow: { // 溢出效果
-		set: function(key, value) {
-			this[key] = value;
-			if (this.renderMode === 0) {
-				this.elemStyle.overflow = value;
-			}
-		}
-	},
+	}),
 	
-	alpha: { // 透明度
-		set: function(key, value) {
-			value = value >= 0 ? value : 0;
-			this[key] = value;
-			if (this.renderMode === 0) {
-				var style = this.elemStyle;
-				if (supportIE6Filter) {
-					// ie6-8下使用alpha filter
-					var filter = style.filter,
-						regexp = /alpha\(opacity=([^)]*)/,
-						text = 'alpha(opacity=' + value*100;
-					style.filter = regexp.test(filter) ? filter.replace(regexp, text) : (filter + ' '+ text + ')');	
-				} else {
-					// 设置css3样式
-					style.opacity = value;
-				}
-			}
-		},
-		step: commonStep
-	},
-	
-	shadow: { // 阴影
-		set: function(key, value) {
+	shadow: newStyle('shadow', null, {
+		parse: function(value) {
 			if (typeof(value) === 'string') {
 				value = value.split('px ');
 				value = {
@@ -381,15 +355,15 @@ StyleSheet.styles = {
 					color: value[3]
 				}
 			}
-			this[key] = value;
-			if (this.renderMode === 0) {
-				this.elemStyle.boxShadow = value.offsetX+'px ' + value.offsetY+'px ' + value.blur+'px ' + value.color;
-			}
+			return value;
 		},
-		step: commonSteps
-	},
+		css: function(key, value) {
+			var shadow = this.shadow;
+			this.elemStyle.boxShadow = shadow.offsetX+'px ' + shadow.offsetY+'px ' + shadow.blur+'px ' + shadow.color;
+		}
+	}),
 	
-	fill: { // 填充样式
+	fill: newStyle('fill', null, {
 		get: function(key) {
 			return this.fillColor || this.fillGradient || this.fillImage;
 		},
@@ -400,7 +374,6 @@ StyleSheet.styles = {
 			if (key) {
 				StyleSheet.set(this, key, value);
 			}
-			
 		},
 		step: function(key, fx) {
 			var value = fx.end;
@@ -410,76 +383,91 @@ StyleSheet.styles = {
 				StyleSheet.step(this, key, fx);
 			}
 		}
-	},
+	}),
 	
-	fillColor: { // 填充色
+	fillColor: newStyle('fillColor', null, {
 		set: function(key, value) {
 			this.fillGradient = this.fillImage = null;
 			this[key] = value;
-			if (this.renderMode === 0) {
-				this.elemStyle.backgroundColor = value;
-				this.elemStyle.backgroundImage = '';
+		},
+		css: function(key, value) {
+			this.elemStyle.backgroundColor = value;
+			this.elemStyle.backgroundImage = '';
+		},
+		step: function(key, fx) {
+			return stepColor(fx.pos, fx.start, fx.end);
+		}
+	}),
+	
+	fillGradient: newStyle('fillGradient', null, {
+		parse: function(value) {
+			if (typeof(value) === 'string') {
+				value = value.split(/\,#|\,rgb/);
+				// 将渐变样式转换成数组格式
+				for (var i = 1, len = value.length; i < len; i++) {
+					value[i] = (value[i].indexOf('(')>-1?'rgb':'#') + value[i];
+				}
+				value = { type: value[0], from: value[1], to: value[2] };
+			}
+			return value;
+		},
+		set: function(key, value) {
+			this.fillColor = this.fillImage = null;
+			this[key] = value;
+		},
+		css: function(key, value) {
+			var style = this.elemStyle, text;
+			// ie6-8下使用gradient filter
+			if (supportIE6Filter || isIE9) {
+				var filter = style.filter,
+					regexp = /gradient([^)]*)/;
+				text = 'gradient(GradientType=0,startColorstr=\''+value.from+'\', endColorstr=\''+value.to+'\'';
+				style.filter = regexp.test(filter) ? filter.replace(regexp, text) : (filter + ' progid:DXImageTransform.Microsoft.'+text+')');
+			} else {
+				// 设置css3样式
+				if (value.type === 'center') {
+					text = 'radial-gradient(circle,' + value.from + ',' + value.to + ')';
+				} else {
+					text = 'linear-gradient('+ value.type + ',' + value.from + ',' + value.to +')';
+				}
+				style.backgroundImage = '-webkit-' + text;
+				style.backgroundImage = '-ms-' + text;
+				style.backgroundImage = '-moz-' + text;
 			}
 		},
 		step: function(key, fx) {
-			this.style(key, stepColor(fx.pos, fx.start, fx.end));
-		}
-	},	
-	
-	fillGradient: { // 填充渐变
-		set: function(key, value) {
-			this.fillColor = this.fillImage = null;
-			this[key] = value = toGradient(value);
-			if (this.renderMode === 0) {
-				var style = this.elemStyle, text;
-				// ie6-8下使用gradient filter
-				if (supportIE6Filter || isIE9) {
-					var filter = style.filter,
-						regexp = /gradient([^)]*)/;
-					text = 'gradient(GradientType=0,startColorstr=\''+value.from+'\', endColorstr=\''+value.to+'\'';
-					style.filter = regexp.test(filter) ? filter.replace(regexp, text) : (filter + ' progid:DXImageTransform.Microsoft.'+text+')');
-				} else {
-					// 设置css3样式
-					if (value.type === 'center') {
-						text = 'radial-gradient(circle,' + value.from + ',' + value.to + ')';
-					} else {
-						text = 'linear-gradient('+ value.type + ',' + value.from + ',' + value.to +')';
-					}
-					style.backgroundImage = '-webkit-' + text;
-					style.backgroundImage = '-ms-' + text;
-					style.backgroundImage = '-moz-' + text;
-				}
-			}
-		}, 
-		step: function(key, fx) {
 			var start = fx.start,
 				end = fx.end,
-				end = toGradient(end),
 				pos = fx.pos,
 				result = { type: end.type };
 			// 设置渐变颜色过渡
 			result.from = stepColor(pos, start.from, end.from);
 			result.to = stepColor(pos, start.to, end.to);
-			this.style(key, result);
+			return result;
 		}
-	},
-	
-	fillImage: { // 填充位图
-		set: function(key, value) {
-			this.fillColor = this.fillGradient = null;
-			if (this.renderMode === 0) {
-				this.elemStyle.backgroundImage = 'url(' + value + ')';
-			} else {
+	}),
+
+	fillImage: newStyle('fillImage', null, {
+		parse: function(value) {
+			if (this.renderMode === 1) {
 				if (!Preload.hasItem(value)) { // 初始化image
 					Preload.loadFile({ type: 'image', url: value });
 				}
 				value = Preload.getItem(value);
 			}
+			return value;
+		},
+		set: function(key, value) {
+			this.fillColor = this.fillGradient = null;
 			this[key] = value;
-		}
-	},
+		},
+		css: function(key, value) {
+			this.elemStyle.backgroundImage = 'url(' + value + ')';
+		},
+		step: null,
+	}),
 	
-	stroke: { // 画笔样式
+	stroke: newStyle('stroke', null, {
 		get: function(key) {
 			return this.strokeColor;
 		},
@@ -490,33 +478,26 @@ StyleSheet.styles = {
 		step: function(key, fx) {
 			StyleSheet.step(this, 'strokeColor', fx);
 		}
-	},
+	}),
 	
-	strokeColor: { // 画笔颜色
-		set: function(key, value) {
-			this[key] = value;
-			if (this.renderMode === 0) {
-				var style = this.elemStyle;	
-				style.borderColor = value;
-				style.borderStyle = 'solid';
-			}
+	strokeColor: newStyle('strokeColor', null, {
+		css: function(key, value) {
+			var style = this.elemStyle;	
+			style.borderColor = value;
+			style.borderStyle = 'solid';
 		},
 		step: function(key, fx) {
-			this.style(key, stepColor(fx.pos, fx.start, fx.end));
+			return stepColor(fx.pos, fx.start, fx.end);
 		}
-	},
+	}),
 	
-	lineWidth: { // 画笔宽度
-		set: function(key, value) {
-			this[key] = value;
-			if (this.renderMode === 0) {
-				this.elemStyle.borderWidth = value + 'px';
-			}
-		},
-		step: commonStep
-	},
+	lineWidth: newStyle('lineWidth', null, {
+		css: function(key, value) {
+			this.elemStyle.borderWidth = value + 'px';
+		}
+	}),
 	
-	radius: { // 圆半径
+	radius: newStyle('radius', null, {
 		set: function(key, value) {
 			if (typeof(value) === 'object') {
 				for (var i in value) {
@@ -528,23 +509,22 @@ StyleSheet.styles = {
 				this[key] = value;
 				this.width = this.height = value * 2;
 			}
-			if (this.renderMode === 0) {
-				var style = this.elemStyle;
-				style.borderRadius = '50%';
-				style.width = this.width + 'px';
-				style.height = this.height + 'px';
-			}
 		},
-		step: commonStep
-	},
+		css: function(key, value) {
+			var style = this.elemStyle;
+			style.borderRadius = '50%';
+			style.width = this.width + 'px';
+			style.height = this.height + 'px';
+		}
+	}),
 	
-	angle: {}, // 圆角度
-	
+	angle: newStyle('angle', null)// 圆角度
+	/*
 	font: {},  // 字体
 
 	textColor: {}, // 文字颜色
 	
-	cursor: {}
+	cursor: {}*/
 };
 
 return StyleSheet;

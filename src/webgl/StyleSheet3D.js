@@ -4,23 +4,7 @@ define( function ( require, exports, module ) {
 
 var StyleSheet = require('display/StyleSheet');
 	
-var newStyle = function(prop, name) {
-	return {
-		get: function(key) {
-			return this[prop][name];
-		},
-		set: function(key, value) {
-			this[prop][name] = value;
-		},
-		step: function(key, fx) {
-			var pos = fx.pos,
-				start = fx.start,
-				end = fx.end,
-				value = (end - start) * pos + start;
-			this[prop][name] = value;
-		}
-	}
-}
+var newStyle = StyleSheet.newStyle;
 
 StyleSheet.styles3d = {
 	

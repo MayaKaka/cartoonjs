@@ -2,8 +2,7 @@
 define( function ( require, exports, module ) {
 	"use strict";
 
-var 
-	THREE = require('webgl/THREE'),
+var THREE = require('webgl/THREE'),
 	Style3D = require('webgl/StyleSheet3D'),
 	Preload = require('core/Preload'),
 	DisplayObject = require('display/DisplayObject'),
@@ -15,7 +14,10 @@ var Object3D = OriginObject3D,
 	dp = DisplayObject.prototype,
 	p = Object3D.prototype;
 	
-var blendings = [ "NoBlending", "NormalBlending", "AdditiveBlending", "SubtractiveBlending", "MultiplyBlending", "AdditiveAlphaBlending" ];
+var blendings = [ 
+	"NoBlending", "NormalBlending", "AdditiveBlending", 
+	"SubtractiveBlending", "MultiplyBlending", "AdditiveAlphaBlending" 
+];
 
 p.type = 'Object3D';
 p.renderMode = 2; // 渲染模式 WebGL
@@ -24,9 +26,11 @@ p.on = dp.on;
 p.off = dp.off;
 p.trigger = dp.trigger;
 
+p.each = dp.each;
+
 p.style = dp.style;
-p._stepTween = dp._stepTween;
 p.to = dp.to;
+p._stepTween = dp._stepTween;
 
 Object3D.create = function(data) {
 	var geo = data.geometry || data.g || {},

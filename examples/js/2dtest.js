@@ -138,7 +138,7 @@ var test2d = {
 					.to(400, fn).to({ x: 200, transform: { rotate: 0 } }, 600, null, fn)
 					.to(400, fn).to({ transform: { scale: 1 } }, 600, null, fn)
 					.to(400, fn).to({ x: 200, y: 200 }, 600, null, function() {
-						rect.style({ z: 300 });
+						rect.style({ transform3d: { perspective: 300 } });
 					}).to({ transform3d: { scaleX: 3, scaleY: 3 } }, 600, null, fn)
 					.to(400, fn).to({ transform3d: { rotateX: 360 } }, 600, null, fn)
 					.to(400, fn).to({ transform3d: { rotateZ: 360 } }, 600, null, fn)

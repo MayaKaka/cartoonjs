@@ -280,7 +280,8 @@ var test3d = {
 				emitter.scale.set( light.width * 2, 0.2, light.height * 2 );
 
 				light.add( emitter );
-			}			var area = new T.AreaLight( 0x0000ff, 10 );
+			}
+			var area = new T.AreaLight( 0x0000ff, 10 );
 			area.width = 20; area.height = 2;
 			createAreaEmitter( area );
 			area.rotation.set(0.2, 0, 0);
@@ -510,6 +511,7 @@ var test3d = {
 			for (var i=0; i<24; i++) {
 				poker = O3D.create({
 					g: { type: 'plane', width: 105, height: 150 },
+					// m: { type: 'basic', writeframe: true }
 					m: { type: 'basic', map: 'images/puke/'+1+'.jpg' }
 				});
 				poker.style({ x: -600, y: -300});
@@ -521,10 +523,24 @@ var test3d = {
 				layer.add(poker);
 			}
 			var look = function() {
-				camera.lookAt(new T.Vector3(0, 550, 0));
+				camera.lookAt(new T.Vector3(0, 0, 0));
 			}
+			var deg = 0;
+			var around = function() {
+				ticker.add(function(delta) {
+					deg++;
+					camera.position.set(Math.cos(deg*RAD_P_DEG/4)*220, 100, Math.sin(deg*RAD_P_DEG/4)*220);
+				});
+			}
+			layer.to(3000, function() {
+				camera.to({ y: 300 }, 3000, null, around, look);
+				layer.each(function(a, i) {
+					var rad = i/24*Math.PI*2;
+					a.to(i*250).to({ x: Math.sin(rad)*300, z: Math.cos(rad)*300, y: 0 })	
+				})
+			})
 			camera.position.set(0, 0, 900);
-			//camera.to({ y: 0 }, 5000, null, null, look);
+			look();
 			cvs.add(layer);
 			ticker.add(function(delta) {
 				$fps.html(ticker.fps);
