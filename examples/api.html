@@ -1,40 +1,72 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-  <link rel="stylesheet" href="css/bootstrap.min.css">
-  <script src="js/libs/jquery-1.11.1.min.js"></script>
-  <script src="js/libs/require.min.js"></script>
-  <style>
-  	html { font-family: "Helvetica Neue", Helvetica, Microsoft Yahei, Hiragino Sans GB, WenQuanYi Micro Hei, sans-serif; }
-    .doc-header { padding: 10px 10px; color: #FFF; height: 150px; background-color: #6f5499; background-image: linear-gradient(to bottom,rgb(45,58,66) 0,rgb(85,98,106) 100%); }
-  	.doc-header h1 { font-size: 50px; }
-  	.doc-header p { font-size: 18px; margin-left: 6px; }
-  	.doc-main { padding: 30px 15px; }
-  	.doc-main h3 { padding-top: 10px; border-top: 1px solid #eee; }
-  	.doc-main canvas { box-sizing:content-box; }
-  	.doc-api { border-color: #ddd; border-width: 1px; border-radius: 4px 4px 0 0; }
-  	.doc-api span { display: inline-block; margin: 5px 3px; padding: 3px 6px 3px 6px; border: 1px #DDD solid; border-radius: 5px; background: #FBFBFB; }
-  	.doc-api label { color: #2a6496; margin-left: 20px; width: 150px; font-weight: normal;}
-  	.doc-api li label { margin-left: 0px; width: 132px; }
-  </style>
-  <script>
-	require.config({ baseUrl: '../src', paths: { cartoon: 'cartoon' }});
-  </script>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+ 	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/home.css">
 </head>
 <body>
-<div class="doc-header">
-  <div class="container">
-    <h1>特效库    API 设计</h1>
-    <p>2D，3D，图形，图像，动画，事件</p>
-  </div>
-</div>
-<div class="doc-main">
+	<script src="js/libs/jquery-1.11.1.min.js"></script>
+	<script src="js/libs/bootstrap.min.js"></script>
+	<script src="js/libs/require.min.js"></script>
+	<script> require.config({ baseUrl: '../src', paths: { cartoon: 'cartoon' }}); </script>
+  	<style>
+	  	html { font-family: "Helvetica Neue", Helvetica, Microsoft Yahei, Hiragino Sans GB, WenQuanYi Micro Hei, sans-serif; }
+	    .doc-header { padding: 10px 10px; color: #FFF; height: 150px; background-color: #6f5499; background-image: linear-gradient(to bottom,rgb(45,58,66) 0,rgb(85,98,106) 100%); }
+	  	.doc-header h1 { font-size: 50px; }
+	  	.doc-header p { font-size: 18px; margin-left: 6px; }
+	  	.doc-main { padding: 30px 15px; }
+	  	.doc-main h3 { padding-top: 10px; }
+	  	.doc-main canvas { box-sizing:content-box; }
+	  	.doc-api { border-color: #ddd; border-width: 1px; border-radius: 4px 4px 0 0; }
+	  	.doc-api span { display: inline-block; margin: 5px 3px; padding: 3px 6px 3px 6px; border: 1px #DDD solid; border-radius: 5px; background: #FBFBFB; }
+	  	.doc-api label { color: #2a6496; margin-left: 20px; width: 150px; font-weight: normal;}
+	  	.doc-api li label { margin-left: 0px; width: 132px; }
+  	</style>
+
+	<div class="navbar navbar-default navbar-fixed-top" role="navigation" id="head">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">	  <span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">
+					<span>C</span>artoonJS</a></div>
+				<a href="http://gitlab.baidu.com/chenrui09/cartoonjs" target="_blank">
+					<img id="fork-image" style="position: absolute; top: 0px; right: 0px; border: 0px; z-index: 1000; width: 149px;" src="images/fork.png" alt="Fork me on GitHub">
+				</a>
+				<div class="navbar-collapse collapse" id="nav-wrap">
+					<ul class="nav navbar-nav navbar-right" id="nav" style="max-width: 100%; margin-right: 45.5px;">
+						<li class=""><a href="index.html" target="_blank">首页</a></li>
+						<li class="active"><a href="#">文档</a></li>
+						<li class=""><a href="demo.html" target="_blank">示例</a></li>
+						<li class=""><a href="three.html" target="_blank">3D示例</a></li>
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">下载<b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="../build/cartoon.min.js"> cartoon.min.js</a></li>
+								<li><a href="../build/cartoon.box2d.js"> cartoon.box2d.js</a></li>
+								<li><a href="../build/cartoon.three.js"> cartoon.three.js</a></li>
+								<li class="divider"></li>
+								<li><a href="doc/changelog.html">更新日志</a></li>
+							</ul>
+						</li>
+						<li class=""><a href="#">关于我们</a></li>
+						<li><a href="javascript:void()" onclick="changeVersion()">English</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<div class="doc-main" id="myDocument">
   <div class="container">
   	<div class="row">
   	  <div class="col-md-9">
   	  	<h1 class="page-header">概览</h1>
-  	  	<p class="lead">结合 Web 开发人员的思维习惯，设计合理的 API 风格，可参考 <a href="http://www.createjs.com/" target="_blank">createjs</a></p>
+  	  	<p class="lead">基础 api 包括 2d，3d，图形，图像，动画，事件功能，结合 web 开发人员的思维习惯，设计合理的 api 风格，可参考 <a href="http://www.createjs.com/" target="_blank">createjs</a></p>
   	  	
   	  	<!--  Class  -->
   	  	<h3 id="base-class">Class</h3>
@@ -355,7 +387,7 @@ require(['cartoon'], function(ct){
 	var ellipse = new ct.Shape({
 		renderMode: 1,
 		x: 220, y: 2,
-		graphics: { type: 'ellipse', stroke: '#242', fill: '#4DF', radiusX: 30, radiusY: 60 }
+		graphics: { type: 'ellipse', stroke: '#242', fill: '#4DF', radius: { x: 30, y: 60 } }
 	});
 	var line = new ct.Shape({
 		renderMode: 1,
@@ -876,16 +908,8 @@ require(['cartoon'], function(ct){
 });
 		</script></div>
 		
-		<!--  BoneAnimation  -->
-		<h3 id="base-bone">BoneAnimation</h3>
-		<p>骨骼动画，继承 DisplayObject</p>
-		<p><pre>
-<code class="html">todo...
-</code>
-		</pre></p>
-
-		<!--  Sy  -->
-		<h3 id="base-bone">BoneAnimation</h3>
+		<!--  SkeletalAnimation  -->
+		<h3 id="base-bone">SkeletalAnimation</h3>
 		<p>骨骼动画，继承 DisplayObject</p>
 		<p><pre>
 <code class="html">todo...
@@ -1018,7 +1042,7 @@ new ParticleSystem({ particle: { type: 'snow', num: 60 } });</code>
 	        <li><a href="#base-line">Timeline</a></li>
 	        <li><a href="#base-sprite">Sprite</a></li>
 	        <li><a href="#base-particle">ParticleSystem</a></li>
-	        <li><a href="#base-bone">BoneAnimation</a></li>
+	        <li><a href="#base-bone">SkeletalAnimation</a></li>
 	      </ul>
 	      <h5>如何扩展</h5>
   	      <ul class="nav">

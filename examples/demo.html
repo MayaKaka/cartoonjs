@@ -1,46 +1,79 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>2d测试</title>
-  <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
-  <link rel="stylesheet" href="css/bootstrap.min.css">
-  <script src="js/libs/jquery-1.11.1.min.js"></script>
-  <script src="js/libs/require.min.js"></script>
-  <script src="js/libs/excanvas.js"></script>
-  <script src="js/2dtest.js"></script>
-  <style>
-    html { font-family: "Helvetica Neue", Helvetica, Microsoft Yahei, Hiragino Sans GB, WenQuanYi Micro Hei, sans-serif; }
-    .demo-header { padding: 10px 10px; color: #FFF; height: 70px; background-color: #6f5499; background-image: linear-gradient(to bottom,rgb(45,58,66) 0,rgb(85,98,106) 100%); }
-	.demo-header label { font-size: 30px; }
-	.demo-header span { margin-left: 30px; font-size: 14px; }
-	
-	.demo-main { position: relative; width: 1230px; height:540px; margin: auto; box-shadow: 0px 3px 6px #666; }
-	.demo-menu { position:absolute; width: 150px; height:540px; overflow-x:hidden; overflow-y:scroll; }
-	.demo-stage { position:absolute; width: 1080px; height: 54px; left:150px; }	
-	.demo-stage * { box-sizing:content-box; }
-	.demo-dom { position:absolute; border:1px solid #999;  }
-	.demo-cvs { position:absolute; border:1px solid #999; border-left-width:0px; left:540px; }
-	.demo-fps { position:absolute; left:500px; width:40px; color:black; z-index:999;}
-	.demo-item { cursor:pointer; }
-	
-	.demo-control-table { position:absolute; bottom: 0px; width: 100%; }
-	.demo-control-table label { width: 80px; }
-	.demo-control-table span { display: inline-block; width: 40px; }
-	.demo-control-tbody>div { display: inline-block; margin-left: 20px; }
-	.demo-control-table input { margin-top: 5px; width: 80px; display: inline-block; }
-	.demo-tip-dom, .demo-tip-gl { position:absolute; left: 1px; background: rgb(180,180,180); color:#000; padding: 5px; }
-	.demo-tip-cvs { position:absolute; left: 541px; background: rgb(180,180,180); color:#000; padding: 5px; }
-	.demo-footer {}
-  </style>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+ 	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/home.css">
 </head>
 <body>
-  <div class="demo-header">
-  	<label>2D TEST</label>
-  	<span>图形 . 图像 . 动画</span>
-  </div>
-  
-  <div class="demo-main">
+	<script src="js/libs/jquery-1.11.1.min.js"></script>
+	<script src="js/libs/bootstrap.min.js"></script>
+	<script src="js/libs/require.min.js"></script>
+	<script src="js/2dtest.js"></script>
+	<script> require.config({ baseUrl: '../src', paths: { cartoon: 'cartoon' }}); </script>
+  	<style>
+		html { font-family: "Helvetica Neue", Helvetica, Microsoft Yahei, Hiragino Sans GB, WenQuanYi Micro Hei, sans-serif; }
+	    .demo-header { padding: 10px 10px; color: #FFF; height: 70px; background-color: #6f5499; background-image: linear-gradient(to bottom,rgb(45,58,66) 0,rgb(85,98,106) 100%); }
+		.demo-header label { font-size: 30px; }
+		.demo-header span { margin-left: 30px; font-size: 14px; }
+		
+		.demo-main { position: relative; width: 1230px; height:540px; margin: auto; box-shadow: 0px 3px 6px #666; }
+		.demo-menu { position:absolute; width: 150px; height:540px; overflow-x:hidden; overflow-y:scroll; }
+		.demo-stage { position:absolute; width: 1080px; height: 54px; left:150px; }	
+		.demo-stage * { box-sizing:content-box; }
+		.demo-dom { position:absolute; border:1px solid #999;  }
+		.demo-cvs { position:absolute; border:1px solid #999; border-left-width:0px; left:540px; }
+		.demo-fps { position:absolute; left:500px; width:40px; color:black; z-index:999;}
+		.demo-item { cursor:pointer; }
+		
+		.demo-control-table { position:absolute; bottom: 0px; width: 100%; }
+		.demo-control-table label { width: 80px; }
+		.demo-control-table span { display: inline-block; width: 40px; }
+		.demo-control-tbody>div { display: inline-block; margin-left: 20px; }
+		.demo-control-table input { margin-top: 5px; width: 80px; display: inline-block; }
+		.demo-tip-dom, .demo-tip-gl { position:absolute; left: 1px; background: rgb(180,180,180); color:#000; padding: 5px; }
+		.demo-tip-cvs { position:absolute; left: 541px; background: rgb(180,180,180); color:#000; padding: 5px; }
+		.demo-footer {}
+  	</style>
+
+	<div class="navbar navbar-default navbar-fixed-top" role="navigation" id="head">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">	  <span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">
+					<span>C</span>artoonJS</a></div>
+				<a href="http://gitlab.baidu.com/chenrui09/cartoonjs" target="_blank">
+					<img id="fork-image" style="position: absolute; top: 0px; right: 0px; border: 0px; z-index: 1000; width: 149px;" src="images/fork.png" alt="Fork me on GitHub">
+				</a>
+				<div class="navbar-collapse collapse" id="nav-wrap">
+					<ul class="nav navbar-nav navbar-right" id="nav" style="max-width: 100%; margin-right: 45.5px;">
+						<li class=""><a href="index.html" target="_blank">首页</a></li>
+						<li class=""><a href="api.html" target="_blank">文档</a></li>
+						<li class="active"><a href="#">示例</a></li>
+						<li class=""><a href="three.html" target="_blank">3D示例</a></li>
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">下载<b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="../build/cartoon.min.js"> cartoon.min.js</a></li>
+								<li><a href="../build/cartoon.box2d.js"> cartoon.box2d.js</a></li>
+								<li><a href="../build/cartoon.three.js"> cartoon.three.js</a></li>
+								<li class="divider"></li>
+								<li><a href="doc/changelog.html">更新日志</a></li>
+							</ul>
+						</li>
+						<li class=""><a href="#">关于我们</a></li>
+						<li><a href="javascript:void()" onclick="changeVersion()">English</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+  <div class="demo-main" id="myDemo">
   	<div class="demo-menu">
   	  <ul>
   	  	<li><div class="demo-item" data-name="paint">2D图形</div></li>

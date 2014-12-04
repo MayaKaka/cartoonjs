@@ -926,29 +926,34 @@ var test2d = {
 			ct.DisplayObject.setRenderMode('canvas');
 			var ticker = new ct.Ticker();
 			var random = ct.random;
-
+			var blendings = [
+				'source-over', 'lighter', 'darker'
+				/*'source-over', 'source-in', 'source-out', 'source-atop',
+				'destination-over', 'destination-in', 'destination-out', 'destination-atop',
+				'lighter', 'darker', 'copy', 'xor'*/
+			];
 			var bg = new ct.Shape({
 				g: { type: 'rect', width: 550, height: 550, fill: 'top,rgb('+random(0, 55)+','+random(0, 55)+','+random(0, 55)+'),rgb('+random(0, 55)+','+random(0, 55)+','+random(0, 55)+')' }
 			});
 			cvs.add(bg);
 	
 			var circle, r, c ='rgb('+random(0, 255)+','+random(0, 255)+','+random(0, 255)+')';
-			for (var i=0; i<6; i++) {
-				r = (6-i)*8;
+			for (var i=0; i<15; i++) {
+				r = (15-i)*9;
 				circle = new ct.Shape({
 					blendMode: 'lighter',
 					x: 300, y: 300, transform: { translateX: -r, translateY: -r },
-					g: { type: 'circle', radius: r, lineWidth: 11,
+					g: { type: 'circle', radius: r, lineWidth: 12,
 						stroke: c }
 				});
 				cvs.add(circle);
 			}
-			var layer = new ct.DisplayObject({ blendMode: 'lighter' });
+			var layer = new ct.DisplayObject();
 			
-			for (var i=0; i<20; i++) {
+			for (var i=0; i<30; i++) {
 				c ='rgb('+random(0, 255)+','+random(0, 255)+','+random(0, 255)+')';
 				circle = new ct.Shape({
-					blendMode: 'lighter',
+					blendMode: blendings[random(0,blendings.length)],
 					x: random(0,550), y: random(0,550), transform: { translateX: -r, translateY: -r },
 					g: { type: 'circle', radius: 14, lineWidth: 10,
 						stroke: c }
@@ -962,17 +967,17 @@ var test2d = {
 			ticker.add(ct.Tween);
 			ticker.add(cvs);
 			
-			var x, y, e, ease = [ 'easeInOut', 'backInOut', 'expoInOut' ];
+			var x, y, e, b, ease = [ 'linear', 'easeInOut', 'backInOut', 'expoInOut' ];
 			bg.on('click', function(evt) {
 				c ='rgb('+random(0, 255)+','+random(0, 255)+','+random(0, 255)+')';
 				x = evt.mouseX;
 				y = evt.mouseY;
-				e = ease[random(0,2)];
+				e = ease[random(0,ease.length)];
 				cvs.each(function(a, i){
 					if (a === bg) {
 						a.to({ fill: 'top,rgb('+random(0, 55)+','+random(0, 55)+','+random(0, 55)+'),rgb('+random(0, 55)+','+random(0, 55)+','+random(0, 55)+')' }, 1000);
 					} else if (a !== layer) {
-						a.to(i*30).to({ x: x, y: y, stroke: c }, 1000, e);
+						a.to(i*30).to({ x: x, y: y, stroke: c }, 1500, e);
 					}
 				});
 			})

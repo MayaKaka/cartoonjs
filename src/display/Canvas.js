@@ -36,6 +36,26 @@ var Canvas = DisplayObject.extend({
 		this.draw(ctx);
 	},
 	
+	getData: function() {
+		var data = this._context2d.getImageData(0, 0, this.width, this.height).data,
+			result = [],
+			index;
+
+		for (var j = 0; j < height; j++) {
+			result[j] = [];
+			for (var i = 0; i < width; i++) {
+				index = width*4*j + i*4;
+				if (data[i+3] === 0) {
+					result[j][i] = null;
+				} else {
+					result[j][i] = [data[i], data[i+1], data[i+2], data[i+3]];	
+				}
+			}
+		}
+
+		return result;
+	},
+
 	_initEvents: function() {
 		var self = this,
 			elem = this.elem,

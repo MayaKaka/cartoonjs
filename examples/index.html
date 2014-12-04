@@ -1,111 +1,155 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-  <link rel="stylesheet" href="css/bootstrap.min.css">
-  <script src="js/libs/jquery-1.11.1.min.js"></script>
-  <script src="js/libs/require.min.js"></script>
-  <style>
-  	html { font-family: "Helvetica Neue", Helvetica, Microsoft Yahei, Hiragino Sans GB, WenQuanYi Micro Hei, sans-serif; }
-    .op-home-header { background:rgb(45,58,66); color:#FFF; overflow:hidden; }
-    .op-home-header h1 { float:left; margin-left:20px; margin-right:20px; }
-    .op-home-navbar a { float:left; margin-top:20px; color:#FFF; }
-    .op-home-slide { height:300px; background:url(images/home_slide_0.jpg) center -100px; overflow:hidden; }
-    .op-home-banner { margin:30px 0 0 20px; color:#FFF; }
-    .op-home-banner li { font-size:20px; margin-top:10px; }
-	.op-home-main {}
-	.op-home-footer { width: 100%; text-align: center; overflow: hidden; }
-	.op-home-footer {  }
-	.op-home-footer canvas { margin-top:10px; border-radius: 0.5em; }
-  </style>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+ 	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/carousel.css">
+	<link rel="stylesheet" href="css/home.css">
 </head>
-  <body>
-	<div class="op-home-header">  
-   	  <h1>CartoonJS</h1>
-   	  <ul class="nav navbar-nav op-home-navbar">
-   	  	<li><a href="api.html" target="_blank">api文档</a></li>
-   	  	<li><a href="demo.html" target="_blank">2d展示</a></li>
-   	  	<li><a href="three.html" target="_blank">3d展示</a></li>
-   	  </ul>
+<body>
+	<div class="navbar navbar-default navbar-fixed-top" role="navigation" id="head">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">	  <span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">
+					<span>C</span>artoonJS</a></div>
+				<a href="http://gitlab.baidu.com/chenrui09/cartoonjs" target="_blank">
+					<img id="fork-image" style="position: absolute; top: 0px; right: 0px; border: 0px; z-index: 1000; width: 149px;" src="images/fork.png" alt="Fork me on GitHub">
+				</a>
+				<div class="navbar-collapse collapse" id="nav-wrap">
+					<ul class="nav navbar-nav navbar-right" id="nav" style="max-width: 100%; margin-right: 45.5px;">
+						<li class="active"><a href="#">首页</a></li>
+						<li class=""><a href="api.html" target="_blank">文档</a></li>
+						<li class=""><a href="demo.html" target="_blank">示例</a></li>
+						<li class=""><a href="three.html" target="_blank">3D示例</a></li>
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">下载<b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="../build/cartoon.min.js"> cartoon.min.js</a></li>
+								<li><a href="../build/cartoon.box2d.js"> cartoon.box2d.js</a></li>
+								<li><a href="../build/cartoon.three.js"> cartoon.three.js</a></li>
+								<li class="divider"></li>
+								<li><a href="doc/changelog.html">更新日志</a></li>
+							</ul>
+						</li>
+						<li class=""><a href="#">关于我们</a></li>
+						<li><a href="javascript:void()" onclick="changeVersion()">English</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
+      	<ol class="carousel-indicators">
+        	<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+        	<li data-target="#myCarousel" data-slide-to="1" class=""></li>
+        	<li data-target="#myCarousel" data-slide-to="2" class=""></li>
+        	<li data-target="#myCarousel" data-slide-to="3" class=""></li>
+      	</ol>
+      	<div class="carousel-inner">
+        	<div class="item active">
+          		<canvas id="cvs00"></canvas>
+        	</div>
+        	<div class="item">
+          		<canvas id="cvs01"></canvas>
+        	</div>
+        	<div class="item">
+         		<canvas id="cvs02"></canvas>
+        	</div>
+        	<div class="item">
+          		<img src="http://echarts.baidu.com/doc/asset/img/slide-05.jpg" alt="百度图说">
+          		<div class="container">
+            		<div class="carousel-caption" style="bottom:0;left:25%">
+              			<p style="text-align:left;">
+                  			<a class="btn btn-lg btn-warning" href="http://tushuo.baidu.com" role="button" target="_blank">了解更多 »</a>
+              			</p>
+            		</div>
+          		</div>
+        	</div>
+      	</div>
+      	<a class="left carousel-control" href="#myCarousel" data-slide="prev">
+      		<span class="glyphicon glyphicon-chevron-left"></span>
+      	</a>
+      	<a class="right carousel-control" href="#myCarousel" data-slide="next">
+      		<span class="glyphicon glyphicon-chevron-right"></span>
+      	</a>
     </div>
-	<div class="op-home-main">
-	  <div class="op-home-slide">
-	  	<div class="op-home-banner">
-	  	  <h2>Create.Connect.Succeed</h2>
-	  	  <br>
-	      <ul>
+    <div class="container marketing">
+      	<h1 class="text-center" style="margin-bottom:30px;">我们致力于</h1>
+      	<div class="row">
+        	<div class="col-lg-4">
+          		<img class="col-lg-12" src="images/feature1.png" alt="绘图" style="margin-bottom:20px">
+          		<h2>完善的绘图支持</h2>
+          		<p class="text-left">　　我们提供基于html5 canvas的多种绘图支持，包括多种基础图形（矩形，圆，椭圆，多边形，线段，等多边形），还包括多种图像功能（位图绘制，滤镜操作，混色处理等），通过扩展，我们还能够支持3D图形的绘制。</p>
+        	</div>
+        	<div class="col-lg-4">
+          		<img class="col-lg-12" src="images/feature2.png" alt="动画" style="margin-bottom:20px">
+          		<h2>丰富的动画功能</h2>
+          		<p class="text-left">　　我们支持dom和canvas渲染方式，支持多种动画方式，包括补间动画，时间轴动画，帧动画，骨骼动画，粒子动画，轨迹运动动画等多样式的动画支持，基于事件模型能够快速构建完善的动画系统和交互功能。</p>
+        	</div>
+        	<div class="col-lg-4">
+          		<img class="col-lg-12" src="images/feature3.png" alt="扩展" style="margin-bottom:20px">
+          		<h2>多种扩展的实现</h2>
+          		<p class="text-left">　　我们提供基于物理引擎box2dweb和3d引擎threejs的扩展，通过扩展可以快速创造物理世界和三维世界，也可以实现趣味性的游戏和多维交互体验。</p>
+        	</div>
+        	<p class="pull-right">
+        		<a href="demo.html" target="_blank">更多 »</a>
+        	</p>
+      	</div>
+    </div>
+
+	      <!--<ul>
 	        <li>构建高性能WEB动画</li>
 	        <li>引导产品设计，提升页面表现力</li>
 	        <li>基础技术积累，提高迭代效率</li>
 	        <li>新技术的创新与实践</li>
-	      </ul>
-	  	</div>
-	  </div>
-	</div>
-	<div class="op-home-footer">
-		<canvas id="cvs"></canvas>
-	
-<script>
-require.config({ baseUrl:'../src', paths: { cartoon: 'cartoon' } });
-require([ 'cartoon' ], function(ct) {
-	ct.DisplayObject.setRenderMode('canvas');
-	console.log(ct);
-	var ticker = new ct.Ticker(),
-		random = ct.random;
-		
-	var cvs = new ct.Canvas({ elem: '#cvs', width: 900, height: 300 });
-	
-	var bg = new ct.Shape({ 
-		g: { type: 'rect', width: cvs.width, height: cvs.height, fill: 'top,#0000FF,#00FF00' }
-	});
-	cvs.add(bg);
-			
-	var spriteSheet = {
-		images: [ 'images/runningGrant.png' ],
-		frames: { width: 165, height: 292, num: 64, cols: 12, rows: 6, img: 0 },
-		animations: {
-			'run': [0, 25, 'run', 0],
-			'jump': [26, 63, 'run', 0]
-		}
-	};
-	var sprite;
-			
-	for (var i=0; i<60; i++) {
-		sprite = new ct.Sprite({
-			x: random(0, cvs.width), y: random(0, cvs.height), ss: spriteSheet,
-			transform: { translateX: -spriteSheet.frames.width/2, translateY: -spriteSheet.frames.height/2, scale: random(25, 100)/100 }
-		});
-		sprite.play('run');
-		cvs.add(sprite);
-	}
-			
-	var fps = new ct.Text({ 
-		text: 'fps:0' 
-	});
-	cvs.add(fps);
-	
-	ticker.add(function() { fps.value('fps:' + ticker.fps); });
-	ticker.add(cvs);
+	      </ul>-->
 
+<script src="js/libs/jquery-1.11.1.min.js"></script>
+<script src="js/libs/bootstrap.min.js"></script>
+<script src="js/libs/require.min.js"></script>
+<script> require.config({ baseUrl: '../src', paths: { cartoon: 'cartoon' }}); </script>
+<script>
+require(['cartoon.three'], function(ct) {
+	ct.DisplayObject.setRenderMode('canvas');
+	var cvs00 = new ct.Canvas({ elem: '#cvs00', width: 900, height: 400 }),
+		cvs01 = new ct.Canvas({ elem: '#cvs01', width: 900, height: 400 }),
+		cvs02 = new ct.Canvas({ elem: '#cvs02', width: 900, height: 400 }),
+		cvs03 = new ct.Canvas({ elem: '#cvs03', width: 900, height: 400 });
+
+	var c00 = new ct.Shape({ g: { type: 'circle', radius: 10, fill: '#ff0000' } });
+	cvs00.add(c00);
+
+	var c01 = new ct.Shape({ g: { type: 'rect', width: 40, height: 40, fill: '#ffff00' } });
+	cvs01.add(c01);
+	
+	var c02 = new ct.Shape({ g: { type: 'ploygon', path: [[0,0], [30,15], [0,30]], fill: '#ff00ff' } });
+	cvs02.add(c02);
+
+	var c03 = new ct.Shape({ g: { type: 'circle', radius: 10, fill: '#00ffff' } });
+	cvs03.add(c03);
+
+
+	var animate = function() {
+		c00.style({ x: 0, y: 180 });
+		c00.to({ x: 900 }, 5000, 'easeInOut', animate);
+	}
+
+	animate();
+
+	var ticker = new ct.Ticker();
+	ticker.add(ct.Tween);
+	ticker.add(cvs00);
+	ticker.add(cvs01);
+	ticker.add(cvs02);
+	ticker.add(cvs03);
    	ticker.start();
 });
 </script>
 
-<div>
-<a href="http://threejs.org/" target="_blank">threejs</a>
-<a href="http://threejs.org/examples/" target="_blank">examples</a>
-<a href="http://webglsamples.org/" target="_blank">webglsamples</a>
-<a href="http://cycleblob.com/" target="_blank">cycleblob</a>
-<a href="http://chrysaora.com/" target="_blank">chrysaora</a>
-<a href="http://madebyevan.com/" target="_blank">madebyevan</a>
-<a href="http://aleksandarrodic.com/" target="_blank">aleksandarrodic</a>
-<a href="http://lights.elliegoulding.com/" target="_blank">lights</a>
-<a href="http://www.creativebloq.com/3d/30-amazing-examples-webgl-action-6142954" target="_blank">creativebloq</a>
-<a href="http://www.randelshofer.ch/webgl/rubikscube/" target="_blank">rubikscube</a>
-<a href="http://stars.chromeexperiments.com/" target="_blank">rubikscube</a>
-<a href="http://playwebgl.com/" target="_blank">rubikscube</a>
-<a href="http://labs.chinamobile.com/mblog/287/168169"></a>
-</div>
-	</div>
-  </body>
+</body>
 </html>
