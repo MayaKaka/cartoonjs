@@ -2,7 +2,8 @@
 define( function ( require, exports, module ) {
 	"use strict";
 	   
-var Class = require('core/Class');
+var Class = require('core/Class'),
+	TagCollection = require('core/TagCollection');
 
 var requestFrame = window.requestAnimationFrame || 
 		window.webkitRequestAnimationFrame || 

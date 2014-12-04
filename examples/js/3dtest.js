@@ -1,9 +1,77 @@
 
 var test3d = {
-	
+	transform: {
+		init: function(ct, cvs, $fps) {
+			var ticker = new ct.Ticker(),
+				O3D = ct.Object3D,
+				T = ct.THREE;
+			
+			var scene = cvs.scene,
+				camera = cvs.camera,
+				renderer = cvs.renderer;
+
+			renderer.sortObjects = false;	
+			scene.add( new T.GridHelper( 500, 100 ) );
+			camera.position.set( 1000, 500, 1000 );
+			camera.lookAt( new T.Vector3( 0, 200, 0 ) );
+
+			var light = new T.DirectionalLight( 0xffffff, 2 );
+			light.position.set( 1, 1, 1 );
+			scene.add( light );
+
+			var geometry = new T.BoxGeometry( 200, 200, 200 );
+			var material = new T.MeshLambertMaterial( { wireframe: true } );
+
+			var	control = new ct.TransformControls( camera, renderer.domElement );
+			control.addEventListener( 'change', function() {
+				control.update();
+			});
+
+			var mesh = new T.Mesh( geometry, material );
+			scene.add( mesh );
+
+			control.attach( mesh );
+			scene.add( control );
+
+			window.addEventListener( 'keydown', function ( event ) {
+		            //console.log(event.which);
+		            switch ( event.keyCode ) {
+		              case 81: // Q
+		                control.setSpace( control.space == "local" ? "world" : "local" );
+		                break;
+		              case 87: // W
+		                control.setMode( "translate" );
+		                break;
+		              case 69: // E
+		                control.setMode( "rotate" );
+		                break;
+		              case 82: // R
+		                control.setMode( "scale" );
+		                break;
+					case 187:
+					case 107: // +,=,num+
+						control.setSize( control.size + 0.1 );
+						break;
+					case 189:
+					case 10: // -,_,num-
+						control.setSize( Math.max(control.size - 0.1, 0.1 ) );
+						break;
+		            }
+        	});
+
+			ticker.start();
+
+			this.dispose = function() {
+				ticker.stop();
+				cvs.removeAll();
+			}
+		}
+	},
+
 	geometry: {
 		init: function(ct, cvs, $fps) {
 			var ticker = new ct.Ticker(),
+				O3D = ct.Object3D,
 				T = ct.THREE;
 			
 			var scene = cvs.scene,
@@ -15,8 +83,11 @@ var test3d = {
 			}
 
 			var g = new T.PlaneGeometry( 14, 14 );
-			var plane = mesh( g );
-			
+			var plane =	O3D.create({
+					g: { type: 'plane', width: 14, height: 14 },
+					m: { type: 'basic', wireframe: true }
+				});
+
 			g = new T.CircleGeometry( 8, 15 );
 			var circle = mesh( g );
 			circle.position.set( 20, 0, 0 );
@@ -496,6 +567,104 @@ var test3d = {
 		}
 	},
 	
+	particle: {
+		init:function(ct, cvs, $fps) {
+			var ticker = new ct.Ticker(),
+				O3D = ct.Object3D,
+				T = ct.THREE;
+				
+			var renderer = cvs.renderer,
+				scene = cvs.scene,
+				camera = cvs.camera;
+
+			scene.fog = new T.FogExp2( 0x000000, 0.0008 );
+
+			var geometry = new T.Geometry(),
+				materials = [];
+
+			var sprite1 = T.ImageUtils.loadTexture( "images/snow/snowflake1.png" ),
+				sprite2 = T.ImageUtils.loadTexture( "images/snow/snowflake2.png" ),
+				sprite3 = T.ImageUtils.loadTexture( "images/snow/snowflake3.png" ),
+				sprite4 = T.ImageUtils.loadTexture( "images/snow/snowflake4.png" ),
+				sprite5 = T.ImageUtils.loadTexture( "images/snow/snowflake5.png" );
+
+			for ( i = 0; i < 10000; i ++ ) {
+
+				var vertex = new T.Vector3();
+				vertex.x = Math.random() * 2000 - 1000;
+				vertex.y = Math.random() * 2000 - 1000;
+				vertex.z = Math.random() * 2000 - 1000;
+
+				geometry.vertices.push( vertex );
+
+			}
+
+			parameters = [ [ [1.0, 0.2, 0.5], sprite2, 20 ],
+							[ [0.95, 0.1, 0.5], sprite3, 15 ],
+							[ [0.90, 0.05, 0.5], sprite1, 10 ],
+							[ [0.85, 0, 0.5], sprite5, 8 ],
+							[ [0.80, 0, 0.5], sprite4, 5 ],
+						];
+
+			for ( i = 0; i < parameters.length; i ++ ) {
+
+				color  = parameters[i][0];
+				sprite = parameters[i][1];
+				size   = parameters[i][2];
+
+				materials[i] = new T.PointCloudMaterial( { size: size, map: sprite, blending: T.AdditiveBlending, depthTest: false, transparent : true } );
+				materials[i].color.setHSL( color[0], color[1], color[2] );
+
+				particles = new T.PointCloud( geometry, materials[i] );
+
+				particles.rotation.x = Math.random() * 6;
+				particles.rotation.y = Math.random() * 6;
+				particles.rotation.z = Math.random() * 6;
+
+				scene.add( particles );
+
+			}
+			var mouseX = 0,
+				mouseY = 0;
+			ticker.add(function() {
+				var time = Date.now() * 0.00005;
+
+				camera.position.x += ( mouseX - camera.position.x ) * 0.05;
+				camera.position.y += ( - mouseY - camera.position.y ) * 0.05;
+
+				camera.lookAt( scene.position );
+
+				for ( i = 0; i < scene.children.length; i ++ ) {
+
+					var object = scene.children[ i ];
+
+					if ( object instanceof T.PointCloud ) {
+
+						object.rotation.y = time * ( i < 4 ? i + 1 : - ( i + 1 ) );
+
+					}
+
+				}
+
+				for ( i = 0; i < materials.length; i ++ ) {
+
+					color = parameters[i][0];
+
+					h = ( 360 * ( color[0] + time ) % 360 ) / 360;
+					materials[i].color.setHSL( h, color[1], color[2] );
+
+				}
+
+			})
+			ticker.start();
+
+			this.dispose = function() {
+				ticker.stop();
+				cvs.removeAll();
+			}
+		}
+	},
+
 	poker: {
 		init: function(ct, cvs, $fps) {
 			var ticker = new ct.Ticker(),
@@ -508,18 +677,16 @@ var test3d = {
 				camera = cvs.camera;
 			
 			var layer = new O3D(), poker, x, y, z;
-			for (var i=0; i<24; i++) {
+			for (var i=0; i<54; i++) {
 				poker = O3D.create({
 					g: { type: 'plane', width: 105, height: 150 },
-					// m: { type: 'basic', writeframe: true }
-					m: { type: 'basic', map: 'images/puke/'+1+'.jpg' }
+					m: { type: 'basic', map: 'images/poker/'+1+'.jpg', side: T.DoubleSide }
 				});
 				poker.style({ x: -600, y: -300});
 				x = (24-i)%6;
 				x = x - 6/2;
 				y = Math.floor((24-i)/6);
 				y = y - 4/2;
-				poker.to(i*250).to({ z: 80, ry: -1 }).to({ x: x*110, y: y*155, z: 0, ry: 0 }, 500);
 				layer.add(poker);
 			}
 			var look = function() {
@@ -529,16 +696,52 @@ var test3d = {
 			var around = function() {
 				ticker.add(function(delta) {
 					deg++;
-					camera.position.set(Math.cos(deg*RAD_P_DEG/4)*220, 100, Math.sin(deg*RAD_P_DEG/4)*220);
-				});
+					layer.rotation.y = deg/2*Math.PI/180;
+					// camera.position.set(Math.cos(deg*RAD_P_DEG/4)*220, 100, Math.sin(deg*RAD_P_DEG/4)*220);
+				}, 'around');
 			}
-			layer.to(3000, function() {
-				camera.to({ y: 300 }, 3000, null, around, look);
+			layer.to(100, function() {
+				camera.to({ y: 600 }, 6000, null, around, look);
 				layer.each(function(a, i) {
-					var rad = i/24*Math.PI*2;
-					a.to(i*250).to({ x: Math.sin(rad)*300, z: Math.cos(rad)*300, y: 0 })	
+					var l = layer.children.length,
+						rad = i/24*Math.PI*2,
+						dis = 500;
+
+					var phi = Math.acos( -1 + ( 2 * i ) / l ),
+						theta = Math.sqrt( l * Math.PI ) * phi;
+
+					var x = dis * Math.cos( theta ) * Math.sin( phi ),
+						y = dis * Math.sin( theta ) * Math.sin( phi ),
+						z = dis * Math.cos( phi );
+
+
+					a.to(200*i).to({ x: x, y: y, z: z }, 
+						ct.random(500, 1000), null, null,
+						function() {
+							a.lookAt(new T.Vector3(0, 0, 0));
+						}
+					)	
 				})
-			})
+			}).to(15000, function() {
+				// ticker.remove('around');
+				layer.each(function(a, i) {
+					var l = layer.children.length,
+						rad = i/24*Math.PI*2,
+						dis = 500;
+
+					var x = dis * Math.sin( rad ),
+						y = dis * i / 50,
+						z = dis * Math.cos( rad );
+
+					a.to(ct.random(0, 2400)).to({ x: x, y: y, z: z }, 
+						ct.random(500, 1000), null, null,
+						function() {
+							a.lookAt(new T.Vector3(0, y, 0));
+						}
+					)	
+				})
+			});
+
 			camera.position.set(0, 0, 900);
 			look();
 			cvs.add(layer);

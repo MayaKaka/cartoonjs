@@ -195,10 +195,6 @@ var easing = {
 };
 
 Ease.easing = easing;
-// 绑定jQuery
-if (jQuery) {
-	jQuery.extend(jQuery.easing, easing);
-}
 
 return Ease;
 });

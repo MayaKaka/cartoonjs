@@ -8,6 +8,7 @@ var cartoon = require('cartoon');
 cartoon.THREE = require('webgl/THREE');
 cartoon.Object3D = require('webgl/Object3D');
 cartoon.GLCanvas = require('webgl/GLCanvas');
+cartoon.TransformControls = require('webgl/TransformControls');
 
 return cartoon;
 });

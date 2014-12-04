@@ -143,7 +143,7 @@ var GLCanvas = DisplayObject.extend({
 		
 		var scene = this.scene = new THREE.Scene();
 		
-		var	camera = this.camera  = new THREE.PerspectiveCamera( 70, this.width/this.height, 0.1, 1000 );
+		var	camera = this.camera  = new THREE.PerspectiveCamera( 70, this.width/this.height, 1, 10000 );
 	}
 
 });
