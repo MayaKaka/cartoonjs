@@ -99,6 +99,7 @@ var Sprite = DisplayObject.extend({
      	} else {
      		nextFrameIdx = this._frameIndex + 1;
      	}
+     	console.log(this._frameIndex, end, 'start');
 		// 判断动画是否结束
 		if (nextFrameIdx > end) {
 			if (typeof(next) === 'string') { // 播放下一个动画
@@ -113,6 +114,7 @@ var Sprite = DisplayObject.extend({
 		} else {
 			this._frameIndex = nextFrameIdx;
 		}
+		console.log(this._frameIndex, this._paused);
 	},
        
     draw: function(ctx){
@@ -121,7 +123,7 @@ var Sprite = DisplayObject.extend({
      	if (frame) {
 	     	var	image = this._images[frame[4]];
 	     	if (image && image.complete) {
-	     		ctx.drawImage(image, frame[0], frame[1], frame[2], frame[3], frame[5], frame[6], frame[2], frame[3]);
+	     		ctx.drawImage(image, frame[0], frame[1], frame[2], frame[3], 0, 0, frame[2], frame[3]);
 	     	}
      	}
      },
@@ -205,6 +207,12 @@ var Sprite = DisplayObject.extend({
 			if (this.width !== frame[2] || this.height !== frame[3]) {
 	        	this.style('size', { width: frame[2], height: frame[3] });
 	        }
+	        
+			var transform = this.transform;
+			if (transform.translateX !== frame[5] || transform.translateY !== frame[6]) {
+				this.style('transform', { translateX: frame[5], translateY: frame[6] });
+			}
+			
 			if (this.renderMode === 0) {
 				var style = this.elemStyle;
 	        	// 设置剪裁图片

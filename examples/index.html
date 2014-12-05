@@ -53,6 +53,17 @@
       	<div class="carousel-inner">
         	<div class="item active">
           		<canvas id="cvs00"></canvas>
+          		<div class="container">
+            		<div class="carousel-caption" style="bottom:0;left:25%">
+					   	<p>构建高性能WEB动画</p>
+					    <p>引导产品设计，提升页面表现力</p>
+					    <p>基础技术积累，提高迭代效率</p>
+					    <p>新技术的创新与实践</p>
+              			<p>
+              				<br><br>
+              			</p>
+            		</div>
+          		</div>
         	</div>
         	<div class="item">
           		<canvas id="cvs01"></canvas>
@@ -61,14 +72,11 @@
          		<canvas id="cvs02"></canvas>
         	</div>
         	<div class="item">
-          		<img src="http://echarts.baidu.com/doc/asset/img/slide-05.jpg" alt="百度图说">
-          		<div class="container">
-            		<div class="carousel-caption" style="bottom:0;left:25%">
-              			<p style="text-align:left;">
-                  			<a class="btn btn-lg btn-warning" href="http://tushuo.baidu.com" role="button" target="_blank">了解更多 »</a>
-              			</p>
-            		</div>
-          		</div>
+        		<div class="container">
+        			<p>
+	        			<a class="btn btn-lg btn-warning" href="http://www.baidu.com" role="button" target="_blank">了解更多 »</a>
+	        		</p>
+        		</div>
         	</div>
       	</div>
       	<a class="left carousel-control" href="#myCarousel" data-slide="prev">
@@ -102,12 +110,7 @@
       	</div>
     </div>
 
-	      <!--<ul>
-	        <li>构建高性能WEB动画</li>
-	        <li>引导产品设计，提升页面表现力</li>
-	        <li>基础技术积累，提高迭代效率</li>
-	        <li>新技术的创新与实践</li>
-	      </ul>-->
+	      <!---->
 
 <script src="js/libs/jquery-1.11.1.min.js"></script>
 <script src="js/libs/bootstrap.min.js"></script>
@@ -115,7 +118,7 @@
 <script> require.config({ baseUrl: '../src', paths: { cartoon: 'cartoon' }}); </script>
 <script>
 require(['cartoon.three'], function(ct) {
-	ct.DisplayObject.setRenderMode('canvas');
+	ct.setRenderMode('canvas');
 	var cvs00 = new ct.Canvas({ elem: '#cvs00', width: 900, height: 400 }),
 		cvs01 = new ct.Canvas({ elem: '#cvs01', width: 900, height: 400 }),
 		cvs02 = new ct.Canvas({ elem: '#cvs02', width: 900, height: 400 }),

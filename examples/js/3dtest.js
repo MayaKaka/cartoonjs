@@ -9,18 +9,21 @@ var test3d = {
 			var scene = cvs.scene,
 				camera = cvs.camera,
 				renderer = cvs.renderer;
-
+			
+			var $info = $('<div style="color:#fff;position:absolute;right:20px;">123</div>');
+			$info.appendTo(cvs.elem.parentNode);
+			
 			renderer.sortObjects = false;	
 			scene.add( new T.GridHelper( 500, 100 ) );
-			camera.position.set( 1000, 500, 1000 );
+			camera.position.set( 800, 500, 800 );
 			camera.lookAt( new T.Vector3( 0, 200, 0 ) );
 
 			var light = new T.DirectionalLight( 0xffffff, 2 );
 			light.position.set( 1, 1, 1 );
 			scene.add( light );
 
-			var geometry = new T.BoxGeometry( 200, 200, 200 );
-			var material = new T.MeshLambertMaterial( { wireframe: true } );
+			var geometry = new T.BoxGeometry( 100, 100, 100 );
+			var material = new T.MeshLambertMaterial( { color: 0x888888 } );
 
 			var	control = new ct.TransformControls( camera, renderer.domElement );
 			control.addEventListener( 'change', function() {
@@ -58,12 +61,21 @@ var test3d = {
 						break;
 		            }
         	});
-
+        	ticker.add(function() {
+        		var html = '切换模式-> q (相对模式/世界模式), w (坐标), e (旋转), r (缩放)<br>';
+        		html += '颜色区分-> x (红色), y (绿色), z (蓝色)<br>';
+        		html += '坐标-> x: '+mesh.position.x.toFixed(2)+', y: '+mesh.position.y.toFixed(2)+', z: '+mesh.position.z.toFixed(2)+'<br>';
+        		html += '旋转-> x: '+mesh.rotation.x.toFixed(4)+', y: '+mesh.rotation.y.toFixed(4)+', z: '+mesh.rotation.z.toFixed(4)+'<br>';
+        		html += '缩放-> x: '+mesh.scale.x.toFixed(3)+', y: '+mesh.scale.y.toFixed(3)+', z: '+mesh.scale.z.toFixed(3)+'<br>';
+        		$info.html(html);
+        	});
+			ticker.add(cvs);
 			ticker.start();
 
 			this.dispose = function() {
 				ticker.stop();
 				cvs.removeAll();
+				$info.remove();
 			}
 		}
 	},
@@ -683,10 +695,11 @@ var test3d = {
 					m: { type: 'basic', map: 'images/poker/'+1+'.jpg', side: T.DoubleSide }
 				});
 				poker.style({ x: -600, y: -300});
-				x = (24-i)%6;
-				x = x - 6/2;
-				y = Math.floor((24-i)/6);
-				y = y - 4/2;
+				x = (54-i)%8;
+				x = x - 8/2;
+				y = Math.floor((54-i)/8);
+				y = y - 7/2;
+				poker.to(i*200).to({ x: x*110, y: 155*y })
 				layer.add(poker);
 			}
 			var look = function() {
@@ -700,8 +713,8 @@ var test3d = {
 					// camera.position.set(Math.cos(deg*RAD_P_DEG/4)*220, 100, Math.sin(deg*RAD_P_DEG/4)*220);
 				}, 'around');
 			}
-			layer.to(100, function() {
-				camera.to({ y: 600 }, 6000, null, around, look);
+			layer.to(12000, function() {
+				camera.to({ y: 700, z: 1000 }, 6000, null, around, look);
 				layer.each(function(a, i) {
 					var l = layer.children.length,
 						rad = i/24*Math.PI*2,
@@ -715,14 +728,14 @@ var test3d = {
 						z = dis * Math.cos( phi );
 
 
-					a.to(200*i).to({ x: x, y: y, z: z }, 
-						ct.random(500, 1000), null, null,
+					a.to(ct.random(0, 3000)).to({ x: x, y: y, z: z }, 
+						ct.random(600, 1200), null, null,
 						function() {
 							a.lookAt(new T.Vector3(0, 0, 0));
 						}
 					)	
 				})
-			}).to(15000, function() {
+			}).to(12000, function() {
 				// ticker.remove('around');
 				layer.each(function(a, i) {
 					var l = layer.children.length,
@@ -730,16 +743,18 @@ var test3d = {
 						dis = 500;
 
 					var x = dis * Math.sin( rad ),
-						y = dis * i / 50,
+						y = dis * i / 50 - 200,
 						z = dis * Math.cos( rad );
 
-					a.to(ct.random(0, 2400)).to({ x: x, y: y, z: z }, 
-						ct.random(500, 1000), null, null,
+					a.to(ct.random(0, 3000)).to({ x: x, y: y, z: z }, 
+						ct.random(600, 1200), null, null,
 						function() {
 							a.lookAt(new T.Vector3(0, y, 0));
 						}
 					)	
 				})
+			}).to(12000, function() {
+				camera.to({ y: 0, z: 200 }, 6000, null, null, look);
 			});
 
 			camera.position.set(0, 0, 900);

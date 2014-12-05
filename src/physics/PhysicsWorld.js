@@ -81,14 +81,20 @@ var PhysicsWorld = DisplayObject.extend({
         child._box2dBody = body;
 	},
 	
-	addJoint: function(obj01, obj02) {
+	addJoint: function(obj01, obj02, pt01, pt02) {
 		var world = this._world,
+			scale = this._scale,
 			body01 = obj01._box2dBody.m_body,
 			body02 = obj02._box2dBody.m_body;
 
-		var jointDef = new b2RevoluteJointDef();
-
-		jointDef.Initialize(body01, body02, body01.GetWorldCenter(), body01.GetWorldCenter());
+		var jointDef = new b2RevoluteJointDef(),
+			center01 = body01.GetWorldCenter(),
+			center02 = body02.GetWorldCenter();
+				
+		pt01 = pt01 ?  { x: center01.x+pt01.x/scale, y: center01.y+pt01.y/scale } : { x: center01.x, y: center01.y };
+		pt02 = pt02 ?  { x: center02.x+pt02.x/scale, y: center02.y+pt02.y/scale } : { x: center02.x, y: center02.y };
+		console.log(pt01, pt02)
+		jointDef.Initialize(body01, body02, pt01, pt02);
 		
 		var joint = world.CreateJoint(jointDef);
 	},
@@ -97,13 +103,13 @@ var PhysicsWorld = DisplayObject.extend({
 		return this._world;
 	},
 	
-	openDebug: function(ctx) {
+	openDebug: function(canvas) {
 		this.debug = true;
-		window.B = Box2D;
+
 		var debugDraw = new b2DebugDraw(),
 			scale = this._scale;
 			
-		debugDraw.SetSprite(ctx);
+		debugDraw.SetSprite(canvas._context2d);
 		debugDraw.SetDrawScale(scale);
 		debugDraw.SetFillAlpha(0.3);
 		debugDraw.SetLineThickness(1.0);

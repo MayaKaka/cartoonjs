@@ -37,5 +37,17 @@ cartoon.expand({
 	
 });
 
+cartoon.expand({
+	
+	setRenderMode: function(mode) {
+		if (mode === 'canvas' || mode === 1) {
+			this.DisplayObject.prototype.renderMode = 1;
+		} else {
+			this.DisplayObject.prototype.renderMode = 0;
+		}
+	}
+
+})
+
 return cartoon;
 });

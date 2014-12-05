@@ -416,13 +416,5 @@ var DisplayObject = EventDispatcher.extend({
 	
 });
 
-DisplayObject.setRenderMode = function(mode) {
-	if (mode === 'canvas' || mode === 1) {
-		DisplayObject.prototype.renderMode = 1;
-	} else {
-		DisplayObject.prototype.renderMode = 0;
-	}
-}
-
 return DisplayObject;
 });

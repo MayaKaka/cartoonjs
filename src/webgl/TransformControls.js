@@ -4,195 +4,187 @@ define( function ( require, exports, module ) {
 
 var THREE = require('webgl/THREE');
 
-	var GizmoMaterial = function ( parameters ) {
+var GizmoMaterial = function ( parameters ) {
 
-		THREE.MeshBasicMaterial.call( this );
+	THREE.MeshBasicMaterial.call( this );
 
-		this.depthTest = false;
-		this.depthWrite = false;
-		this.side = THREE.FrontSide;
-		this.transparent = true;
+	this.depthTest = false;
+	this.depthWrite = false;
+	this.side = THREE.FrontSide;
+	this.transparent = true;
 
-		this.setValues( parameters );
+	this.setValues( parameters );
 
-		this.oldColor = this.color.clone();
-		this.oldOpacity = this.opacity;
+	this.oldColor = this.color.clone();
+	this.oldOpacity = this.opacity;
 
-		this.highlight = function( highlighted ) {
+	this.highlight = function( highlighted ) {
 
-			if ( highlighted ) {
+		if ( highlighted ) {
+			this.color.setRGB( 1, 1, 0 );
+			this.opacity = 1;
+		} else {
+			this.color.copy( this.oldColor );
+			this.opacity = this.oldOpacity;
+		}
+	};
+};
 
-				this.color.setRGB( 1, 1, 0 );
-				this.opacity = 1;
+GizmoMaterial.prototype = Object.create( THREE.MeshBasicMaterial.prototype );
 
-			} else {
+var GizmoLineMaterial = function ( parameters ) {
 
-					this.color.copy( this.oldColor );
-					this.opacity = this.oldOpacity;
+	THREE.LineBasicMaterial.call( this );
 
-			}
+	this.depthTest = false;
+	this.depthWrite = false;
+	this.transparent = true;
+	this.linewidth = 1;
 
-		};
+	this.setValues( parameters );
 
+	this.oldColor = this.color.clone();
+	this.oldOpacity = this.opacity;
+
+	this.highlight = function( highlighted ) {
+
+		if ( highlighted ) {
+
+			this.color.setRGB( 1, 1, 0 );
+			this.opacity = 1;
+
+		} else {
+
+			this.color.copy( this.oldColor );
+			this.opacity = this.oldOpacity;
+
+		}
 	};
 
-	GizmoMaterial.prototype = Object.create( THREE.MeshBasicMaterial.prototype );
+};
 
-	var GizmoLineMaterial = function ( parameters ) {
+GizmoLineMaterial.prototype = Object.create( THREE.LineBasicMaterial.prototype );
 
-		THREE.LineBasicMaterial.call( this );
+THREE.TransformGizmo = function () {
 
-		this.depthTest = false;
-		this.depthWrite = false;
-		this.transparent = true;
-		this.linewidth = 1;
+	var scope = this;
+	var showPickers = false; //debug
+	var showActivePlane = false; //debug
 
-		this.setValues( parameters );
+	this.init = function () {
 
-		this.oldColor = this.color.clone();
-		this.oldOpacity = this.opacity;
+		THREE.Object3D.call( this );
 
-		this.highlight = function( highlighted ) {
+		this.handles = new THREE.Object3D();
+		this.pickers = new THREE.Object3D();
+		this.planes = new THREE.Object3D();
 
-			if ( highlighted ) {
-
-				this.color.setRGB( 1, 1, 0 );
-				this.opacity = 1;
-
-			} else {
-
-					this.color.copy( this.oldColor );
-					this.opacity = this.oldOpacity;
-
-			}
-
-		};
-
-	};
-
-	GizmoLineMaterial.prototype = Object.create( THREE.LineBasicMaterial.prototype );
-
-	THREE.TransformGizmo = function () {
-
-		var scope = this;
-		var showPickers = false; //debug
-		var showActivePlane = false; //debug
-
-		this.init = function () {
-
-			THREE.Object3D.call( this );
-
-			this.handles = new THREE.Object3D();
-			this.pickers = new THREE.Object3D();
-			this.planes = new THREE.Object3D();
-
-			this.add(this.handles);
-			this.add(this.pickers);
-			this.add(this.planes);
+		this.add(this.handles);
+		this.add(this.pickers);
+		this.add(this.planes);
 
 			//// PLANES
 
-			var planeGeometry = new THREE.PlaneGeometry( 50, 50, 2, 2 );
-			var planeMaterial = new THREE.MeshBasicMaterial( { wireframe: true } );
-			planeMaterial.side = THREE.DoubleSide;
+		var planeGeometry = new THREE.PlaneGeometry( 50, 50, 2, 2 );
+		var planeMaterial = new THREE.MeshBasicMaterial( { wireframe: true } );
+		planeMaterial.side = THREE.DoubleSide;
 
-			var planes = {
-				"XY":   new THREE.Mesh( planeGeometry, planeMaterial ),
-				"YZ":   new THREE.Mesh( planeGeometry, planeMaterial ),
-				"XZ":   new THREE.Mesh( planeGeometry, planeMaterial ),
-				"XYZE": new THREE.Mesh( planeGeometry, planeMaterial )
-			};
+		var planes = {
+			"XY":   new THREE.Mesh( planeGeometry, planeMaterial ),
+			"YZ":   new THREE.Mesh( planeGeometry, planeMaterial ),
+			"XZ":   new THREE.Mesh( planeGeometry, planeMaterial ),
+			"XYZE": new THREE.Mesh( planeGeometry, planeMaterial )
+		};
 
-			this.activePlane = planes["XYZE"];
+		this.activePlane = planes["XYZE"];
 
-			planes["YZ"].rotation.set( 0, Math.PI/2, 0 );
-			planes["XZ"].rotation.set( -Math.PI/2, 0, 0 );
+		planes["YZ"].rotation.set( 0, Math.PI/2, 0 );
+		planes["XZ"].rotation.set( -Math.PI/2, 0, 0 );
 
-			for (var i in planes) {
-				planes[i].name = i;
-				this.planes.add(planes[i]);
-				this.planes[i] = planes[i];
-				planes[i].visible = false;
+		for (var i in planes) {
+			planes[i].name = i;
+			this.planes.add(planes[i]);
+			this.planes[i] = planes[i];
+			planes[i].visible = false;
+		}
+
+		//// HANDLES AND PICKERS
+
+		var setupGizmos = function( gizmoMap, parent ) {
+
+			for ( var name in gizmoMap ) {
+
+				for ( i = gizmoMap[name].length; i--;) {
+
+					var object = gizmoMap[name][i][0];
+					var position = gizmoMap[name][i][1];
+					var rotation = gizmoMap[name][i][2];
+
+					object.name = name;
+
+					if ( position ) object.position.set( position[0], position[1], position[2] );
+					if ( rotation ) object.rotation.set( rotation[0], rotation[1], rotation[2] );
+
+					parent.add( object );
+
+				}
+
 			}
-
-			//// HANDLES AND PICKERS
-
-			var setupGizmos = function( gizmoMap, parent ) {
-
-				for ( var name in gizmoMap ) {
-
-					for ( i = gizmoMap[name].length; i--;) {
-
-						var object = gizmoMap[name][i][0];
-						var position = gizmoMap[name][i][1];
-						var rotation = gizmoMap[name][i][2];
-
-						object.name = name;
-
-						if ( position ) object.position.set( position[0], position[1], position[2] );
-						if ( rotation ) object.rotation.set( rotation[0], rotation[1], rotation[2] );
-
-						parent.add( object );
-
-					}
-
-				}
-
-			};
-
-			setupGizmos(this.handleGizmos, this.handles);
-			setupGizmos(this.pickerGizmos, this.pickers);
-
-			// reset Transformations
-
-			this.traverse(function ( child ) {
-				if (child instanceof THREE.Mesh) {
-					child.updateMatrix();
-
-					var tempGeometry = new THREE.Geometry();
-					tempGeometry.merge( child.geometry, child.matrix );
-
-					child.geometry = tempGeometry;
-					child.position.set( 0, 0, 0 );
-					child.rotation.set( 0, 0, 0 );
-					child.scale.set( 1, 1, 1 );
-				}
-			});
-
 		};
 
-		this.hide = function () {
-			this.traverse(function( child ) {
-				child.visible = false;
-			});
-		};
+		setupGizmos(this.handleGizmos, this.handles);
+		setupGizmos(this.pickerGizmos, this.pickers);
 
-		this.show = function () {
-			this.traverse(function( child ) {
-				child.visible = true;
-				if (child.parent == scope.pickers ) child.visible = showPickers;
-				if (child.parent == scope.planes ) child.visible = false;
-			});
-			this.activePlane.visible = showActivePlane;
-		};
+		// reset Transformations
 
-		this.highlight = function ( axis ) {
-			this.traverse(function( child ) {
-				if ( child.material && child.material.highlight ){
-					if ( child.name == axis ) {
-						child.material.highlight( true );
-					} else {
-						child.material.highlight( false );
-					}
-				}
-			});
-		};
+		this.traverse(function ( child ) {
+			if (child instanceof THREE.Mesh) {
+				child.updateMatrix();
+
+				var tempGeometry = new THREE.Geometry();
+				tempGeometry.merge( child.geometry, child.matrix );
+
+				child.geometry = tempGeometry;
+				child.position.set( 0, 0, 0 );
+				child.rotation.set( 0, 0, 0 );
+				child.scale.set( 1, 1, 1 );
+			}
+		});
 
 	};
 
-	THREE.TransformGizmo.prototype = Object.create( THREE.Object3D.prototype );
+	this.hide = function () {
+		this.traverse(function( child ) {
+			child.visible = false;
+		});
+	};
 
-	THREE.TransformGizmo.prototype.update = function ( rotation, eye ) {
+	this.show = function () {
+		this.traverse(function( child ) {
+			child.visible = true;
+			if (child.parent == scope.pickers ) child.visible = showPickers;
+			if (child.parent == scope.planes ) child.visible = false;
+		});
+		this.activePlane.visible = showActivePlane;
+	};
+
+	this.highlight = function ( axis ) {
+		this.traverse(function( child ) {
+			if ( child.material && child.material.highlight ){
+				if ( child.name == axis ) {
+					child.material.highlight( true );
+				} else {
+					child.material.highlight( false );
+				}
+			}
+		});
+	};
+
+};
+
+THREE.TransformGizmo.prototype = Object.create( THREE.Object3D.prototype );
+
+THREE.TransformGizmo.prototype.update = function ( rotation, eye ) {
 
 		var vec1 = new THREE.Vector3( 0, 0, 0 );
 		var vec2 = new THREE.Vector3( 0, 1, 0 );
@@ -974,6 +966,20 @@ var THREE = require('webgl/THREE');
 			var y = ( pointer.clientY - rect.top ) / rect.height;
 
 			pointerVector.set( ( x * 2 ) - 1, - ( y * 2 ) + 1, 0.5 );
+			
+			pointerVector.unproject = pointerVector.unproject || function () {
+				var matrix;
+
+				return function ( camera ) {
+
+					if ( matrix === undefined ) matrix = new THREE.Matrix4();
+
+					matrix.multiplyMatrices( camera.matrixWorld, matrix.getInverse( camera.projectionMatrix ) );
+					return this.applyProjection( matrix );
+
+				};
+			}();
+
 			pointerVector.unproject( camera );
 
 			ray.set( camPosition, pointerVector.sub( camPosition ).normalize() );
