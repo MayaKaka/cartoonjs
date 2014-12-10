@@ -1,6 +1,6 @@
 <canvas id="canvas"></canvas>
 <script src="js/libs/require.min.js"></script>
-<script> require.config({ baseUrl: '../src', paths: { cartoon: 'cartoon' }}); </script>
+<script src="js/requireConf.js"></script>	
 <script>
 require(['cartoon'], function(ct) {
 
@@ -53,7 +53,7 @@ loader.on('complete', function(evt) {
 	});
 	girl.play('all');
 	
-	var christ = new ct.Sprite({ x: 400, y: 100, 
+	var christ = new ct.Sprite({ x: 400, y: 100, renderMode: 0, 
 		ss: parse('images/sprite/christ.png', 'images/sprite/christ.json', 1500) 
 	});
 	christ.play('all');
@@ -62,9 +62,13 @@ loader.on('complete', function(evt) {
 	var bg = new ct.Shape({ g: { type: 'rect', width: canvas.width, height: canvas.height, fill: 'top,#ff0000,#ffff00' }})
 	canvas.add(bg);
 	canvas.add(girl);
-	canvas.add(christ);
+	// canvas.add(christ);
+	document.body.appendChild(christ.elem);
+
+	console.log(christ.spriteSheet);
 
 	var ticker = new ct.Ticker();
+	ticker.add(christ);
 	ticker.add(canvas);
 	ticker.start();
 })

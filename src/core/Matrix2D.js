@@ -2,9 +2,10 @@
 define( function ( require, exports, module ) {
 	"use strict";
 	
-var Class = require('core/Class');
+var	base = require('base'),
+	Class = require('core/Class');
 
-var DEG_TO_RAD = Math.PI/180;
+var DEG_TO_RAD = base.DEG_TO_RAD;
 
 // 2D矩阵，参见 https://github.com/CreateJS/EaselJS/blob/master/src/easeljs/geom/Matrix2D.js
 var Matrix2D = Class.extend({

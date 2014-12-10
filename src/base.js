@@ -13,9 +13,14 @@ if (!Array.prototype.indexOf) {
 	}
 }
 
-var expand = function (props) {
+var expand = function (origin, props) {
+	if (arguments.length === 1) {
+		props = origin;
+		origin = this;
+	}
+	
 	for (var i in props) {
-		this[i] = props[i];
+		origin[i] = props[i];
 	}
 }
 
@@ -23,5 +28,5 @@ var random = function(min, max) {
 	return Math.round(Math.random() * (max - min)) + min;
 }
 
-return { version: '0.0.0', expand: expand, random: random };
+return { version: '0.0.0', DEG_TO_RAD: Math.PI/180, expand: expand, random: random };
 });

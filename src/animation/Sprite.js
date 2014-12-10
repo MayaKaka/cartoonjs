@@ -99,7 +99,7 @@ var Sprite = DisplayObject.extend({
      	} else {
      		nextFrameIdx = this._frameIndex + 1;
      	}
-     	console.log(this._frameIndex, end, 'start');
+     	// console.log(this._frameIndex, end, 'start');
 		// 判断动画是否结束
 		if (nextFrameIdx > end) {
 			if (typeof(next) === 'string') { // 播放下一个动画
@@ -114,7 +114,7 @@ var Sprite = DisplayObject.extend({
 		} else {
 			this._frameIndex = nextFrameIdx;
 		}
-		console.log(this._frameIndex, this._paused);
+		// console.log(this._frameIndex, this._paused);
 	},
        
     draw: function(ctx){

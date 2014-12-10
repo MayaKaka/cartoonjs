@@ -85,7 +85,7 @@ var test3d = {
 			var ticker = new ct.Ticker(),
 				O3D = ct.Object3D,
 				T = ct.THREE;
-			
+				
 			var scene = cvs.scene,
 				camera = cvs.camera,
 				renderer = cvs.renderer;
@@ -235,8 +235,41 @@ var test3d = {
 	material: {
 		init: function(ct, cvs, $fps) {
 			var ticker = new ct.Ticker(),
+				O3D = ct.Object3D,
 				T = ct.THREE;
-
+				
+			var $info = $([
+				'<div style="color:#fff;position:absolute;right:20px;top:30px;">',
+					'<table>',
+						'<tr><td><input type="number" id="intensity"></td><td>intensity(光源强度)</td></tr>',
+						'<tr><td><input type="color" id="lcolor"></td><td>lcolor(光源颜色)</td></tr>',
+						'<tr><td><input type="color" id="color"></td><td>color(颜色)</td></tr>',
+						'<tr><td><input type="color" id="ambient"></td><td>ambient(环境光色)</td></tr>',
+						'<tr><td><input type="color" id="emissive"></td><td>emissive(发射光色)</td></tr>',
+						'<tr><td><input type="color" id="specular"></td><td>specular(镜面反射光色)</td></tr>',
+						'<tr><td><input type="number" id="shininess"></td><td>shininess(自发光强度)</td></tr>',
+						'<tr><td><input type="checkbox" id="transparent"></td><td>transparent(开启透明)</td></tr>',
+						'<tr><td><input type="number" id="opacity"></td><td>opacity(透明度)</td></tr>',
+						'<tr><td><input type="number" id="reflectivity"></td><td>reflectivity(反射率)</td></tr>',
+						'<tr><td><select type="select" id="shading">',
+							'<option value="0">No</option>',
+							'<option value="1">Flat</option>',
+							'<option value="2">Smooth</option>',
+						'</select></td><td>shading(投影模式)</td></tr>',
+						'<tr><td><select type="select" id="blending">',
+							'<option value="0">No</option>',
+							'<option value="1">Normal</option>',
+							'<option value="2">Additive</option>',
+							'<option value="3">Subtractive</option>',
+							'<option value="4">Multiply</option>',
+							'<option value="5">Custom</option>',
+						'</select></td><td>blending(混色模式)</td></tr>',
+					'</table>',
+				'</div>'
+			].join(''));
+			var $input = $info.find('input, select');
+			$info.appendTo(cvs.elem.parentNode);
+			
 			var scene = cvs.scene,
 				camera = cvs.camera,
 				renderer = cvs.renderer;
@@ -279,8 +312,67 @@ var test3d = {
 			t.needsUpdate = true;
 			m = new T.MeshLambertMaterial( { map: t , transparent: true } );
 			map = mesh( m );
-			map.position.set(0, -20, 0);
+			map.position.set(0, 20, 0);
 			
+			var box = O3D.create({
+				g: { type: 'sphere', radius: 10, segment: 20 },
+				m: { type: 'phong', color: 0x222222 }
+			});
+			var min = O3D.create({
+				g: { type: 'sphere', radius: 5, segment: 20 },
+				m: { type: 'phong', color: 0x220022 }
+			});
+			box.add(min);
+			box.style({
+				x: -30, y: -30
+			})
+			box.castShadow = true;
+			box.receiveShadow = true;
+			plane.castShadow = true;
+			plane.receiveShadow = true;
+			
+			m = box.material;
+			console.log(box.material);
+			$input.each(function(i, a) {
+				var name = a.id;
+				if (name === 'intensity') {
+					a.value = light.intensity;
+				}
+				else if (name === 'lcolor') {
+					a.value = '#'+light.color.getHexString();
+				}
+				else if (a.type === 'color') {
+					a.value = '#'+m[name].getHexString();
+				} else if (a.type === 'number' || a.options) {
+					a.value = m[name];
+				} else if (a.type === 'checkbox') {
+					a.checked = m[name];
+				}
+			});
+			$input.change(function(evt) {
+				var a = evt.target,
+					name = a.id,
+					val = a.value;
+				if (name === 'intensity') {
+					light.intensity = a.value;
+				}
+				else if (name === 'lcolor') {
+					var r = parseInt(val.substring(1,3), 16)/255,
+						g = parseInt(val.substring(3,5), 16)/255,
+						b = parseInt(val.substring(5,7), 16)/255;
+					light.color.setRGB(r, g, b);
+				}
+				else if (a.type === 'color') {
+					var r = parseInt(val.substring(1,3), 16)/255,
+						g = parseInt(val.substring(3,5), 16)/255,
+						b = parseInt(val.substring(5,7), 16)/255;
+					m[name].setRGB(r, g, b);
+				} else if (a.type === 'number' || a.options) {
+					m[name] = a.value;
+				} else if (a.type === 'checkbox') {
+					m[name] = a.checked;
+				}
+			});
 			scene.add( hemi );
 			scene.add( light );
 			scene.add( plane );
@@ -290,6 +382,7 @@ var test3d = {
 			scene.add( phong );
 			scene.add( depth );
 			scene.add( map );
+			scene.add( box );
 			
 			camera.position.set(0, -60, 60);
 			camera.lookAt(new T.Vector3(0, 0, 0));
@@ -297,7 +390,7 @@ var test3d = {
 			var deg = 0, rad;
 			var render = function () {
 				rad = Math.PI/180*(deg++);
-				light.position.set( Math.sin(rad)*60, Math.cos(rad)*60, 20 );
+				light.position.set( Math.sin(rad)*60, Math.cos(rad)*60, 60 );
 				renderer.render(scene, camera);
 				$fps.html(ticker.fps);
 			};
@@ -310,6 +403,7 @@ var test3d = {
 				ticker.stop();
 				cvs.removeAll();
 				$fps.css('color', '');
+				$info.remove();
 			}
 		}
 	},
@@ -320,7 +414,22 @@ var test3d = {
 				RAD_P_DEG = Math.PI/180,
 				O3D = ct.Object3D,
 				T = ct.THREE;
-				
+			var $info = $([
+				'<div style="color:#fff;position:absolute;right:20px;top:30px;">',
+					'<table>',
+						'<tr><td><input type="number" id="point"></td><td>intensity(光源强度)</td></tr>',
+						'<tr><td><input type="color" id="hemi"></td><td>lcolor(光源颜色)</td></tr>',
+						'<tr><td><input type="color" id="area"></td><td>color(颜色)</td></tr>',
+						'<tr><td><input type="color" id="direct"></td><td>ambient(环境光色)</td></tr>',
+						'<tr><td><input type="color" id="emissive"></td><td>spot(发射光色)</td></tr>',
+						'<tr><td><input type="color" id="specular"></td><td>specular(镜面反射光色)</td></tr>',
+						'<tr><td><input type="number" id="shininess"></td><td>shininess(自发光强度)</td></tr>',
+
+					'</table>',
+				'</div>'
+			].join(''));
+			var $input = $info.find('input, select');
+			$info.appendTo(cvs.elem.parentNode);	
 			var camera = cvs.camera;
 			
 			var plane = O3D.create({
@@ -457,7 +566,7 @@ var test3d = {
 			var human = O3D.createModel({
 				json: 'json/gastonLagaffe.js',
 				pre: function(geometry, materials) {
-					console.log(geometry, materials);
+					// console.log(geometry, materials);
 				}
 			});
 			human.position.set(0, -g.boundingBox.min.y*12, 0);
@@ -524,7 +633,7 @@ var test3d = {
 			var human = O3D.createModel({
 				json: 'json/knight.js',
 				pre: function(geometry, materials) {
-					console.log(geometry, materials);
+					// console.log(geometry, materials);
 				}
 			});
 			var g = human.geometry;
@@ -536,7 +645,7 @@ var test3d = {
 			var bear = O3D.createModel({
 				json: 'json/bear.js',
 				pre: function(geometry, materials) {
-					console.log(geometry, materials);
+					// console.log(geometry, materials);
 				}
 			});
 			var g = human.geometry;

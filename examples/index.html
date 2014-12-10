@@ -46,9 +46,9 @@
 	<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
       	<ol class="carousel-indicators">
         	<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-        	<li data-target="#myCarousel" data-slide-to="1" class=""></li>
+        	<!--<li data-target="#myCarousel" data-slide-to="1" class=""></li>
         	<li data-target="#myCarousel" data-slide-to="2" class=""></li>
-        	<li data-target="#myCarousel" data-slide-to="3" class=""></li>
+        	<li data-target="#myCarousel" data-slide-to="3" class=""></li>-->
       	</ol>
       	<div class="carousel-inner">
         	<div class="item active">
@@ -115,7 +115,7 @@
 <script src="js/libs/jquery-1.11.1.min.js"></script>
 <script src="js/libs/bootstrap.min.js"></script>
 <script src="js/libs/require.min.js"></script>
-<script> require.config({ baseUrl: '../src', paths: { cartoon: 'cartoon' }}); </script>
+<script src="js/requireConf.js"></script>
 <script>
 require(['cartoon.three'], function(ct) {
 	ct.setRenderMode('canvas');
@@ -127,10 +127,10 @@ require(['cartoon.three'], function(ct) {
 	var c00 = new ct.Shape({ g: { type: 'circle', radius: 10, fill: '#ff0000' } });
 	cvs00.add(c00);
 
-	var c01 = new ct.Shape({ g: { type: 'rect', width: 40, height: 40, fill: '#ffff00' } });
+	var c01 = new ct.Shape({ g: { type: 'circle', radius: 10, fill: '#00ff00' } });
 	cvs01.add(c01);
 	
-	var c02 = new ct.Shape({ g: { type: 'ploygon', path: [[0,0], [30,15], [0,30]], fill: '#ff00ff' } });
+	var c02 = new ct.Shape({ g: { type: 'circle', radius: 10, fill: '#0000ff' } });
 	cvs02.add(c02);
 
 	var c03 = new ct.Shape({ g: { type: 'circle', radius: 10, fill: '#00ffff' } });
@@ -138,7 +138,7 @@ require(['cartoon.three'], function(ct) {
 
 
 	var animate = function() {
-		c00.style({ x: 0, y: 180 });
+		c00.style({ x: -50, y: 174 });
 		c00.to({ x: 900 }, 5000, 'easeInOut', animate);
 	}
 

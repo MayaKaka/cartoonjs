@@ -9,8 +9,8 @@
 	<script src="js/libs/jquery-1.11.1.min.js"></script>
 	<script src="js/libs/bootstrap.min.js"></script>
 	<script src="js/libs/require.min.js"></script>
+	<script src="js/requireConf.js"></script>
 	<script src="js/3dtest.js"></script>
-	<script> require.config({ baseUrl: '../src', paths: { cartoon: 'cartoon' }}); </script>
   	<style>
 		html { font-family: "Helvetica Neue", Helvetica, Microsoft Yahei, Hiragino Sans GB, WenQuanYi Micro Hei, sans-serif; }
 	    .three-header { padding: 10px 10px; height: 70px; color: #FFF; background-color: #6f5499; background-image: linear-gradient(to bottom,rgb(45,58,66) 0,rgb(85,98,106) 100%); }
@@ -27,6 +27,8 @@
 		
 		.three-tip-cvs { position:absolute; left: 1px; background: rgb(180,180,180); color:#000; padding: 5px; }
 		.three-footer {}
+		.three-main select { width: 48px; color: #000000; }
+		.three-main input[type="number"] { width: 46px; color: #000000; }
   	</style>
 
 	<div class="navbar navbar-default navbar-fixed-top" role="navigation" id="head">
@@ -92,10 +94,7 @@
 		
   </div>
   <script>
-    require.config({ baseUrl: '../src' });
-    
-	var resource = [ 'cartoon.three' ];
-	require(resource, function(ct){
+    require(['cartoon.three'], function(ct) {
 		var loader = ct.Preload;
 		loader.load([
 			'images/bear_big.png',
