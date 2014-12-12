@@ -60,58 +60,69 @@ ParticleEmitter.particles = {
 	snow: {
 		type: 'snow',
 		init: function(data) {
-			var width = data.width,
-				height = data.height,
-				image = data.image,
-				particle,
-				radius, x, y, alpha;
+			var w = data.width || 300,
+				h = data.height || 150,
+				img = data.image,
+				ss = data.spriteSheet || data.ss,
+				p, x, y, spd, idx, frame;
 
 			this.particles = [];
-			this.data('fall_width', width);
-			this.data('fall_height', height);
-			// 初始化雪花粒子
-			for (var i=0, l=data.num||60; i<l; i++) {
-				x = random(0, width);
-				y = -random(0, height);
-				radius = random(15, 25);
-				alpha = random(6, 10)/10;
+			this.data({ 'fall_width': w, 'fall_height': h });
 
-				particle = image ? new Bitmap({
-					renderMode: this.renderMode,
-					x: x, y: y, width: radius, height: radius, scaleToFit: true,
-					image: image, alpha: alpha
-				}) : new Shape({
-					renderMode: this.renderMode,
-					x: x, y: y, alpha: random(5, 8)/10,
-					graphics: {
-						type: 'circle', radius: random(4, 7), fill: '#FFF', angle: 360
-					}
+			var createParticle = function (renderMode, speed) {
+				x = random(0, w);
+				y = -random(0, h);
+				if (ss) {
+					idx = random(0, ss.frames.length-1);
+					frame = ss.frames[idx];
+					return new Bitmap({
+						renderMode: renderMode, x: x, y: y, 
+						transform: { scale: speed*random(30, 35)/1000 },
+						image: ss.images[frame[4]], sourceRect: frame
+					})
+				} 
+				else {
+					return new Shape({
+						renderMode: renderMode,
+						x: x, y: y, alpha: random(5, 9)/10,
+						g: { type: 'circle', radius: random(4, 8), fill: '#ffffff' }
+					});
+				}
+			}
+			// 初始化雪花粒子
+			for (var i=0, l = data.num || 30; i < l; i++) {
+				spd = random(25, 50);
+				p = createParticle(this.renderMode, spd); 
+				p.data({
+					'fall_spdx': spd*random(-6, 6)/10, 'fall_spdy': spd, 'fall_spdr': random(30, 50),
+					'start_alpha': p.alpha
 				});
-				
-				particle.data('fall_x', particle.x);
-				particle.data('fall_width', random(10, 20));
-				particle.data('fall_speed', random(15, 30)/1000);
-				this.particles.push(particle);
-				this.add(particle);
+				this.add(p);
+				this.particles.push(p);
 			}
 		},
 		update: function(delta) {
 			var particles = this.particles,
-				width = this.data('fall_width'),
-				height = this.data('fall_height'),
-				particle, spd, dis, x, y;
+				w = this.data('fall_width'),
+				h = this.data('fall_height'),
+				p, sx, sy, sr, x, y, r;
 			// 雪花飘落效果
 			for (var i=0, l=particles.length; i<l; i++) {
-				particle = particles[i];
-				spd = particle.data('fall_speed');
-				dis = spd * delta;
-				x = particle.data('fall_x');
-				y = particle.y;
-				if (y > height) {
-					particle.fallTime = 0;
-					y = -random(0, height);
+				p = particles[i];
+				sx = p.data('fall_spdx');
+				sy = p.data('fall_spdy');
+				sr = p.data('fall_spdr');
+				x = p.x + sx*delta/1000;
+				y = p.y + sy*delta/1000;
+				r = p.transform.rotate + sr*delta/1000;
+				if (y > h) {
+					x = random(0, w);
+					y = -random(0, h);
+					p.style('alpha', p.data('start_alpha'));
+				} else if (y > (h-80)) {
+					p.style('alpha', p.alpha-delta/1500);
 				}
-				particle.style({ x: x + Math.sin(y / (spd*2000)) * particle.data('fall_width'), y: y + dis });
+				p.style({ x: x, y: y, transform: { rotate: r } });
 			}
 		}
 	},
@@ -182,25 +193,28 @@ ParticleEmitter.particles = {
     fireworks: {
         type: 'fireworks',
         init: function(data) {
-            var list = data.list,
-                image = data.image,
-                num = data.num,
-                startX = 0, 
-                startY = 0,
-                particle;
+            var ss = data.ss,
+                sx = 0, sy = 0,
+                p, a, r, spd, idx, frame;
+
             this.particles = [];
-            for(var i = 0; i < (num || 60); i++) {
-                var len = list.length;
-                var index = Math.floor(Math.random() * len);
-                particle = new Bitmap({ renderMode:this.renderMode, image: image, sourceRect: list[index]});
-                var angle = Math.random() * 360 * Math.PI / 180,
-                    rotate = Math.random() * 360;
-                particle.data('angle', angle);
-                var speed = Math.random() * 0.1 + 0.2;
-                particle.data('speed', speed);
-                particle.style({x: startX, y: startY, transform: { rotate: rotate }});
-                this.particles.push(particle);
-                this.add(particle);
+            for(var i = 0; i < (data.num || 60); i++) {
+                idx = random(0, ss.frames.length-1);
+                frame = ss.frames[idx];
+
+                p = new Bitmap({ 
+                	renderMode: this.renderMode,
+                	image: ss.images[frame[4]], sourceRect: frame
+               	});
+                a = Math.random() * 360 * Math.PI / 180,
+                r = Math.random() * 360;
+               
+                spd = Math.random() * 0.1 + 0.2;
+                p.data({ 'angle': a, 'speed': spd });
+                p.style({ x: sx, y: sy, transform: { rotate: r } });
+                
+                this.add(p);
+                this.particles.push(p);
             }
         },
 

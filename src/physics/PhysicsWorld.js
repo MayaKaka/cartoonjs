@@ -12,7 +12,9 @@ var b2Vec2 = Box2D.Common.Math.b2Vec2,
     b2Fixture = Box2D.Dynamics.b2Fixture,
     b2RevoluteJointDef = Box2D.Dynamics.Joints.b2RevoluteJointDef,
     b2DistanceJointDef = Box2D.Dynamics.Joints.b2DistanceJointDef,
+    b2MouseJointDef = Box2D.Dynamics.Joints.b2MouseJointDef,
 	b2World = Box2D.Dynamics.b2World,
+	b2AABB = Box2D.Collision.b2AABB,
 	b2MassData = Box2D.Collision.Shapes.b2MassData,
     b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape,
     b2CircleShape = Box2D.Collision.Shapes.b2CircleShape,
@@ -28,7 +30,8 @@ var PhysicsWorld = DisplayObject.extend({
 	_world: null,
 	_scale: -1,
 	_worldSize: null,
-	
+	_mouseJoint: null,
+
 	init: function(props) {
 		this._super(props);
 		this._initWorld({ width: props.worldWidth, height: props.worldHeight }, props.scale || 50);
@@ -93,12 +96,71 @@ var PhysicsWorld = DisplayObject.extend({
 				
 		pt01 = pt01 ?  { x: center01.x+pt01.x/scale, y: center01.y+pt01.y/scale } : { x: center01.x, y: center01.y };
 		pt02 = pt02 ?  { x: center02.x+pt02.x/scale, y: center02.y+pt02.y/scale } : { x: center02.x, y: center02.y };
-		console.log(pt01, pt02)
+
 		jointDef.Initialize(body01, body02, pt01, pt02);
 		
 		var joint = world.CreateJoint(jointDef);
 	},
 	
+	addMouse: function(mouseX, mouseY) {
+		var world = this._world,
+			scale = this._scale;
+		mouseX = mouseX/scale;
+		mouseY = mouseY/scale;
+
+		var body = this.getBodyAtMouse(mouseX, mouseY);
+        if (body) {
+           var jointDef = new b2MouseJointDef();
+           jointDef.bodyA = world.GetGroundBody();
+           jointDef.bodyB = body;
+           jointDef.target.Set(mouseX, mouseY);
+           jointDef.collideConnected = true;
+           jointDef.maxForce = 300.0 * body.GetMass();
+           
+           var mouseJoint = this._mouseJoint = world.CreateJoint(jointDef);
+           body.SetAwake(true);
+        }
+	},
+
+	getBodyAtMouse: function(mouseX, mouseY) {
+		var world = this._world,
+			vec = new b2Vec2(mouseX, mouseY),
+			aabb = new b2AABB();
+	    aabb.lowerBound.Set(mouseX - 0.001, mouseY - 0.001);
+	    aabb.upperBound.Set(mouseX + 0.001, mouseY + 0.001);
+
+	    var body = null;
+	    world.QueryAABB(function getBodyCallBack(fixture) {
+		    if(fixture.GetBody().GetType() != b2Body.b2_staticBody) {
+		       if(fixture.GetShape().TestPoint(fixture.GetBody().GetTransform(), vec)) {
+		          body = fixture.GetBody();
+		          return false;
+		       }
+		    }
+		    return true;
+		 }, aabb);
+
+	    return body;
+	},
+	
+	moveMouse: function(mouseX, mouseY) {
+		var mouseJoint = this._mouseJoint;
+		if (mouseJoint) {
+			var scale = this._scale;
+			mouseX = mouseX/scale;
+			mouseY = mouseY/scale;
+			mouseJoint.SetTarget(new b2Vec2(mouseX, mouseY));
+		}
+	},
+
+	removeMouse: function() {
+		var mouseJoint = this._mouseJoint;
+		if (mouseJoint) {
+			this._world.DestroyJoint(mouseJoint);
+	        this._mouseJoint = null;
+		}
+	},
+
 	getWorld: function() {
 		return this._world;
 	},
@@ -129,7 +191,6 @@ var PhysicsWorld = DisplayObject.extend({
 		this._world = new b2World(new b2Vec2(0, 10), true);
 		this._scale = scale;
 		this._worldSize = { width: size.width / scale, height: size.height / scale };
-
 	},
 	
 	_initGround: function() {

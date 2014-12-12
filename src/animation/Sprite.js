@@ -56,6 +56,7 @@ var Sprite = DisplayObject.extend({
     	// 播放单帧
     	this._currentAnimation = null;
    		this._frameIndex = index;
+   		this._updateFrame();
     },
     
     playAnimation: function(name) {

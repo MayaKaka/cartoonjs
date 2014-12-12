@@ -107,6 +107,7 @@ var Canvas = DisplayObject.extend({
 			if (!elem.addEventListener) elem.addEventListener = elem.attachEvent;
 			elem.addEventListener('mousedown', handleDown, false);
 			elem.addEventListener('mouseup', handleUp, false);
+			elem.addEventListener('mouseout', handleUp, false);
 			elem.addEventListener('mousemove', handleMove, false);
 		}
 	},

@@ -108,6 +108,8 @@ var DisplayObject = EventDispatcher.extend({
 		if (tag) {
 			TagCollection.set(this, 'child.' + tag, child);
 		}
+
+		return this;
 	},
 	
 	remove: function(child) {
@@ -129,6 +131,8 @@ var DisplayObject = EventDispatcher.extend({
 			
 			this._removeUpdater(child);
 		}
+		
+		return this;
 	},
 	
 	removeAll: function() {

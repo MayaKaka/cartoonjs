@@ -217,8 +217,7 @@ var test3d = {
 				renderer.render(scene, camera);
 				$fps.html(ticker.fps);
 			};
-			
-			$fps.css('color', '#FFF');
+
 			camera.position.set(0, 0, 60);
 			camera.lookAt(new T.Vector3(0, 0, 0));
 			ticker.add(render);
@@ -227,7 +226,6 @@ var test3d = {
 			this.dispose = function() {
 				ticker.stop();
 				cvs.removeAll();
-				$fps.css('color', '');
 			}
 		}
 	},
@@ -395,14 +393,12 @@ var test3d = {
 				$fps.html(ticker.fps);
 			};
 			
-			$fps.css('color', '#FFF');
 			ticker.add(render);
             ticker.start();
 			
 			this.dispose = function() {
 				ticker.stop();
 				cvs.removeAll();
-				$fps.css('color', '');
 				$info.remove();
 			}
 		}
@@ -414,6 +410,7 @@ var test3d = {
 				RAD_P_DEG = Math.PI/180,
 				O3D = ct.Object3D,
 				T = ct.THREE;
+			/*
 			var $info = $([
 				'<div style="color:#fff;position:absolute;right:20px;top:30px;">',
 					'<table>',
@@ -429,7 +426,8 @@ var test3d = {
 				'</div>'
 			].join(''));
 			var $input = $info.find('input, select');
-			$info.appendTo(cvs.elem.parentNode);	
+			$info.appendTo(cvs.elem.parentNode);
+			*/
 			var camera = cvs.camera;
 			
 			var plane = O3D.create({
@@ -518,14 +516,13 @@ var test3d = {
 				// hemi.position.set(-100, -100, -Math.cos(deg*RAD_P_DEG/10)*100);
 				$fps.html(ticker.fps);
 			});
-			$fps.css('color', '#FFF');
+
 			ticker.add(cvs);
 			ticker.start();
 
 			this.dispose = function() {
 				ticker.stop();
 				cvs.removeAll();
-				$fps.css('color', '');
 			}
 		}
 	},
@@ -881,5 +878,69 @@ var test3d = {
 				cvs.removeAll();
 			}
 		}
-	}
+	},
+
+	shader: {
+		init: function(ct, cvs, $fps) {
+			var ticker = new ct.Ticker(),
+				RAD_P_DEG = Math.PI/180,
+				O3D = ct.Object3D,
+				T = ct.THREE;
+				
+			var renderer = cvs.renderer,
+				scene = cvs.scene,
+				camera = cvs.camera;
+
+			var vShader = ct.Preload.getItem('js/shaders/v_shader_00.js'),
+				fShader1 = ct.Preload.getItem('js/shaders/f_shader_00.js')
+				fShader2 = ct.Preload.getItem('js/shaders/f_shader_01.js');
+			
+			var geometry1 = new T.BoxGeometry( 10, 10, 10 );
+			var material1 = new T.ShaderMaterial({
+				uniforms: {
+					time: { type: "f", value: 1.0 },
+					resolution: { type: "v2", value: new T.Vector2() }
+				},
+				vertexShader: vShader,
+				fragmentShader: fShader1
+			});
+
+			var mesh1 = new T.Mesh( geometry1, material1 );
+			mesh1.position.set(-10, 0, 0);
+			scene.add( mesh1 );
+			
+			var geometry2 = new T.BoxGeometry( 10, 10, 10 );
+			var material2 = new T.ShaderMaterial({
+				uniforms: {
+					time: { type: "f", value: 1.0 },
+					resolution: { type: "v2", value: new T.Vector2() }
+				},
+				vertexShader: vShader,
+				fragmentShader: fShader2
+			});
+
+			var mesh2 = new T.Mesh( geometry2, material2 );
+			mesh2.position.set(10, 0, 0);
+			scene.add( mesh2 );
+			
+			camera.position.set(0, 0, 30);
+			camera.lookAt(new T.Vector3(0, 0, 0));
+			ticker.add(function(delta) { 
+				mesh2.rotation.x = mesh1.rotation.x += 0.01;
+				mesh2.rotation.z = mesh1.rotation.y += 0.01;
+				material1.uniforms.time.value += delta / 200;
+				material2.uniforms.time.value += delta / 200;
+				$fps.html(ticker.fps); 
+				
+			});
+			ticker.add(ct.Tween);
+			ticker.add(cvs);
+			ticker.start();
+			
+			this.dispose = function() {
+				ticker.stop();
+				cvs.removeAll();
+			}
+		}
+	},
 }

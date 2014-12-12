@@ -419,7 +419,8 @@ var test2d = {
 	
 	particle: {
 		init: function(ct, dom, cvs, $fps) {
-			var ticker = new ct.Ticker();
+			var ticker = new ct.Ticker(),
+				random = ct.random;
 			
 			ct.setRenderMode('dom');
 			
@@ -427,20 +428,27 @@ var test2d = {
 				x: 0, y: 0, particle: { type: 'snow', width: 540, height: 540, num: 50, image: 'images/particle.png' }
 			})
 			snow.update(10000);
-			var fireworks = new ct.ParticleSystem({
-				x: 270, y: 270, particle: { type:'fireworks', num: 32,
-				image: 'images/allin.png',
-				list: [[305, 35, 25, 25], [285, 35, 20, 20], [230, 30, 30, 30], [135, 10, 50, 50]] }});
-			fireworks.on('animationend', function() {
-				dom.remove(fireworks);
-				ticker.remove(fireworks);
-			})
+			var createFirework = function() {
+				var fw = new ct.ParticleSystem({
+					renderMode: 0, x: 270, y: 270, 
+					p: { type:'fireworks', num: 32,
+						ss: { 
+							images: ['images/allin.png'],
+							frames: [[305,35,25,25,0], [285,35,20,20,0],[230,30,30,30,0], [135,10,50,50,0]]
+						}}
+				});
+				fw.on('animationend', function() {
+					dom.remove(fw);
+				});
+				dom.add(fw);
+			}
+			snow.to(1000, createFirework).to(1000, createFirework).to(1000, createFirework);
+
 			var bg = new ct.Shape({
 				x: 0, y: 0, graphics: { type: 'rect', width: 540, height: 540, fill: 'top,#2080C0,#80B0E0' }
 			});
 			dom.add(bg);
 			dom.add(snow);
-			dom.add(fireworks);
 			
 			ct.setRenderMode('canvas');
 			
@@ -670,11 +678,7 @@ var test2d = {
 			bmp3.applyFilter('invert', '0.9');
 			bmp4.applyFilter('saturate', '7.9');
 
-			dom.add(bmp);
-			dom.add(bmp1);
-			dom.add(bmp2);
-			dom.add(bmp3);
-			dom.add(bmp4);
+			dom.add(bmp).add(bmp1).add(bmp2).add(bmp3).add(bmp4);
 			
 			ct.setRenderMode('canvas');
 			
@@ -689,11 +693,7 @@ var test2d = {
 			bmp_cvs3.applyFilter('brightness');
 			bmp_cvs4.applyFilter('grayscale');
 			
-			cvs.add(bmp_cvs);
-			cvs.add(bmp_cvs1);
-			cvs.add(bmp_cvs2);
-			cvs.add(bmp_cvs3);
-			cvs.add(bmp_cvs4);
+			cvs.add(bmp_cvs).add(bmp_cvs1).add(bmp_cvs2).add(bmp_cvs3).add(bmp_cvs4);
 			
 			var animate = function() {
 				var idx = 1;
@@ -1062,6 +1062,15 @@ var test2d = {
 			world.on('click', function(evt){
 				swpan(evt, 0);
 			});
+			world_cvs.on('mousedown', function(evt) {
+				this.addMouse(evt.mouseX, evt.mouseY);
+			});
+			world_cvs.on('mousemove', function(evt) {
+				this.moveMouse(evt.mouseX, evt.mouseY);
+			});
+			world_cvs.on('mouseup', function(evt) {
+				this.removeMouse();
+			});
 			world_cvs.on('click', function(evt){
 				swpan(evt, 1);
 			});
@@ -1073,7 +1082,7 @@ var test2d = {
 			});
 			var obj02, obj03;
 
-			world_cvs .add(obj01, { type: 'static' });
+			world_cvs.add(obj01, { type: 'static' });
 			
 			for (var i=0; i < 15; i++) {
 				obj02 = new ct.Shape({
@@ -1102,9 +1111,7 @@ var test2d = {
 				world_cvs.drawDebug();
 			});
 			ticker.start();
-			
-			window.w = world_cvs._world;
-			
+
 			this.dispose = function() {
 				ticker.stop();
 				dom.removeAll();
@@ -1199,16 +1206,9 @@ var test2d = {
 				}
 			});
 			
-			cvs.add(c0);
-			cvs.add(c1);
-			cvs.add(l1);
-			cvs.add(c2);
-			cvs.add(c3);
-			cvs.add(c4);
-			cvs.add(l4);
-			cvs.add(c5);
-			cvs.add(c6);
-			cvs.add(l6);
+			cvs.add(c0).add(c1).add(l1).add(c2)
+			   .add(c3).add(c4).add(l4).add(c5)
+			   .add(c6).add(l6);
 			
 			ticker.add(ct.Movement);
 			ticker.add(ct.Tween);

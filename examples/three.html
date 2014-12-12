@@ -22,7 +22,7 @@
 		.three-stage { position:absolute; width: 1080px; height: 54px; left:150px; }	
 		.three-stage * { box-sizing:content-box; }
 		.three-cvs { position:absolute; border:1px solid #999; }
-		.three-fps { position:absolute; right:0px; width:40px; color:black; z-index:999;}
+		.three-fps { position:absolute; right:0px; width:40px; color:#ffffff; z-index:999;}
 		.three-item { cursor:pointer; }
 		
 		.three-tip-cvs { position:absolute; left: 1px; background: rgb(180,180,180); color:#000; padding: 5px; }
@@ -48,7 +48,7 @@
 					<ul class="nav navbar-nav navbar-right" id="nav" style="max-width: 100%; margin-right: 45.5px;">
 						<li class=""><a href="index.html" target="_blank">首页</a></li>
 						<li class=""><a href="api.html" target="_blank">文档</a></li>
-						<li class=""><a href="three.html" target="_blank">示例</a></li>
+						<li class=""><a href="demo.html" target="_blank">示例</a></li>
 						<li class="active"><a href="#">3D示例</a></li>
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">下载<b class="caret"></b></a>
@@ -77,8 +77,8 @@
   		<li><div class="three-item" data-name="light">光源</div></li>
   		<li><div class="three-item" data-name="model">模型</div></li>
   		<li><div class="three-item" data-name="animation">模型动画</div></li>
-  		<!--<li><div class="three-item" data-name="particle">粒子效果</div></li>
-  		<li><div class="three-item" data-name="shader">高级着色器</div></li>-->
+  		<!--<li><div class="three-item" data-name="particle">粒子效果</div></li>-->
+  		<li><div class="three-item" data-name="shader">着色器</div></li>
   		<li><div class="three-item" data-name="poker">扑克牌</div></li>
 	  </ul>
     </div>
@@ -104,7 +104,10 @@
 			'json/gastonLagaffe.js',
 			'json/ground.js',
 			'json/knight.js',
-			'json/bear.js'
+			'json/bear.js',
+			'js/shaders/v_shader_00.js',
+			'js/shaders/f_shader_00.js',
+			'js/shaders/f_shader_01.js'
 		]);
 		loader.on('progress', function(evt) {
 			// console.log(evt.file, evt.progress);
