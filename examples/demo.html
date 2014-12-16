@@ -93,7 +93,7 @@
   		<li><div class="demo-item" data-name="move">运动</div></li>
   		<li><div class="demo-item" data-name="board">涂鸦板</div></li>
   		<li><div class="demo-item" data-name="ball">物理效果</div></li>
-  		<!--<li><div class="demo-item" data-name="model">三维模型</div></li>-->
+  		<li><div class="demo-item" data-name="firecracker">爆竹效果</div></li>
 	  </ul>
     </div>
     
@@ -126,7 +126,7 @@
 		}, 'first_load');
 		
 		loader.on('complete', function(evt) {
-			console.log(loader._listeners);
+			// console.log(loader._listeners);
 			loader.off('progress', 'first_load');
 			loader.off('complete', 'first_load');
 			loader.getItem('json/ground.js');

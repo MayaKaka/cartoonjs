@@ -244,6 +244,62 @@ ParticleEmitter.particles = {
             	this.trigger({ type: 'animationend' });
             }
         }
+    },
+
+    boom: {
+    	init: function(data) {
+    		var w = data.width || 300,
+				h = data.height || 150,
+				ss = data.spriteSheet || data.ss,
+				vx = data.vx || 0,
+				vy = data.vy || 0,
+				p, sc, r, v;
+
+			this.particles = [];
+    		for (var i = 0, l = (data.num || 30); i < l; i++) {
+    			sc = random(0,10)/10 + 1;
+    			r = Math.random()*Math.PI*2;
+    			v = Math.random()*15;
+    			p = new Shape({
+					renderMode: this.renderMode,
+					x: 0, y: 0, transform: { scale: sc, rotate: random(0, 360) },
+					g: { type: 'circle', radius: 3, fill: '#ff0000' }
+				});
+    			p.data({
+    				'vx': Math.cos(r)*v + vx, 'vy': Math.sin(r)*v + vy
+    			});
+
+    			this.add(p);
+                this.particles.push(p);
+			}
+    	},
+
+    	update: function(delta) {
+    		var particles = this.particles,
+    			p, x, y, vx, vy;
+
+			for (var i = 0, l = particles.length; i < l; i++) {
+				p = particles[i];
+				vx = p.data('vx');
+				vy = p.data('vy');
+				x = p.x + vx;
+				y = p.y + vy;
+				vx *= 0.99;
+				vy = (vy + 0.5)*0.99;
+				p.style({ x: x, y: y });
+				p.data({ vx: vx, vy: vy });
+				if (p.y > 500 || Math.abs(p.x) > 500) {
+					this.remove(p);
+					particles.splice(i, 1);
+					i--; l--;
+				}
+			}
+
+			if (l === 0) {
+            	this.stop();
+            	this.trigger({ type: 'animationend' });
+            }
+    	}
     }
 	
 }

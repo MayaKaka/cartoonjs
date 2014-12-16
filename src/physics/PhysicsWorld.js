@@ -12,6 +12,7 @@ var b2Vec2 = Box2D.Common.Math.b2Vec2,
     b2Fixture = Box2D.Dynamics.b2Fixture,
     b2RevoluteJointDef = Box2D.Dynamics.Joints.b2RevoluteJointDef,
     b2DistanceJointDef = Box2D.Dynamics.Joints.b2DistanceJointDef,
+    b2WeldJointDef = Box2D.Dynamics.Joints.b2WeldJointDef,
     b2MouseJointDef = Box2D.Dynamics.Joints.b2MouseJointDef,
 	b2World = Box2D.Dynamics.b2World,
 	b2AABB = Box2D.Collision.b2AABB,
@@ -48,10 +49,9 @@ var PhysicsWorld = DisplayObject.extend({
 	},
 	
 	add: function(child, data) {
-		if (!data) data = {};
-		
 		this._super(child);
-		
+
+		if (!data) data = {};
 		if (!data.type) return;
 
         var world = this._world,
@@ -63,9 +63,9 @@ var PhysicsWorld = DisplayObject.extend({
         bodyDef.position.y = child.y / scale;
 
         var fixDef = new b2FixtureDef();
-        fixDef.density = data.density || 1;
-        fixDef.friction = data.friction || 0.5;
-        fixDef.restitution = data.restitution || 0.2;
+        fixDef.density = data.density || 1; // 密度
+        fixDef.friction = data.friction || 0.5; // 摩擦力
+        fixDef.restitution = data.restitution || 0.2; // 恢复系数
         
         if (child.radius) {
        		fixDef.shape = new b2CircleShape(child.radius/scale);
@@ -79,29 +79,68 @@ var PhysicsWorld = DisplayObject.extend({
         }
         child.style('transform', { translateX: -child.width/2, translateY: -child.height/2 });
          
-        var body = world.CreateBody(bodyDef).CreateFixture(fixDef);
-        body.m_userData = { displayObj: child };
-        child._box2dBody = body;
+        var fixture = world.CreateBody(bodyDef).CreateFixture(fixDef);
+        fixture.m_userData = { displayObj: child };
+        child._b2Fixture = fixture;
 	},
 	
-	addJoint: function(obj01, obj02, pt01, pt02) {
+	remove: function(child) {
+		this._super(child);
+
+		var world = this._world,
+			fixture = child._b2Fixture;
+		if (fixture) {
+			world.DestroyBody(fixture.m_body);
+		}
+	},
+
+	addJoint: function(obj01, obj02, anchor) {
 		var world = this._world,
 			scale = this._scale,
-			body01 = obj01._box2dBody.m_body,
-			body02 = obj02._box2dBody.m_body;
+			body01 = obj01._b2Fixture.m_body,
+			body02 = obj02._b2Fixture.m_body,
 
-		var jointDef = new b2RevoluteJointDef(),
-			center01 = body01.GetWorldCenter(),
-			center02 = body02.GetWorldCenter();
-				
-		pt01 = pt01 ?  { x: center01.x+pt01.x/scale, y: center01.y+pt01.y/scale } : { x: center01.x, y: center01.y };
-		pt02 = pt02 ?  { x: center02.x+pt02.x/scale, y: center02.y+pt02.y/scale } : { x: center02.x, y: center02.y };
+		anchor = anchor || {};
 
-		jointDef.Initialize(body01, body02, pt01, pt02);
-		
+		var	center = body01.GetWorldCenter(), 
+			dx = (anchor.x || 0) / scale,
+			dy = (anchor.y || 0) / scale;
+
+		var jointDef = new b2RevoluteJointDef();
+		jointDef.Initialize(body01, body02, new b2Vec2(center.x + dx, center.y + dy));
+
 		var joint = world.CreateJoint(jointDef);
 	},
 	
+	addWeld: function(obj01, obj02, anchor) {
+		var world = this._world,
+			scale = this._scale,
+			body01 = obj01._b2Fixture.m_body,
+			body02 = obj02._b2Fixture.m_body,
+
+		anchor = anchor || {};
+
+		var	center = body01.GetWorldCenter(), 
+			dx = (anchor.x || 0) / scale,
+			dy = (anchor.y || 0) / scale;
+
+		var jointDef = new b2WeldJointDef();
+		jointDef.Initialize(body01, body02, new b2Vec2(center.x + dx, center.y + dy));
+
+		var joint = world.CreateJoint(jointDef);
+	},
+
+	addDistance: function(obj01, obj02) {
+		var world = this._world,
+			body01 = obj01._b2Fixture.m_body,
+			body02 = obj02._b2Fixture.m_body;
+
+		var jointDef = new b2DistanceJointDef();
+		jointDef.Initialize(body01, body02, body01.GetWorldCenter(), body02.GetWorldCenter());
+
+		var joint = world.CreateJoint(jointDef);
+	},
+
 	addMouse: function(mouseX, mouseY) {
 		var world = this._world,
 			scale = this._scale;

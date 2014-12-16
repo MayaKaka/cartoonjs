@@ -17,9 +17,8 @@ var test2d = {
 				x: 360, y: 30,
 				graphics: { type: 'ellipse', stroke: '#0000FF', fill: '#FF00FF', radius: { x: 60, y: 40 } }
 			});
-			dom.add(rect_dom);
-			dom.add(circle_dom);
-			dom.add(ellipse_dom);
+			dom.add(rect_dom).add(circle_dom).add(ellipse_dom);
+
 			dom.each(function(a, i) {
 				a.to(i*1000).to({ transform: { scale: 0.1 } }, 800, 'easeInOut')
 				 .to({ transform: { scale: 1 } }, 800, 'easeInOut');
@@ -69,14 +68,9 @@ var test2d = {
 							[[80, 10], [120, 120, 10, 80]]
 					]}
 			});
-			cvs.add(rect);
-			cvs.add(circle);
-			cvs.add(ellipse);
-			cvs.add(line);
-			cvs.add(ploygon);
-			cvs.add(star);
-			cvs.add(star1);
-			cvs.add(lines);
+			cvs.add(rect).add(circle).add(ellipse).add(line);
+			cvs.add(ploygon).add(star).add(star1).add(lines);
+
 			cvs.each(function(a, i) {
 				a.to(i*1000).to({ transform: { rotate: 360 } }, 800, 'easeInOut', function() {
 					a.style('transform', { rotate: 0 });
@@ -482,6 +476,7 @@ var test2d = {
 			
 			this.dispose = function() {
 				ticker.stop();
+				ct.Tween.destroyAll();
 				dom.removeAll();
 				cvs.removeAll();
 			}
@@ -1087,11 +1082,12 @@ var test2d = {
 			for (var i=0; i < 15; i++) {
 				obj02 = new ct.Shape({
 					renderMode: 1, x: x, y: y+=30,
-					g: { type: 'rect', width: 4, height: 4,
-					fill: 'rgb('+random(0,256)+','+random(0,256)+','+random(0,256)+')' }
+					g: { type: 'rect', width: 1, height: 30,
+					fill: '#000000' }
 				});
 				world_cvs.add(obj02, { type: 'dynamic' });
-				world_cvs.addJoint(obj01, obj02, { x: 0, y: 10 });
+				world_cvs.addJoint(obj01, obj02, { x: 0, y: 15 });
+
 				for (var j=0; j<0; j++) {
 					obj03 = new ct.Shape({
 						renderMode: 1, x: x + (j%2?8:-8), y: y+j*6,
@@ -1218,6 +1214,80 @@ var test2d = {
 			});
 			ticker.start();
 			
+			this.dispose = function() {
+				ticker.stop();
+				dom.removeAll();
+				cvs.removeAll();
+			}
+		}
+	},
+
+	firecracker: {
+		init: function(ct, dom, cvs, $fps) {
+			ct.setRenderMode('canvas');
+
+			var world = new ct.PhysicsWorld({
+				worldWidth: 540, worldHeight: 540
+			});
+			cvs.add(world);
+
+			var nail = new ct.Shape({
+				x: 270, y: 10,
+				g: { type: 'circle', radius: 3, fill: '#000000' }
+			});
+			world.add(nail, { type: 'static' });
+
+			var line, line0;
+			for (var i = 0; i < 8; i++) {
+				line = new ct.Shape({
+					x: 270, y: 35+i*50,
+					g: { type: 'rect', width: 6, height: 50, fill: '#ff3030' }
+				});
+				world.add(line, { type: 'dynamic' });
+				if (line0) {
+					world.addJoint(line0, line, { x: 0, y: 25 });
+				} else {
+					world.addJoint(nail, line);
+				}
+				line0 = line;
+			}
+			world.openDebug(cvs);
+
+			world.on('mousedown', function(evt) {
+				this.addMouse(evt.mouseX, evt.mouseY);
+			});
+			world.on('mousemove', function(evt) {
+				this.moveMouse(evt.mouseX, evt.mouseY);
+			});
+			world.on('mouseup', function(evt) {
+				this.removeMouse();
+			});
+
+			line.on('click', function() {
+				for (var i = 0; i < 16; i++) {
+					line.to(200, function() {
+						if (world.children[8-i/2]) world.remove(world.children[8-i/2]);
+						var boom = new ct.ParticleSystem({
+							x: 270, y: 35+7*50-i*20, p: { type: 'boom' }
+						});
+						boom.on('animationend', function() {
+							cvs.remove(boom);
+						})
+						cvs.add(boom);
+						i++;
+					});
+				}
+				i = 0;
+			})
+			
+			var ticker = new ct.Ticker();
+			ticker.add(ct.Tween);
+			ticker.add(cvs);
+			ticker.add(function() {
+				world.drawDebug();
+			})
+			ticker.start();
+
 			this.dispose = function() {
 				ticker.stop();
 				dom.removeAll();

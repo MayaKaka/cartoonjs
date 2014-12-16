@@ -107,6 +107,14 @@ Tween._tweens = [];
 Tween._currentTarget = null;
 
 Tween.destroyAll = function() {
+	var tweens = this._tweens,
+		target;
+	// 销毁执行队列
+	for (var i=0, l=tweens.length; i<l; i++) {
+		target = tweens[i]._target;
+		target._fxQueue = target._fxTween = null;
+	}
+
 	this._tweens = [];
 }
 
@@ -134,7 +142,7 @@ Tween.has = function(target) {
 	return !!target._fxQueue;
 }
 
-Tween.exec = function(fnName) {
+Tween.exec = function(fnName, callback) {
 	var target = this._currentTarget;
 	switch (fnName) {
 		case 'shift':
@@ -153,10 +161,10 @@ Tween.exec = function(fnName) {
 			target._fxQueue = target._fxTween = null;
 			break;
 		case 'fadeIn':
-			this.addTween({ alpha: 1 });
+			this.addTween({ alpha: 1 }, null, null, callback);
 			break;
 		case 'fadeOut':
-			this.addTween({ alpha: 0 });
+			this.addTween({ alpha: 0 }, null, null, callback);
 			break;
 	}
 }
@@ -172,7 +180,8 @@ Tween.addTween = function(props, duration, easing, callback, onframe) {
 		props = {};
 		easing = 'none';
 	} else if (typeof(props) === 'string') {
-		this.exec(props);
+		callback = duration;
+		this.exec(props, callback);
 	}
 	
 	var nextAnimation = function() {
