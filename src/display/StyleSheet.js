@@ -252,7 +252,8 @@ StyleSheet.styles = {
 			}
 		},
 		css: function(key, value) {
-			var style = this.elemStyle;
+			var style = this.elemStyle,
+				t2d = this.transform;
 			if (supportIE6Filter) {
 				// ie6-8下使用matrix filter
 				var	elem = this.elem,
@@ -271,7 +272,7 @@ StyleSheet.styles = {
 				// 设置css3样式
 				css3(style, 'transform', this._mergeTransformText());
 				if ('originX' in value || 'originY' in value) {
-					var t2d = this.transform;
+					
 					css3(style, 'transformOrigin', t2d.originX*100+'% ' + t2d.originY*100+'%');
 				}
 			}
@@ -304,10 +305,11 @@ StyleSheet.styles = {
 			}
 		},
 		css: function(key, value) {
-			var style = this.elemStyle;
+			var style = this.elemStyle,
+				t3d = this.transform3d;
 			css3(style, 'transform', this._mergeTransform3DText());
 			if ('originX' in value || 'originY' in value || 'originZ' in value) {
-				var t3d = this.transform3d;
+				
 				css3(style, 'transformOrigin', t3d.originX*100+'% ' + t3d.originY*100+'%');
 			}
 		}
