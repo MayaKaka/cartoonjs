@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<style>
+	  html { overflow: hidden; }
+      body { margin: 0; padding: 0; overflow: hidden; font-family: Monospace; font-size: 13px; line-height: 20px; color: #333; }
+	</style>
+</head>
+<body>
+	<canvas id="canvas"></canvas>
+	<script src="../js/libs/jquery-1.11.1.min.js"></script>
+	<script src="../js/libs/require.min.js"></script>
+  <script>
+  	require.config({ 
+		baseUrl: location.origin + '/src', 
+		paths: {
+			cartoon: 'cartoon'
+		}
+	});
+	require(['cartoon'], function(ct) {
+		ct.setRenderMode('canvas');
+
+		var ww = window.innerWidth,
+			wh = window.innerHeight;
+		
+		var canvas = new ct.Canvas({ elem: '#canvas', width: ww, height: wh });
+
+		var star = new ct.DisplayObject({
+			x: ww/2, y: wh/2, width: 300, height: 300,
+			transform: { translateX: -150, translateY: -150 }
+		});
+
+		var shape  = new ct.Shape({
+			width: 300, height: 300,
+			g: {
+				type: 'polyStar', stroke: '#ffdd88', fill: 'top,#ff0000,#ffff00', 
+				radius: 150, sides: 5, cohesion: 0.5 
+			}
+		})
+		
+		star.add(shape);
+		canvas.add(star);
+
+		var ticker = new ct.Ticker();
+		ticker.add(ct.Tween);
+		ticker.add(canvas);
+		ticker.start();
+
+		function animate() {
+			star.to(300).to({ transform: { scale: 0.5, rotate: 360 }}, 2000, 'backInOut')
+				.to(300).to({ transform: { scale: 1, rotate: 0 }}, 2000, 'backInOut', function() {
+					animate();
+				})
+		}
+
+		animate();
+	});
+  </script>
+</body>
+</html>
