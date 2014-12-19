@@ -37,7 +37,7 @@
 				type: 'polyStar', stroke: '#ffdd88', fill: 'top,#ff0000,#ffff00', 
 				radius: 150, sides: 5, cohesion: 0.5 
 			}
-		})
+	45	})
 		
 		star.add(shape);
 		canvas.add(star);
@@ -48,8 +48,11 @@
 		ticker.start();
 
 		function animate() {
-			star.to(300).to({ transform: { scale: 0.5, rotate: 360 }}, 2000, 'backInOut')
-				.to(300).to({ transform: { scale: 1, rotate: 0 }}, 2000, 'backInOut', function() {
+			star.to(800).to({ transform: { scale: 0.5, rotate: 360 }}, 3200, 'backInOut')
+				.to(800).to({ transform: { scale: 1, rotate: 0 }}, 3200, 'backInOut', function() {
+					shape.sides++;
+					shape.cohesion+=0.1;
+					if (shape.cohesion>1) shape.cohesion = 1;
 					animate();
 				})
 		}

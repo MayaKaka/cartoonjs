@@ -3,7 +3,7 @@
 /node_modules/
 /build/
 /test/
-/deck.js/
+/examples/deckjs/
 
 # Project Files #
 *.project
