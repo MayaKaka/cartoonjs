@@ -198,9 +198,9 @@ THREE.TransformGizmo.prototype.update = function ( rotation, eye ) {
 			}
 		});
 
-	};
+};
 
-	THREE.TransformGizmoTranslate = function () {
+THREE.TransformGizmoTranslate = function () {
 
 		THREE.TransformGizmo.call( this );
 
@@ -306,11 +306,11 @@ THREE.TransformGizmo.prototype.update = function ( rotation, eye ) {
 
 		this.init();
 
-	};
+};
 
-	THREE.TransformGizmoTranslate.prototype = Object.create( THREE.TransformGizmo.prototype );
+THREE.TransformGizmoTranslate.prototype = Object.create( THREE.TransformGizmo.prototype );
 
-	THREE.TransformGizmoRotate = function () {
+THREE.TransformGizmoRotate = function () {
 
 		THREE.TransformGizmo.call( this );
 
@@ -432,11 +432,11 @@ THREE.TransformGizmo.prototype.update = function ( rotation, eye ) {
 
 		this.init();
 
-	};
+};
 
-	THREE.TransformGizmoRotate.prototype = Object.create( THREE.TransformGizmo.prototype );
+THREE.TransformGizmoRotate.prototype = Object.create( THREE.TransformGizmo.prototype );
 
-	THREE.TransformGizmoScale = function () {
+THREE.TransformGizmoScale = function () {
 
 		THREE.TransformGizmo.call( this );
 
@@ -518,11 +518,11 @@ THREE.TransformGizmo.prototype.update = function ( rotation, eye ) {
 
 		this.init();
 
-	};
+};
 
-	THREE.TransformGizmoScale.prototype = Object.create( THREE.TransformGizmo.prototype );
+THREE.TransformGizmoScale.prototype = Object.create( THREE.TransformGizmo.prototype );
 
-	THREE.TransformControls = function ( camera, domElement ) {
+THREE.TransformControls = function ( camera, domElement ) {
 
 		// TODO: Make non-uniform scale and rotate play nice in hierarchies
 		// TODO: ADD RXYZ contol
@@ -989,9 +989,9 @@ THREE.TransformGizmo.prototype.update = function ( rotation, eye ) {
 
 		}
 
-	};
+};
 
-	THREE.TransformControls.prototype = Object.create( THREE.Object3D.prototype );
+THREE.TransformControls.prototype = Object.create( THREE.Object3D.prototype );
 
 return THREE.TransformControls;
 });

@@ -272,7 +272,6 @@ StyleSheet.styles = {
 				// 设置css3样式
 				css3(style, 'transform', this._mergeTransformText());
 				if ('originX' in value || 'originY' in value) {
-					
 					css3(style, 'transformOrigin', t2d.originX*100+'% ' + t2d.originY*100+'%');
 				}
 			}
@@ -389,7 +388,7 @@ StyleSheet.styles = {
 	
 	fillColor: newStyle('fillColor', null, {
 		set: function(key, value) {
-			this.fillGradient = this.fillImage = null;
+			this.fillBrush = this.fillGradient = this.fillImage = null;
 			this[key] = value;
 		},
 		css: function(key, value) {
@@ -414,7 +413,7 @@ StyleSheet.styles = {
 			return value;
 		},
 		set: function(key, value) {
-			this.fillColor = this.fillImage = null;
+			this.fillBrush = this.fillColor = this.fillImage = null;
 			this[key] = value;
 		},
 		css: function(key, value) {
@@ -460,7 +459,7 @@ StyleSheet.styles = {
 			return value;
 		},
 		set: function(key, value) {
-			this.fillColor = this.fillGradient = null;
+			this.fillBrush = this.fillColor = this.fillGradient = null;
 			this[key] = value;
 		},
 		css: function(key, value) {

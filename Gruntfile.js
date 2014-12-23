@@ -1,34 +1,44 @@
 module.exports = function(grunt) {
 	"use strict";
 
-	// Project configuration.
-	grunt.initConfig({
-	  	pkg: grunt.file.readJSON('package.json'),
-	  	requirejs: {
+	// load npm tasks
+	grunt.loadNpmTasks('grunt-contrib-requirejs');
+  	grunt.loadNpmTasks('grunt-contrib-uglify');
+
+	var pkg = grunt.file.readJSON('package.json');
+
+	var	requirejs = {
 		  	compile: {
 		    	options: {
 		      		baseUrl: 'src',
 		      		// mainConfigFile: "buildConfig.js",
-		      		name: '<%= pkg.main %>',
-		      		out: 'build/<%= pkg.main %>.<%= grunt.template.today("yymmdd") %>.js',
+		      		name: 'cartoon',
+		      		out: 'build/cartoon.js',
 		      		optimize: 'none'
 		    	}
 		  	}
-		},
-	  	uglify: {
+		};
+
+	var uglify =  {
 	    	options: {
 	      		banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
 	    	},
 	    	build: {
-	      		src: 'build/<%= pkg.main %>.<%= grunt.template.today("yymmdd") %>.js',
-	      		dest: 'build/<%= pkg.main %>.min.js'
+	    		files: {
+	    			'build/cartoon.min.js': ['build/cartoon.js'],
+	    			'build/filters.js': ['src/display/filters.js'],
+	    			'build/particles.js': ['src/animation/particles.js'],
+	    			'build/three.js': ['src/cartoon.three.js']
+	    		}
 	    	}
-	  	}
-	});
+	  	};
 
-	// load npm tasks
-	grunt.loadNpmTasks('grunt-contrib-requirejs');
-  	grunt.loadNpmTasks('grunt-contrib-uglify');
+	// Project configuration.
+	grunt.initConfig({
+	  	pkg: pkg,
+	  	requirejs: requirejs,
+	  	uglify: uglify
+	});
 
   	// register default tasks
   	grunt.registerTask('default', ['requirejs', 'uglify']);

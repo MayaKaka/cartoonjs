@@ -28,13 +28,12 @@ cartoon.expand({
 	// 动画组件
 	Ease: require('animation/Ease'),
 	Tween: require('animation/Tween'),
-	Sprite: require('animation/Sprite'),
 	Movement: require('animation/Movement'),
-	ParticleEmitter: require('animation/ParticleEmitter'),
-	ParticleSystem: require('animation/ParticleSystem'),
 	Timeline:  require('animation/Timeline'),
-	SkeletalAnimation: require('animation/SkeletalAnimation')
-	
+	Sprite: require('animation/Sprite'),
+	ParticleEmitter: require('animation/ParticleEmitter'),
+	ParticleSystem: require('animation/ParticleSystem')
+
 });
 
 cartoon.expand({

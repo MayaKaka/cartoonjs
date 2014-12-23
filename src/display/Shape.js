@@ -10,6 +10,7 @@ var Shape = DisplayObject.extend({
 	type: 'Shape',
 	
 	graphics: null,
+	fillBrush: null,
 	snapToPixel: true,
 	
 	init: function(props) {
@@ -31,31 +32,40 @@ var Shape = DisplayObject.extend({
 		if (image) {
 			// 使用位图填充
 			if (image.complete) {
-				style = ctx.createPattern(image, 'no-repeat');
+				if (this.fillBrush) {
+					style = this.fillBrush;
+				} else {
+					this.fillBrush = style = ctx.createPattern(image, 'no-repeat');
+				}
 			}
 		} else if (gradient) {
-			// 使用渐变填充
-			switch (gradient.type) {
-				case 'top': case 'bottom':
-					style = ctx.createLinearGradient(0, 0, 0, this.height);
-					break;
-				case 'left': case 'right':
-					style = ctx.createLinearGradient(0, 0, this.width, 0);
-					break;
-				case 'left top':
-					style = ctx.createLinearGradient(0, 0, this.width, this.height);
-					break;
-				case 'right top':
-					style = ctx.createLinearGradient(this.width, 0, 0, this.height);
-					break;
-				case 'center':
-					var radiusX = this.width / 2,
-						radiusY = this.height / 2;
-					style = ctx.createRadialGradient(radiusX, radiusY, 0, radiusX, radiusY, radiusX>radiusY ? radiusX : radiusY);
-					break;
+			if (this.fillBrush) {
+				style = this.fillBrush;
+			} else {
+				// 使用渐变填充
+				switch (gradient.type) {
+					case 'top': case 'bottom':
+						style = ctx.createLinearGradient(0, 0, 0, this.height);
+						break;
+					case 'left': case 'right':
+						style = ctx.createLinearGradient(0, 0, this.width, 0);
+						break;
+					case 'left top':
+						style = ctx.createLinearGradient(0, 0, this.width, this.height);
+						break;
+					case 'right top':
+						style = ctx.createLinearGradient(this.width, 0, 0, this.height);
+						break;
+					case 'center':
+						var radiusX = this.width / 2,
+							radiusY = this.height / 2;
+						style = ctx.createRadialGradient(radiusX, radiusY, 0, radiusX, radiusY, radiusX>radiusY ? radiusX : radiusY);
+						break;
+				}
+				style.addColorStop(0.0, gradient.from);
+				style.addColorStop(1.0, gradient.to);
+				this.fillBrush = style;
 			}
-			style.addColorStop(0.0, gradient.from);
-			style.addColorStop(1.0, gradient.to);
 		}
 		// 设置fillStyle
 		if (style) {

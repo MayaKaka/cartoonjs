@@ -28,5 +28,11 @@ var random = function(min, max) {
 	return Math.round(Math.random() * (max - min)) + min;
 }
 
-return { version: '0.0.0', DEG_TO_RAD: Math.PI/180, expand: expand, random: random };
+return { 
+	version: '0.0.0', 
+	DEG_TO_RAD: Math.PI/180,
+	expand: expand, 
+	random: random 
+};
+
 });

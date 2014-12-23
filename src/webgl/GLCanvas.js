@@ -28,8 +28,6 @@ var GLCanvas = DisplayObject.extend({
 	},
 	
 	update: function(delta) {
-		// THREE.AnimationHandler.update(delta / 1000);
-		
 		var renderer = this.renderer,
 			scene = this.scene,
 			camera = this.camera;

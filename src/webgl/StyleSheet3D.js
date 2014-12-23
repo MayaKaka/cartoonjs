@@ -2,9 +2,8 @@
 define( function ( require, exports, module ) {
 	"use strict";
 
-var StyleSheet = require('display/StyleSheet');
-	
-var newStyle = StyleSheet.newStyle;
+var StyleSheet = require('display/StyleSheet'),
+	newStyle = StyleSheet.newStyle;
 
 StyleSheet.styles3d = {
 	

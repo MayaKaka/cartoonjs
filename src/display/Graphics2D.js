@@ -9,7 +9,7 @@ Graphics2D.get = function(type) {
 	return Graphics2D.shapes[type];
 }
 
-Graphics2D.commonStyle = function(target, data) {
+var setStyle = function(target, data) {
 	if (data.stroke && data.lineWidth === undefined) {
 		data.lineWidth = 1;
 	}
@@ -19,7 +19,7 @@ Graphics2D.commonStyle = function(target, data) {
 	target.style('lineWidth', data.lineWidth);
 }
 
-Graphics2D.commonDraw = function(ctx, hasFill, hasStroke) {
+var drawShape = function(ctx, hasFill, hasStroke) {
 	// 绘制图形
 	if (hasFill) ctx.fill();
 	if (hasStroke) ctx.stroke();
@@ -27,11 +27,10 @@ Graphics2D.commonDraw = function(ctx, hasFill, hasStroke) {
 
 Graphics2D.shapes = {
 	rect: {
-		type: 'rect',
 		init: function(data) {
 			this.style('size', data);
 			// 设置通用样式
-			Graphics2D.commonStyle(this, data);
+			setStyle(this, data);
 		},
 		draw: function(ctx) {
 			// 绘制矩形
@@ -45,7 +44,6 @@ Graphics2D.shapes = {
 	},
 	
 	circle: {
-		type: 'circle',
 		init: function(data) {
 			if (data.angle === undefined) {
 				data.angle = 360;
@@ -53,7 +51,7 @@ Graphics2D.shapes = {
 			this.style('radius', data.radius);
 			this.style('angle', data.angle);
 			// 设置通用样式
-			Graphics2D.commonStyle(this, data);
+			setStyle(this, data);
 		},
 		draw: function(ctx) {
 			var radius = this.radius,
@@ -66,17 +64,16 @@ Graphics2D.shapes = {
 				ctx.lineTo(radius, radius);
 			}
 			ctx.closePath();
-			Graphics2D.commonDraw(ctx, hasFill, hasStroke);
+			drawShape(ctx, hasFill, hasStroke);
 		}
 	},
 	
 	ellipse: {
-		type: 'ellipse',
 		init: function(data) {
 			this.radius = { x: 0, y: 0 };
 			this.style('radius', data.radius);
 			// 设置通用样式
-			Graphics2D.commonStyle(this, data);
+			setStyle(this, data);
 		},
 		draw: function(ctx) {
 			var k = 0.5522848,
@@ -96,12 +93,11 @@ Graphics2D.shapes = {
 			ctx.bezierCurveTo(w, ry+ky, rx+kx, h, rx, h);
 			ctx.bezierCurveTo(rx-kx, h, 0, ry+ky, 0, ry);
 			ctx.closePath();
-			Graphics2D.commonDraw(ctx, hasFill, hasStroke);
+			drawShape(ctx, hasFill, hasStroke);
 		}
 	},
 	
 	line: {
-		type: 'line',
 		init: function(data) {
 			if (data.lineWidth === undefined) {
 				data.lineWidth = 1;
@@ -136,11 +132,10 @@ Graphics2D.shapes = {
 	},
 	
 	ploygon: {
-		type: 'ploygon',
 		init: function(data) {
 			this.path = data.path;
 			// 设置通用样式
-			Graphics2D.commonStyle(this, data);
+			setStyle(this, data);
 		},
 		draw: function(ctx) {
 			var path = this.path, line,
@@ -164,19 +159,18 @@ Graphics2D.shapes = {
 					}
 				}
 				ctx.closePath();
-				Graphics2D.commonDraw(ctx, hasFill, hasStroke);
+				drawShape(ctx, hasFill, hasStroke);
 			}
 		}
 	},
 	
 	polyStar: {
-		type: 'polyStar',
 		init: function(data) {
 			this.sides = data.sides;
 			this.cohesion = data.cohesion;
 			this.style('radius', data.radius);
 			// 设置通用样式
-			Graphics2D.commonStyle(this, data);
+			setStyle(this, data);
 		},
 		draw: function(ctx) {
 			var radius = this.radius,
@@ -204,12 +198,11 @@ Graphics2D.shapes = {
 				}
 			}
 			ctx.closePath();
-			Graphics2D.commonDraw(ctx, hasFill, hasStroke);
+			drawShape(ctx, hasFill, hasStroke);
 		}
 	},
 	
 	roundRect: {
-		type: 'roundRect',
 		init: function() {
 			
 		},
@@ -219,7 +212,6 @@ Graphics2D.shapes = {
 	},
 	
 	lines: {
-		type: 'lines',
 		init: function(data) {
 			if (data.lineWidth === undefined) {
 				data.lineWidth = 1;

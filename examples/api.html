@@ -882,7 +882,7 @@ require(['cartoon'], function(ct){
 		</pre></p>
 		<div><canvas id="cvs-particle"></canvas>
 		  <script>
-require(['cartoon'], function(ct){
+require(['cartoon', 'animation/particles'], function(ct, particles){
 	var canvas = new ct.Canvas({
 	    elem: document.getElementById('cvs-particle'),
 	    width: 850, height: 150
@@ -1032,11 +1032,6 @@ new ParticleSystem({ particle: { type: 'snow', num: 60 } });</code>
 	elem: document.getElementById('cvs-three'),
 	width: 850, height: 150
 });
-	
-var box = ct.Object3D.create({
-	g: { type: 'box', size: [1, 1, 1] },
-	m: { type: 'normal', color: 0x444444 }
-});
 
 canvas.add(box);</code>
 		</pre></p>
@@ -1063,6 +1058,54 @@ require(['cartoon.three'], function(ct){
 	ticker.add(canvas);
 });
 		</script></div>
+
+		<!--  Object3D  -->
+		<h3 id="base-obj3d">Object3D</h3>
+		<p>Object3D，3D显示对象基类</p>
+		<div class="doc-api">
+			<div>
+				<h5>Constructor</h5>
+				<ul>
+					<li><label>init</label>
+						<code class="html">new Object3D(props);</code>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<p><pre>
+<code class="html">var group = new Object3D();
+group.style({ x: 100, rotateX: 0.5 });
+
+var box = ct.Object3D.create({
+    geometry: { type: 'box', size: [2, 2, 2] },
+    material: { type: 'basic', wireframe: true }
+});</code>
+		</pre></p>
+	<div><canvas id="cvs-obj3d"></canvas>
+		  <script>
+require(['cartoon.three'], function(ct){
+	var canvas = new ct.GLCanvas({
+	    elem: document.getElementById('cvs-obj3d'),
+	    width: 850, height: 150
+	});
+	var group = new ct.Object3D();
+	
+	var box = ct.Object3D.create({
+		g: { type: 'box', size: [2, 2, 2] },
+		m: { type: 'basic', wireframe: true }
+	});
+
+	group.add(box);
+	canvas.add(group);
+	canvas.camera.position.z = 4;
+
+	var ticker = window.glTicker;
+	ticker.add(function() {
+		box.rotation.y += 0.01;
+	});
+	ticker.add(canvas);
+});
+	</script></div>
 
   	  </div>
   	  <div class="col-md-3">
