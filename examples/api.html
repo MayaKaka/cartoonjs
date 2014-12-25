@@ -1094,14 +1094,14 @@ require(['cartoon.three'], function(ct){
 		g: { type: 'box', size: [2, 2, 2] },
 		m: { type: 'basic', wireframe: true }
 	});
-
+	box.style('x', 2);
 	group.add(box);
 	canvas.add(group);
 	canvas.camera.position.z = 4;
 
 	var ticker = window.glTicker;
 	ticker.add(function() {
-		box.rotation.y += 0.01;
+		group.rotation.y += 0.01;
 	});
 	ticker.add(canvas);
 });
