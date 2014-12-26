@@ -25,10 +25,11 @@ module.exports = function(grunt) {
 	    	},
 	    	build: {
 	    		files: {
-	    			'build/cartoon.min.js': ['build/cartoon.js'],
-	    			'build/filters.js': ['src/display/filters.js'],
-	    			'build/particles.js': ['src/animation/particles.js'],
-	    			'build/three.js': ['src/cartoon.three.js']
+	    			'build/all/cartoon.js': ['build/cartoon.js'],
+	    			'build/all/filters.js': ['src/filters.js'],
+	    			'build/all/particles.js': ['src/particles.js'],
+	    			'build/all/box2d.js': ['src/box2d.js'],
+	    			'build/all/three.js': ['src/three.js']
 	    		}
 	    	}
 	  	};

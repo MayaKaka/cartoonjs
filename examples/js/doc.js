@@ -72,7 +72,7 @@ function JsonTree(jsonData) {
                     } else {
                         html += '<li class = \'tree-close\' title=\''
                                 + key
-                                + '\'><a href=\'#' + (literal == '' ? key : literal).charAt(0).toUpperCase()
+                                + '\'><a href=\'#' + (literal == '' ? key : literal).charAt(0)/*.toUpperCase()*/
                                 + (literal == '' ? key : literal).slice(1)
                                 + '\'><strong>' + key + '</strong></a>:'
                                 + buildDom(o[key], literal == '' ? key : literal)
@@ -116,7 +116,7 @@ function JsonTree(jsonData) {
 
 var domConfig = document.getElementById('config');
 var domToc = document.getElementById('toc');
-domConfig.appendChild(new JsonTree(echartsConfig).getTree());
+domConfig.appendChild(new JsonTree(config).getTree());
 function _resize() {
     var viewHeight = document.documentElement.clientHeight;
     var scrollHeight = document.documentElement.scrollTop

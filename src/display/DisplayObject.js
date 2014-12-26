@@ -48,8 +48,8 @@ var DisplayObject = EventDispatcher.extend({
 	init: function(props) {
 		if (!props) props = {};
 		// 设置渲染模式
-		this.renderMode = props.renderMode !== undefined ? props.renderMode : this.renderMode;
-
+		this.renderMode = props.renderMode === undefined ? this.renderMode : 
+						  (props.renderMode === 'canvas' || props.renderMode === 1) ? 1 : 0;
 		if (this.renderMode === 0) {
 			// 初始化dom节点
 			var elem = props.elem;

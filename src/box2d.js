@@ -2,13 +2,13 @@
 define( function ( require, exports, module ) {
 	"use strict";
 	   
-var cartoon = require('cartoon');
+var base = require('cartoon');
 
-cartoon.expand({
+base.expand({
 	// Box2D库文件
 	Box2D: require('physics/Box2D'),
 	PhysicsWorld: require('physics/PhysicsWorld')
 });
 
-return cartoon;
+return base;
 });

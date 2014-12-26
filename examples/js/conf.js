@@ -7,7 +7,43 @@
  */
 //define(function() {
     // 请原谅我这样写，这显然可以直接返回个对象，但那样的话outline就显示不出来了~~
-    var echartsConfig = {
+    var config = {
+        props: {
+           
+        },
+
+        graphics: {
+           
+        },
+
+        easing: {
+           
+        },
+
+        spriteSheet: {
+           
+        },
+        
+        particle: {
+           
+        },
+
+        bodyData: {
+            type: [ 'static', '' ]
+        },
+
+        geometry: {
+
+        },
+
+        material: {
+
+        },
+
+        light: {
+
+        }
+/*
         // 图表标题
         title: {
             text: '',
@@ -911,18 +947,6 @@
             startAngle: 90,
             clockWise: true,
             ribbonType: true,
-            
-            /***************** 下面的配置项在 ribbonType 为 false 时有效 */
-            // 同force类似
-            minRadius: 10,
-            maxRadius: 20,
-            symbol: 'circle',
-            /***************** 上面的配置项在 ribbonType 为 false 时有效 */
-
-            /***************** 下面的配置项在 ribbonType 为 true 时有效 */
-            showScale: false,
-            showScaleText: false,
-            /***************** 上面的配置项在 ribbonType 为 true 时有效 */
 
             // 分类里如果有样式会覆盖节点默认样式
             categories: [{
@@ -941,46 +965,15 @@
                         rotate: false,
                         distance: 5,
                         textStyle: null      // 默认使用全局文本样式，详见TEXTSTYLE
-                    },
-                    chordStyle: {
-                        /** ribbonType = false 时有效 */
-                        width: 1,
-                        color: 'black',
-                        /** ribbonType = true 时有效 */
-                        borderWidth: 1,
-                        borderColor: '#999',
-                        opacity: 0.5
                     }
                 },
                 emphasis: {
                     borderWidth: 0,
-                    borderColor: '#000',
-                    chordStyle: {
-                        /** ribbonType = false 时有效 */
-                        width: 1,
-                        color: 'black',
-                        /** ribbonType = true 时有效 */
-                        borderWidth: 1,
-                        borderColor: '#999'
-                    }
+                    borderColor: '#000'                    
                 }
             },
             data: [],
             // Source data matrix
-            /**
-             *         target
-             *    -1--2--3--4--5-
-             *  1| x  x  x  x  x
-             *  2| x  x  x  x  x
-             *  3| x  x  x  x  x  source
-             *  4| x  x  x  x  x
-             *  5| x  x  x  x  x
-             *
-             *  Relation ship from source to target
-             *  https://github.com/mbostock/d3/wiki/Chord-Layout#wiki-chord
-             *  
-             *  Row based
-             */
             matrix: [],
             nodes: [],
             links: []
@@ -1278,6 +1271,7 @@
             TOOLTIP_OUT_GRID: 'tooltipOutGrid',
             ROAMCONTROLLER: 'roamController'
         }
+        */
     };
 //    return config;
 //});

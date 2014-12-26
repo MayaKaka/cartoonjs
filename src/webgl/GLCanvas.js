@@ -37,6 +37,7 @@ var GLCanvas = DisplayObject.extend({
 	
 	add: function(child) {
 		this.scene.add(child);
+		return this;
 	},
 	
 	remove: function(child) {

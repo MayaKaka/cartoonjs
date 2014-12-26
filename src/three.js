@@ -2,9 +2,9 @@
 define( function ( require, exports, module ) {
 	"use strict";
 	   
-var cartoon = require('cartoon');
+var base = require('cartoon');
 
-cartoon.expand({
+base.expand({
 	
 	// THREE库文件
 	THREE: require('webgl/THREE'),
@@ -14,5 +14,5 @@ cartoon.expand({
 	
 });
 
-return cartoon;
+return base;
 });
