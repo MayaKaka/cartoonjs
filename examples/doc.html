@@ -28,6 +28,7 @@
 						<li class=""><a href="index.html">首页</a></li>
 						<li class="active"><a href="#" target="_blank">文档</a></li>
 						<li class=""><a href="demo.html" target="_blank">示例</a></li>
+						<li class=""><a href="three.html" target="_blank">3d示例</a></li>
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">下载<b class="caret"></b></a>
 							<ul class="dropdown-menu">
@@ -126,8 +127,8 @@
             </div>
             <div class="col-md-9">
                 <p style="margin:20px 0 -30px 0">
-                    <a href="start.html" target="_blank" style="margin-right: 30px;">入门教程 ( Getting started ) »</a>
-                    <a href="three.html" target="_blank" style="margin-right: 30px;">threejs快速入门 ( Studying threejs ) »</a>
+                    <!--<a href="start.html" target="_blank" style="margin-right: 30px;">入门教程 ( Getting started ) »</a>-->
+                    <a href="slide.three.html" target="_blank" style="margin-right: 30px;">threejs快速入门 ( Studying threejs ) »</a>
                 </p>
                 <div id="doc">
                     <h3>简介<a name="简介"> </a></h3>
@@ -208,11 +209,8 @@ require([ 'cartoon' ], // 加载模块
 );
 </pre>
                     </div>
-
-                    <h3>基础<a name="基础"> </a></h3>
-                    <p>基础模块</p>
             
-                    <h4>Class<a name="base-class"> </a></h4>
+                    <h3>Class<a name="base-class"> </a></h3>
                     <p> 类式继承基类，参考 <a href="http://ejohn.org/blog/simple-javascript-inheritance" target="_blank">simple-javascript-inheritance</a></p>
                     <p><pre>
 <code class="html">var Person = Class.extend({
@@ -229,7 +227,7 @@ var Student = Person.extend({
 var student = new Student();</code></pre></p>
 
 
-                    <h4>Ticker<a name="base-ticker"> </a></h4>
+                    <h3>Ticker<a name="base-ticker"> </a></h3>
                     <p>高频计时器，默认为浏览器渲染帧频（60帧）</p>
                     <p><pre>
 <code class="html">var ticker = new Ticker(50);
@@ -246,18 +244,128 @@ require(['cartoon'], function(ct){
 });
                     </script>
                     
-                    <h4>EventDispatcher<a name="base-dispatcher"> </a></h4>
+                    <h3>EventDispatcher<a name="base-dispatcher"> </a></h3>
 
-                    <h4>Preload<a name="base-preload"> </a></h4>   
+                    <h3>Preload<a name="base-preload"> </a></h3>   
 
-                    <h4>Matrix2D<a name="base-matrix"> </a></h4>
+                    <h3>Matrix2D<a name="base-matrix"> </a></h3>
                     <p>2D矩阵，参考 <a href="https://github.com/CreateJS/EaselJS/blob/master/src/easeljs/geom/Matrix2D.js" target="_blank">gskinner-Matrix2D</a></p>
                     <p><pre>
 <code class="html">var matrix = new Matrix2D();
 matrix.append(1, 0, 0, 1, 50, 50);</code></pre></p>
                     
-                    <h4>DisplayObject<a name="base-display"> </a></h4>
+                    <h3>DisplayObject<a name="base-display"> </a></h3>
                     <p>基础显示对象，继承 EventDispatcher，参考 <a href="http://help.adobe.com/zh_CN/FlashPlatform/reference/actionscript/3/flash/display/DisplayObject.html#" target="_blank">as3-DisplayObject</a></p>
+                    <h5>Properties</h5>
+                    <table cellspacing="0" class="ADoc_table full">
+                        <tbody>
+                        <tr>
+                            <th> 属性 </th>
+                            <th> 描述 </th>
+                            <th> 默认值 </th>
+                        </tr>
+                        <tr>
+                            <td> <b>renderMode</b> </td>
+                            <td> 渲染模式 <br> dom模式：0 | "dom" <br>canvas模式：1 | "canvas" </td>
+                            <td> 0 </td>
+                            <td>  </td>
+                        </tr>
+                        <tr>
+                            <td> <b>x</b> </td>
+                            <td> x轴坐标 </td>
+                            <td> 0 </td>
+                        </tr>
+                        <tr>
+                            <td> <b>y</b> </td>
+                            <td> y轴坐标 </td>
+                            <td> 0 </td>
+                        </tr>
+                        <tr>
+                            <td> <b>width</b> </td>
+                            <td> 宽度 </td>
+                            <td> 0 </td>
+                        </tr>
+                        <tr>
+                            <td> <b>height</b> </td>
+                            <td> 高度 </td>
+                            <td> 0 </td>
+                        </tr>
+                        <tr>
+                            <td> <b>transform</b> </td>
+                            <td> 2d变换 <br> 参见css3 transform </td>
+                            <td><pre>{
+    translateX: 0, translateY: 0,
+    rotate: 0,
+    scaleX: 1, scaleY: 1,
+    originX: 0.5, originY: 0.5
+}                           </pre></td>
+                        </tr>
+                        <tr>
+                            <td> <b>transform3d</b> </td>
+                            <td> 3d变换 <br> 参见css3 transform3d </td>
+                            <td><pre>{
+    perspective: 0, 
+    translateX: 0, translateY: 0, translateZ: 0,
+    rotateX: 0, rotateY: 0, rotateZ: 0,
+    scaleX: 1, scaleY: 1, scaleZ: 1,
+    originX: 0.5, originY: 0.5
+}                           </pre></td>
+                          <tr>
+                            <td> <b>alpha</b> </td>
+                            <td> 透明度 </td>
+                            <td> 1 </td>
+                        </tr>  
+                    </tbody></table>
+                    <h5>Methods</h5>
+                    <table cellspacing="0" class="ADoc_table full">
+                        <tbody><tr>
+                            <th> 方法 </th>
+                            <th> 描述 </th>
+                            <th> 示例 </th>
+                            <th> 查看效果 </th>
+                        </tr>
+                        <tr>
+                            <td> <b>add</b> </td>
+                            <td> 添加子节点 </td>
+                            <td><pre>
+displayObj.add(child);
+displayObj.add(child, 'tag'); // 添加时进行标签标记
+                            </pre></td>
+                            <td> <input type="button" value="查看"> </td>
+                        </tr>
+                        <tr>
+                            <td> <b>remove</b> </td>
+                            <td> 移除子节点 </td>
+                            <td><pre>
+displayObj.remove(child);
+displayObj.remove('tag'); // 移除标签标记的节点
+displayObj.removeAll(); // 移除所有子节点
+                            </pre></td>
+                            <td> <input type="button" value="查看"> </td>
+                        </tr>
+                        <tr>
+                            <td> <b>each</b> </td>
+                            <td> 遍历子节点 </td>
+                            <td><pre>
+diplayObj.each(function(child, index){
+	console.log(child, index);
+});
+                            </pre></td>
+                            <td> <input type="button" value="查看"> </td>
+                        </tr>
+                        <tr>
+                            <td> <b>style</b> </td>
+                            <td> 设置样式 </td>
+                            <td><pre>diplayObj.style('x', 100);
+diplayObj.style('transform', { scale: 3 });
+diplayObj.style({ // 批量设置样式
+    'y': 100, 'alpha': 0.8, 
+    'transform': { rotate: 45 }
+}); 
+                            </pre></td>
+                            <td> <input type="button" value="查看"> </td>
+                        </tr>
+                    </tbody></table>
                     <p><pre>
 <code class="html">var displayObj = new DisplayObject({
    renderMode: 0,
@@ -266,16 +374,16 @@ matrix.append(1, 0, 0, 1, 50, 50);</code></pre></p>
 });</code></pre></p>
 
                     
-                    <h4>Container<a name="base-dom"> </a></h4>
+                    <h3>Container<a name="base-dom"> </a></h3>
                     <p>dom容器，继承 DisplayObject，处理子对象的事件响应</p>
                     
-                    <h4>Canvas<a name="base-canvas"> </a></h4>
+                    <h3>Canvas<a name="base-canvas"> </a></h3>
                     <p>canvas容器，继承 DisplayObject，处理子对象的事件响应</p>
                     
-                    <h4>GLCanvas<a name="base-webgl"> </a></h4>
+                    <h3>GLCanvas<a name="base-webgl"> </a></h3>
                     <p>webgl容器，继承 DisplayObject，处理子对象的事件响应</p>
 
-                    <h4>Shape<a name="base-shape"> </a></h4>
+                    <h3>Shape<a name="base-shape"> </a></h3>
                     <p>基础图形对象，继承 DisplayObject，参照 <a href="http://www.w3school.com.cn/svg/svg_rect.asp" target="_blank">svg-shapes</a></p>
                     <p><pre>
 <code class="html">var rect = new Shape({
@@ -347,7 +455,7 @@ require(['cartoon'], function(ct){
 });
                     </script>
         
-                    <h4>Bitmap<a name="base-bitmap"> </a></h4>
+                    <h3>Bitmap<a name="base-bitmap"> </a></h3>
                     <p>位图，滤镜，继承 DisplayObject</p>
                     <p><pre>
 <code class="html">var bmp = new Bitmap({
@@ -388,7 +496,7 @@ require(['cartoon', 'filters'], function(ct){
 });               
                     </script>
 
-                    <h4>Text<a name="base-text"> </a></h4>
+                    <h3>Text<a name="base-text"> </a></h3>
                     <p>文本，继承 DisplayObject</p>
                     <p><pre>
 <code class="html">var txt = new Text({
@@ -410,7 +518,7 @@ require(['cartoon'], function(ct){
 });               
                     </script>
         
-                    <h4>Tween<a name="base-tween"> </a></h4>
+                    <h3>Tween<a name="base-tween"> </a></h3>
                     <p>补间动画</p>
                     <p><pre>
 <code class="html">displayObj.to({ x: 350, transform: { rotate: 45 }, alpha: 0.2 }, 300, 'linear')
@@ -452,7 +560,7 @@ require(['cartoon'], function(ct){
                     </script>
 
                     
-                    <h4>Timeline<a name="base-timeline"> </a></h4>
+                    <h3>Timeline<a name="base-timeline"> </a></h3>
                     <p>时间轴动画</p>
                     <p><pre>
 <code class="html">var timeline = new Timeline({ loop: true });
@@ -492,9 +600,9 @@ require(['cartoon'], function(ct){
 });               
                     </script>
                     
-                    <h4>Movement<a name="base-movement"> </a></h4>
+                    <h3>Movement<a name="base-movement"> </a></h3>
 
-                    <h4>Sprite<a name="base-sprite"> </a></h4>
+                    <h3>Sprite<a name="base-sprite"> </a></h3>
                     <p>精灵，帧动画，继承 DisplayObject</p>
                     <p><pre>
 <code class="html">var sprite = new Sprite({
@@ -540,7 +648,7 @@ require(['cartoon'], function(ct){
 });               
                     </script>
 
-                    <h4>ParticleSystem<a name="base-particle"> </a></h4>
+                    <h3>ParticleSystem<a name="base-particle"> </a></h3>
                     <p>粒子动画，继承 DisplayObject</p>
                     <p><pre>
 <code class="html">var particles = new ParticleSystem({
@@ -574,16 +682,51 @@ require(['cartoon', 'particles'], function(ct, particles){
 });
                     </script>
                     
-                    <h4>SkeletalAnimation<a name="base-skeletal"> </a></h4>
+                    <h3>SkeletalAnimation<a name="base-skeletal"> </a></h3>
 
-                    <h4>PhysicsWorld<a name="base-physics"> </a></h4>
+                    <h3>PhysicsWorld<a name="base-physics"> </a></h3>
 
                     <!--  Object3D  -->
-                    <h4>Object3D<a name="base-obj3d"> </a></h4>
+                    <h3>Object3D<a name="base-obj3d"> </a></h3>
                     <p>3D显示对象基类</p>
-                    <p>几何体构建，参考 <a href="#geometry">geometry</a></p>
-                    <p>材质构建，参考 <a href="#material">material</a></p>
-                    <div class="doc-api">                    
+                    <table cellspacing="0" class="ADoc_table full">
+                        <tbody><tr>
+                            <th> 属性 </th>
+                            <th> 名称 </th>
+                            <th> 默认值 </th>
+                            <th> 描述 </th>
+                        </tr>
+                        <tr>
+                            <td> <b>position</b> </td>
+                            <td> 位置 </td>
+                            <td> THREE.Vector3 </td>
+                            <td> { x: 0, y: 0, z: 0 } </td>
+                        </tr>
+                        <tr>
+                            <td> <b>rotation</b> </td>
+                            <td> 旋转 </td>
+                            <td> THREE.Vector3 </td>
+                            <td> { x: 0, y: 0, z: 0 } </td>
+                        </tr>
+                        <tr>
+                            <td> <b>scale</b> </td>
+                            <td> 缩放 </td>
+                            <td> THREE.Vector3 </td>
+                            <td> { x: 0, y: 0, z: 0 } </td>
+                        </tr>
+                        <tr>
+                            <td> <b>geometry</b> </td>
+                            <td> 几何图形 </td>
+                            <td> THREE.Geometry </td>
+                            <td> 参见 <a href="#geometry">geometry</a> </td>
+                        </tr>
+                        <tr>
+                            <td> <b>material</b> </td>
+                            <td> 材质 </td>
+                            <td> THREE.Material </td>
+                            <td> 参见 <a href="#geometry">material</a> </td>
+                        </tr>
+                    </tbody></table>                  
                     <p><pre>
 <code class="html">var group = new Object3D();
 group.style({ x: 100, rotateX: 0.5 });
@@ -616,89 +759,6 @@ require(['cartoon', 'three'], function(ct){
     ticker.add(canvas);
 });
                     </script>
-
-                    <h3>props<a name="props"> </a></h3>
-                    <p>DisplayObject 初始化参数 & 通用参数</p>
-                    <p><pre>
-<code class="html">var props0 = {
-    renderMode: 'canvas', x: 100, y: 200
-};
-var props1 = {
-    width: 100, height:300, alpha: 0.6
-};
-var props2 = {
-    transform: { scale: 3, rotate: 195 }
-};
-new DisplayObject(props0);
-new DisplayObject(props1);</code></pre></p>
-                    <table cellspacing="0" class="ADoc_table full">
-                        <tbody><tr>
-                            <th> 属性 </th>
-                            <th> 名称 </th>
-                            <th> 默认值 </th>
-                            <th> 描述 </th>
-                        </tr>
-                        <tr>
-                            <td> <b>renderMode</b> </td>
-                            <td> 渲染模式 </td>
-                            <td> 0 </td>
-                            <td> dom模式：0 | "dom" <br>canvas模式：1 | "canvas" </td>
-                        </tr>
-                        <tr>
-                            <td> <b>x</b> </td>
-                            <td> x轴坐标 </td>
-                            <td> 0 </td>
-                            <td>  </td>
-                        </tr>
-                        <tr>
-                            <td> <b>y</b> </td>
-                            <td> y轴坐标 </td>
-                            <td> 0 </td>
-                            <td>  </td>
-                        </tr>
-                        <tr>
-                            <td> <b>width</b> </td>
-                            <td> 宽度 </td>
-                            <td> 0 </td>
-                            <td>  </td>
-                        </tr>
-                        <tr>
-                            <td> <b>height</b> </td>
-                            <td> 高度 </td>
-                            <td> 0 </td>
-                            <td>  </td>
-                        </tr>
-                        <tr>
-                            <td> <b>transform</b> </td>
-                            <td> 2d变换 </td>
-                            <td><pre>{
-    translateX: 0, translateY: 0,
-    rotate: 0,
-    scaleX: 1, scaleY: 1,
-    originX: 0.5, originY: 0.5
-}                           </pre></td>
-                            <td> 参见css3 transform </td>
-                        </tr>
-                        <tr>
-                            <td> <b>transform3d</b> </td>
-                            <td> 3d变换 </td>
-                            <td><pre>{
-    perspective: 0, 
-    translateX: 0, translateY: 0, translateZ: 0,
-    rotateX: 0, rotateY: 0, rotateZ: 0,
-    scaleX: 1, scaleY: 1, scaleZ: 1,
-    originX: 0.5, originY: 0.5
-}                           </pre></td>
-                            <td> 参见css3 transform3d </td>
-                            <tr>
-                            <td> <b>alpha</b> </td>
-                            <td> 透明度 </td>
-                            <td> 1 </td>
-                            <td>  </td>
-                        </tr>
-                        </tr>  
-                    </tbody></table>
-
 
                     <h3>graphics<a name="graphics"> </a></h3>
                     <p>Shape 初始化图形参数</p>
@@ -817,12 +877,22 @@ require(['cartoon', 'three'], function(ct){
     var geometry2 = {
         type: 'sphere', radius: 30, segment: 9
     };
+    var geometry3 = {
+        type: 'ring', radius: 30, width: 20, segment: 18
+    };
+    var geometry4 = {
+        type: 'cylinder', radius: 30, tube: 80
+    };
     var obj0 = ct.Object3D.create({ g: geometry0, m: material });
     var obj1 = ct.Object3D.create({ g: geometry1, m: material });
     var obj2 = ct.Object3D.create({ g: geometry2, m: material });
+    var obj3 = ct.Object3D.create({ g: geometry3, m: material });
+    var obj4 = ct.Object3D.create({ g: geometry4, m: material });
     obj1.style('x', -100);
     obj2.style('x', 100);
-    canvas.add(obj0).add(obj1).add(obj2);
+    obj3.style('x', 200);
+    obj4.style('x', -200);
+    canvas.add(obj0).add(obj1).add(obj2).add(obj3).add(obj4);
     
     canvas.camera.position.set(0,0,150);
     ticker.add(function(delta){
@@ -832,11 +902,149 @@ require(['cartoon', 'three'], function(ct){
 });               
                     </script>
 
-                    
-                    
 
+                    <h3>material<a name="material"> </a></h3>
+                    <p>Object3D 初始化材质参数</p>
+                    <p><pre>
+<code class="html">var material0 = {
+    type: 'basic', wireframe: true
+};
+var material1 = {
+    type: 'basic', color: 0xff0000
+};
+var material2 = {
+    type: 'lambert', color: 0x0000ff
+};
+var material3 = {
+    type: 'phong', color: 0x888888, shininess: 100, reflectivity: 2
+};
+Object3D.create({ g: geometry, m: material0 }); // 参数可缩写
+Object3D.create({ graphics: geometry, material: material2 });</code></pre></p>
+                    <table cellspacing="0" class="ADoc_table full">
+                        <tbody><tr>
+                            <th> 属性 </th>
+                            <th> 名称 </th>
+                            <th> 默认值 </th>
+                            <th> 描述 </th>
+                        </tr>
+                        <tr>
+                            <td> <b>type</b> </td>
+                            <td> 图形类型 </td>
+                            <td> 0 </td>
+                            <td> 参见 <a href="#material-basic">basic（普通材质）</a>，<a href="#material-lambert">lambert（接受光源材质，如木头石头）</a>，<a href="#geometry-phong">phong（反射光源材质，如塑料金属）</a>，<a href="#geometry-shader">shader（自定义着色器材质）</a></td>
+                        </tr>
+                        <tr>
+                            <td> <b>color</b> </td>
+                            <td> 颜色 </td>
+                            <td> </td>
+                            <td> </td>
+                        </tr>
+                        <tr>
+                            <td> <b>ambient</b> </td>
+                            <td> 环境光色 </td>
+                            <td> </td>
+                            <td> </td>
+                        </tr>
+                        <tr>
+                            <td> <b>emissive</b> </td>
+                            <td> 发射光色 </td>
+                            <td> </td>
+                            <td> </td>
+                        </tr>
+                        <tr>
+                            <td> <b>specular</b> </td>
+                            <td> 镜面反射光色 </td>
+                            <td> </td>
+                            <td> </td>
+                        </tr>
+                        <tr>
+                            <td> <b>shininess</b> </td>
+                            <td> 自发光强度 </td>
+                            <td> </td>
+                            <td> </td>
+                        </tr>
+                        <tr>
+                            <td> <b>transparent</b> </td>
+                            <td> 开启透明 </td>
+                            <td> </td>
+                            <td> </td>
+                        </tr>
+                        <tr>
+                            <td> <b>opacity</b> </td>
+                            <td> 透明度 </td>
+                            <td> </td>
+                            <td> </td>
+                        </tr>
+                        <tr>
+                            <td> <b>color</b> </td>
+                            <td> 颜色 </td>
+                            <td> </td>
+                            <td> </td>
+                        </tr>
+                        <tr>
+                            <td> <b>reflectivity</b> </td>
+                            <td> 反射率 </td>
+                            <td> </td>
+                            <td> </td>
+                        </tr>
+                        <tr>
+                            <td> <b>shading</b> </td>
+                            <td> 投影模式 </td>
+                            <td> </td>
+                            <td> </td>
+                        </tr>
+                        <tr>
+                            <td> <b>blending</b> </td>
+                            <td> 混色模式 </td>
+                            <td> </td>
+                            <td> </td>
+                        </tr>
+                    </tbody></table>
+                    <canvas id="cvs-material"></canvas>
+                    <script>
+require(['cartoon', 'three'], function(ct){
+    var canvas = new ct.GLCanvas({
+        elem: '#cvs-material',
+        width: 850, height: 150
+    });
+    var geometry = { type: 'sphere', radius: 8 };
+    var material0 = {
+	    type: 'basic', wireframe: true
+	};
+	var material1 = {
+	    type: 'basic', color: 0xff0000
+	};
+	var material2 = {
+	    type: 'lambert', color: 0x0000ff
+	};
+	var material3 = {
+	    type: 'phong', color: 0x888888, shininess: 100, reflectivity: 2
+	};
+    var obj0 = ct.Object3D.create({ g: geometry, m: material0 });
+    var obj1 = ct.Object3D.create({ g: geometry, m: material1 });
+    var obj2 = ct.Object3D.create({ g: geometry, m: material2 });
+    var obj3 = ct.Object3D.create({ g: geometry, m: material3 });
+    var light = ct.Object3D.createLight({
+    	type: 'direct', color: 0xffffcc, debug: true, intensity: 2
+    });
+    obj1.style('x', -30);
+    obj2.style('x', 30);
+    obj3.style('x', -60);
+    light.style('y', 10);
+
+    canvas.add(light).add(obj0).add(obj1).add(obj2).add(obj3);
+    canvas.camera.position.set(0,0,30);
+
+    var t = 0, l = 15;
+    ticker.add(function(delta){
+        t += 0.01;
+        light.style({ x: Math.sin(t)*l, z: Math.cos(t)*l+l })
+    });
+    ticker.add(canvas);
+});               
+                    </script>                    
                     
-                    <p> 内容格式器formatter：<a href="example/tooltip.html" target="_blank">try this »</a></p>
+                    <!--<p> 内容格式器formatter：<a href="example/tooltip.html" target="_blank">try this »</a></p>
                     <ul>
                         <li>
                             <b>{string}</b>，模板（Template），其变量为：
@@ -890,94 +1098,44 @@ require(['cartoon', 'three'], function(ct){
                                 <li><i>*函数回调时this指针指向当前图表实例（myChart）</i></li>
                             </ul>
                         </li>
-                    </ul>
-                    
-
-                   
-                    
-                    
-                    
-                    <h3>附录：一个直观的事例<a name="附录一个直观的事例"> </a></h3>
-                    <p>查看更多实例 <a href="example.html" target="_blank">example</a>，或者使用这个<a href="example/demo.html" target="_blank">demo</a> 或 <a href="example/www/index.html" target="_blank">ECharts单一文件引入</a>作为你的模板</p>
-                    <div class="code" style="margin-bottom: 25px;">
-                        <pre style="margin-bottom: 0;">// 图表实例化------------------
-// srcipt标签式引入
-var myChart = echarts.init(document.getElementById('main'));
-
-// 过渡---------------------
-myChart.showLoading({
-    text: '正在努力的读取数据中...',    //loading话术
-});
-
-// ajax getting data...............
-
-// ajax callback
-myChart.hideLoading();
-
-// 图表使用-------------------
-var option = {
-    legend: {                                   // 图例配置
-        padding: 5,                             // 图例内边距，单位px，默认上下左右内边距为5
-        itemGap: 10,                            // Legend各个item之间的间隔，横向布局时为水平间隔，纵向布局时为纵向间隔
-        data: ['ios', 'android']
-    },
-    tooltip: {                                  // 气泡提示配置
-        trigger: 'item',                        // 触发类型，默认数据触发，可选为：'axis'
-    },
-    xAxis: [                                    // 直角坐标系中横轴数组
-        {
-            type: 'category',                   // 坐标轴类型，横轴默认为类目轴，数值轴则参考yAxis说明
-            data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-        }
-    ],
-    yAxis: [                                    // 直角坐标系中纵轴数组
-        {
-            type: 'value',                      // 坐标轴类型，纵轴默认为数值轴，类目轴则参考xAxis说明
-            boundaryGap: [0.1, 0.1],            // 坐标轴两端空白策略，数组内数值代表百分比
-            splitNumber: 4                      // 数值轴用，分割段数，默认为5
-        }
-    ],
-    series: [
-        {
-            name: 'ios',                        // 系列名称
-            type: 'line',                       // 图表类型，折线图line、散点图scatter、柱状图bar、饼图pie、雷达图radar
-            data: [112, 23, 45, 56, 233, 343, 454, 89, 343, 123, 45, 123]
-        },
-        {
-            name: 'android',                    // 系列名称
-            type: 'line',                       // 图表类型，折线图line、散点图scatter、柱状图bar、饼图pie、雷达图radar
-            data: [45, 123, 145, 526, 233, 343, 44, 829, 33, 123, 45, 13]
-        }
-    ]
-};
-myChart.setOption(option);
-
-...
-
-// 增加些数据------------------
-option.legend.data.push('win');
-option.series.push({
-        name: 'win',                            // 系列名称
-        type: 'line',                           // 图表类型，折线图line、散点图scatter、柱状图bar、饼图pie、雷达图radar
-        data: [112, 23, 45, 56, 233, 343, 454, 89, 343, 123, 45, 123]
-});
-myChart.setOption(option);
-
-...
-
-// 图表清空-------------------
-myChart.clear();
-
-// 图表释放-------------------
-myChart.dispose();
-</pre>
-</div>                        </div>
-                    </div>
+                    </ul>-->
+                </div>
+            </div>
         </div>
     </div><!--/.fluid-container-->
 
     <!-- FOOTER -->
-    <footer id="footer" style="margin-top: 50px;"><div class="container"><div class="row" style="padding-bottom:20px;"><div class="col-md-3"><p>友情链接</p><ul><li><a href="http://tushuo.baidu.com/" target="_blank">Baidu 图说</a></li><li><a href="http://efe.baidu.com" target="_blank">Baidu EFE</a></li><li><a href="http://datavlab.org/" target="_blank">DataV</a></li><li><a href="http://ecomfe.github.io/zrender/index.html" target="_blank">ZRender</a></li></ul></div><div class="col-md-3"><p>更多</p><ul><li><a href="https://github.com/ecomfe/echarts/blob/master/LICENSE.txt" target="_blank">License</a></li><li><a href="http://echarts.baidu.com/doc/changelog.html" target="_blank">Changelog</a></li><li><a href="http://www.oschina.net/p/echarts" target="_blank">开源中国</a></li></ul></div><div class="col-md-3"><p>联系我们</p><ul><li><a href="mailto:echarts(a)baidu.com">echarts(a)baidu.com</a></li><li><a href="https://github.com/ecomfe/echarts" target="_blank"> Github</a></li><li><a href="http://weibo.com/echarts" target="_blank">Weibo</a></li></ul></div><div class="col-md-3 flogo"><a href="javascript:void(0)" onclick="back2Top()" title="回到顶部"><img src="http://echarts.baidu.com/doc/asset/img/echarts-logo2.png" alt="ECharts"></a></div></div><p class="pull-right"><a href="javascript:void(0)" onclick="back2Top()">Back to top</a></p><p>© 2014 <a href="http://www.baidu.com/" target="_blank">Baidu</a></p></div></footer>
+    <footer id="footer" style="margin-top: 50px;">
+    	<div class="container">
+    		<div class="row" style="padding-bottom:20px;">
+    			<div class="col-md-3">
+    				<p>友情链接</p>
+    				<ul>
+    					<li><a href="http://echarts.baidu.com/" target="_blank">Echarts</a></li>
+    					<li><a href="http://efe.baidu.com" target="_blank">Baidu EFE</a></li>
+    				</ul>
+    			</div>
+    			<div class="col-md-3">
+    				<p>更多</p>
+    				<ul>
+    					<li><a href="http://gitlab.baidu.com/chenrui09/cartoonjs" target="_blank">Gitlab</a></li>
+    				</ul>
+    			</div>
+    			<div class="col-md-3">
+    				<p>联系我们</p>
+    				<ul>
+    					<li><a href="http://fe.baidu.com/" target="_blank">http://fe.baidu.com/</a></li>
+    				</ul>
+    			</div>
+    			<div class="col-md-3 flogo">
+    				<!--<a href="javascript:void(0)" onclick="back2Top()" title="回到顶部"><img src="" alt=""></a>-->
+    			</div>
+    		</div>
+    		<p class="pull-right">
+    			<a href="javascript:void(0)" onclick="back2Top()">Back to top</a></p><p>© 2014 <a href="http://www.baidu.com/" target="_blank">Baidu</a>
+    		</p>
+    	</div>
+    </footer>
     
     <script src="js/libs/jquery-1.11.1.min.js"></script>
     <script src="js/libs/bootstrap.min.js"></script>

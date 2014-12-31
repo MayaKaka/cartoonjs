@@ -8,9 +8,6 @@
 //define(function() {
     // 请原谅我这样写，这显然可以直接返回个对象，但那样的话outline就显示不出来了~~
     var config = {
-        props: {
-           
-        },
 
         graphics: {
            

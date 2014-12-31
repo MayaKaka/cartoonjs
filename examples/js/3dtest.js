@@ -666,7 +666,6 @@ var test3d = {
 			var deg = 0;
 			ticker.add(function(delta) {
 				deg+=1;
-				camera.position.set(Math.cos(deg*RAD_P_DEG/4)*220, 100, Math.sin(deg*RAD_P_DEG/4)*220);
 				point.position.set(Math.sin(deg*RAD_P_DEG)*60, 120, Math.cos(deg*RAD_P_DEG)*60);
 				camera.lookAt(new T.Vector3(0, 0, 0));	
 				human.updateAnimation(delta/1000);

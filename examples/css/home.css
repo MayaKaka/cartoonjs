@@ -50,6 +50,9 @@
 	overflow: hidden;
 }
 
+.ADoc_table pre {
+    max-width: 380px;
+}
 
 * {
     font-family: "Microsoft YaHei";
@@ -391,8 +394,7 @@ table.full {width:100%;}
 }
 
 .ADoc_table th {
-    border-bottom:2px solid rgb(23,53,81);
-    background:rgb(37,78,117);
+    background:rgb(62,152, 197);
     color:#fff;
     text-align:center;
 }

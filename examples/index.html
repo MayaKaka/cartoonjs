@@ -25,16 +25,16 @@
 						<li class="active"><a href="#">首页</a></li>
 						<li class=""><a href="doc.html" target="_blank">文档</a></li>
 						<li class=""><a href="demo.html" target="_blank">示例</a></li>
+						<li class=""><a href="three.html" target="_blank">3d示例</a></li>
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">下载<b class="caret"></b></a>
 							<ul class="dropdown-menu">
-								<li><a href="../build/cartoon.min.js">cartoon.js</a></li>
-								<li><a href="../build/cartoon.min.js">cartoon.min.js</a></li>
-								<li><a href="../build/cartoon.min.js">extra/filters.js</a></li>
-								<li><a href="../build/cartoon.min.js">extra/particles.js</a></li>
-								<li><a href="../build/cartoon.min.js">extra/box2d.js</a></li>
-								<li><a href="../build/cartoon.min.js">extra/three.js</a></li>
-								<li class="divider"></li>
+								<li><a href="../build/all/cartoon.js">cartoon.js</a></li>
+								<li><a href="../build/all/filters.js">filters.js</a></li>
+								<li><a href="../build/all/particles.js">particles.js</a></li>
+								<li><a href="../build/all/box2d.js">box2d.js</a></li>
+								<li><a href="../build/all/three.js">three.js</a></li>
+                                <li class="divider"></li>
 								<li><a href="doc/changelog.html">更新日志</a></li>
 							</ul>
 						</li>
@@ -44,6 +44,7 @@
 			</div>
 		</div>
 	</div>
+
 	<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
       	<ol class="carousel-indicators">
         	<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
@@ -128,7 +129,7 @@ $(function() {
 });
 </script>>
 <script>
-require(['cartoon.three'], function(ct) {
+require(['cartoon', 'particles'], function(ct) {
 	ct.setRenderMode('canvas');
 
 	var canvas = new ct.Canvas({ elem: '#cvs_0', width: 900, height: 400 });

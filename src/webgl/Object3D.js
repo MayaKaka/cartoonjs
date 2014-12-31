@@ -132,7 +132,9 @@ Object3D.geometries = {
 	
 	ring: {
 		init: function(data) {
-			return new THREE.RingGeometry(data);
+			var radius = data.radius || 3,
+				width = data.width || 4;
+			return new THREE.RingGeometry(radius-width/2, radius+width/2, data.segment || 9);
 		}
 	},
 	
@@ -146,6 +148,12 @@ Object3D.geometries = {
 	sphere: {
 		init: function(data) {
 			return new THREE.SphereGeometry(data.radius || 3, data.segment || 9, data.segment || 9);
+		}
+	},
+
+	cylinder: {
+		init: function(data) {
+			return new THREE.CylinderGeometry(data.radius || 30, data.tube ||20, data.rSegment || 8, data.tSegment || 6);
 		}
 	}
 		
