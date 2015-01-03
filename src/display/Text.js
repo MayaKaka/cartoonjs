@@ -27,24 +27,28 @@ var Text = DisplayObject.extend({
 	
 	draw: function(ctx) {
 		// 绘制文本
-		ctx.font = this.font;
+		ctx.font = this.fontSize + 'px ' + this.fontFamily;
 		ctx.textAlign = this.textAlign;
 		ctx.textBaseline = this.textBaseline;
-		ctx.fillStyle = this.textColor;
+		ctx.fillStyle = this.color;
 		ctx.fillText(this.text, 0, 0);
 	},
 
 	_initText: function(props) {
 		// 初始化文本
-		this.font = props.font || '20px Microsoft Yahei';
+		this.color = props.color || '0x000000';
+		this.fontSize = props.size || 20;
+		this.fontFamily = props.font || 'Microsoft Yahei';
 		this.textAlign = props.align || 'left';
 		this.textBaseline = props.baseline || 'top';
-		this.textColor = props.color || 'black';
 		
 		this.value(props.text || '');
 		
 		if (this.renderMode === 0) {
-			this.elemStyle.color = this.textColor;
+			var style = this.elemStyle;
+			style.color = this.color;
+			style.fontSize = this.fontSize + 'px';
+			style.fontFamily = this.fontFamily;
 		}
 	}
 

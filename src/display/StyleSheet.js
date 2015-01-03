@@ -359,8 +359,9 @@ StyleSheet.styles = {
 			return value;
 		},
 		css: function(key, value) {
-			var shadow = this.shadow;
-			this.elemStyle.boxShadow = shadow.offsetX+'px ' + shadow.offsetY+'px ' + shadow.blur+'px ' + shadow.color;
+			var shadow = this.shadow,
+				stlyeName = this.type === 'Text' ? 'textShadow' : 'boxShadow';
+			this.elemStyle[stlyeName] = shadow.offsetX+'px ' + shadow.offsetY+'px ' + shadow.blur+'px ' + shadow.color;
 		}
 	}),
 	

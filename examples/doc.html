@@ -32,11 +32,11 @@
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">下载<b class="caret"></b></a>
 							<ul class="dropdown-menu">
-								<li><a href="../build/all/cartoon.js">cartoon.js</a></li>
-								<li><a href="../build/all/filters.js">filters.js</a></li>
-								<li><a href="../build/all/particles.js">particles.js</a></li>
-								<li><a href="../build/all/box2d.js">box2d.js</a></li>
-								<li><a href="../build/all/three.js">three.js</a></li>
+								<li><a href="../build/cartoon.js">cartoon.js</a></li>
+								<li><a href="../build/cartoon.filters.js">filters.js</a></li>
+								<li><a href="../build/cartoon.particles.js">particles.js</a></li>
+								<li><a href="../build/cartoon.box2d.js">box2d.js</a></li>
+								<li><a href="../build/cartoon.three.js">three.js</a></li>
                                 <li class="divider"></li>
 								<li><a href="doc/changelog.html">更新日志</a></li>
 							</ul>
@@ -175,10 +175,10 @@
                         <pre>require.config({
     paths: {
         'cartoon': 'http://webfx.baidu.com/build/cartoon',
-        'filters': 'http://webfx.baidu.com/build/filters',
-        'particles': 'http://webfx.baidu.com/build/particles',
-        'box2d': 'http://webfx.baidu.com/build/box2d',
-        'three': 'http://webfx.baidu.com/build/three' 
+        'cartoon.filters': 'http://webfx.baidu.com/build/cartoon.filters',
+        'cartoon.particles': 'http://webfx.baidu.com/build/cartoon.particles',
+        'cartoon.box2d': 'http://webfx.baidu.com/build/cartoon.box2d',
+        'cartoon.three': 'http://webfx.baidu.com/build/cartoon.three' 
     }
 });
 </pre>
@@ -463,7 +463,7 @@ require(['cartoon'], function(ct){
 });</code></pre></p>
                     <canvas id="cvs-bitmap"></canvas>
                     <script>
-require(['cartoon', 'filters'], function(ct){
+require(['cartoon', 'cartoon.filters'], function(ct){
     ct.setRenderMode('canvas');
 
     var canvas = new ct.Canvas({
@@ -658,7 +658,7 @@ require(['cartoon'], function(ct){
 });</code></pre></p>
                     <canvas id="cvs-particle"></canvas>
                     <script>
-require(['cartoon', 'particles'], function(ct, particles){
+require(['cartoon', 'cartoon.particles'], function(ct, particles){
     ct.setRenderMode('canvas');
 
     var canvas = new ct.Canvas({
@@ -737,7 +737,7 @@ var box = ct.Object3D.create({
 });</code></pre></p>
                     <canvas id="cvs-obj3d"></canvas>
                     <script>
-require(['cartoon', 'three'], function(ct){
+require(['cartoon', 'cartoon.three'], function(ct){
     var canvas = new ct.GLCanvas({
         elem: document.getElementById('cvs-obj3d'),
         width: 850, height: 150
@@ -862,7 +862,7 @@ Object3D.create({ graphics: geometry2, material: material });</code></pre></p>
                     </tbody></table>
                     <canvas id="cvs-geometry"></canvas>
                     <script>
-require(['cartoon', 'three'], function(ct){
+require(['cartoon', 'cartoon.three'], function(ct){
     var canvas = new ct.GLCanvas({
         elem: '#cvs-geometry',
         width: 850, height: 150
@@ -1002,7 +1002,7 @@ Object3D.create({ graphics: geometry, material: material2 });</code></pre></p>
                     </tbody></table>
                     <canvas id="cvs-material"></canvas>
                     <script>
-require(['cartoon', 'three'], function(ct){
+require(['cartoon', 'cartoon.three'], function(ct){
     var canvas = new ct.GLCanvas({
         elem: '#cvs-material',
         width: 850, height: 150

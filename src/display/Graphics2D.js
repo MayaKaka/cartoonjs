@@ -166,8 +166,8 @@ Graphics2D.shapes = {
 	
 	polyStar: {
 		init: function(data) {
-			this.sides = data.sides;
-			this.cohesion = data.cohesion;
+			this.sides = data.sides || 5;
+			this.cohesion = data.cohesion || 0.6;
 			this.style('radius', data.radius);
 			// 设置通用样式
 			setStyle(this, data);

@@ -25,7 +25,7 @@ var test3d = {
 			var geometry = new T.BoxGeometry( 100, 100, 100 );
 			var material = new T.MeshLambertMaterial( { color: 0x888888 } );
 
-			var	control = new ct.TransformControls( camera, renderer.domElement );
+			var	control = new T.TransformControls( camera, renderer.domElement );
 			control.addEventListener( 'change', function() {
 				control.update();
 			});

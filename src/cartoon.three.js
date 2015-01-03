@@ -9,8 +9,7 @@ base.expand({
 	// THREE库文件
 	THREE: require('webgl/THREE'),
 	Object3D: require('webgl/Object3D'),
-	GLCanvas: require('webgl/GLCanvas'),
-	TransformControls: require('webgl/TransformControls')
+	GLCanvas: require('webgl/GLCanvas')
 	
 });
 
