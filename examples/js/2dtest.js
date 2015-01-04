@@ -1140,20 +1140,20 @@ var test2d = {
 				g: { type: 'circle', radius: 16, fill: '#00F' }
 			});
 			c0.move({
-				vx: 0.06, vy: -0.8, ay: 0.0006, fn: function(t, x, y) {
+				type: 'speed', vx: 0.06, vy: -0.8, ay: 0.0006, fn: function(t, x, y) {
 					if (t > 2500) return true;
 				}
 			});
 			c0.to({ transform: { scale: 0.3 }}, 1400);
 			c1.move({
-				vx: -0.06, ax:-0.0001, vy: -0.8, ay: 0.0006, fn: function(t, x, y) {
+				type: 'speed', vx: -0.06, ax:-0.0001, vy: -0.8, ay: 0.0006, fn: function(t, x, y) {
 					l1.path.push([x, y]);
 					if (t > 2500) return true;
 				}
 			});
 			c1.to({ transform: { scale: 0.3 }}, 1400);
 			c2.move({
-				vy: -0.8, ay: 0.0006, fn: function(t, x, y) {
+				type: 'speed', vy: -0.8, ay: 0.0006, fn: function(t, x, y) {
 					if (t > 1600) return true;
 				}
 			});

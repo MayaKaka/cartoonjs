@@ -33,13 +33,13 @@ Graphics2D.shapes = {
 			setStyle(this, data);
 		},
 		draw: function(ctx) {
+			var hasFill = this.setFill(ctx),
+				hasStroke = this.setStroke(ctx);
 			// 绘制矩形
-			if (this.setFill(ctx)) {
-				ctx.fillRect(0, 0, this.width, this.height);
-			}
-			if (this.setStroke(ctx)) {
-				ctx.strokeRect(0, 0, this.width, this.height);
-			}
+			ctx.beginPath();
+			ctx.rect(0, 0, this.width, this.height);
+			ctx.closePath();
+			drawShape(ctx, hasFill, hasStroke);
 		}
 	},
 	

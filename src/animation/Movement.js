@@ -34,6 +34,10 @@ var Movement = Class.extend({
 	},
 	
 	move: function(delta) {
+		
+	},
+
+	speed: function(delta) {
 		var data = this.data,
 			target = this._target,
 			sx = this._sx,
@@ -162,14 +166,22 @@ Movement.addMovement = function(data) {
 			p2: data.p2 || { x: 0, y: 0 },
 			fn: data.fn
 		});
-	} else {
+	} else if (data.type === 'speed') {
 		movement = new Movement({
-			type: 'move',
+			type: 'speed',
 			target: this._currentTarget,
 			vx: data.vx || 0,
 			vy: data.vy || 0,
 			ax: data.ax || 0,
 			ay: data.ay || 0,
+			fn: data.fn
+		});
+	} else {
+		movement = new Movement({
+			type: 'move',
+			target: this._currentTarget,
+			path: data.path || [],
+			v: data.v || 0,
 			fn: data.fn
 		});
 	}

@@ -230,6 +230,10 @@ var DisplayObject = EventDispatcher.extend({
 		}
 	},
 	
+	mask: function(shape) {
+
+	},
+
 	cache: function(tag) {
 		// 开启缓存，后期加入多缓存模式
 		if (supportCanvas) {

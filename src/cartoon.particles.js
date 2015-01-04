@@ -5,8 +5,8 @@ var	cartoon = require('cartoon'),
 	Shape = cartoon.Shape,
 	Bitmap = cartoon.Bitmap,
 	ParticleEmitter = cartoon.ParticleEmitter,
-	particles = ParticleEmitter.particles,
-	random = cartoon.random;
+	random = cartoon.random,
+	particles = ParticleEmitter.particles;
 
 cartoon.expand(particles, {	
 	rain: {
