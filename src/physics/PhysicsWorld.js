@@ -2,8 +2,9 @@
 define( function ( require, exports, module ) {
 	"use strict";
 
-var DisplayObject = require('display/DisplayObject'),
-	Box2D = require('physics/Box2D');
+var cartoon = require('cartoon'),
+	Box2D = require('physics/Box2D'),
+	DisplayObject = cartoon.DisplayObject;
 
 var b2Vec2 = Box2D.Common.Math.b2Vec2,
 	b2BodyDef = Box2D.Dynamics.b2BodyDef,

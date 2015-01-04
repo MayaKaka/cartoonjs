@@ -2,7 +2,8 @@
 define( function ( require, exports, module ) {
 	"use strict";
 
-var StyleSheet = require('display/StyleSheet'),
+var cartoon = require('cartoon'),
+	StyleSheet = cartoon.StyleSheet,
 	newStyle = StyleSheet.newStyle;
 
 StyleSheet.styles3d = {

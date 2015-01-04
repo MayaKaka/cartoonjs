@@ -461,8 +461,8 @@ require(['cartoon'], function(ct){
 			<div>
 				<h5>Methods</h5>
 				<ul>
-					<li><label>applyFilter</label>
-						<code class="html">bmp.applyFilter('grayscale', '100%');  // 添加滤镜效果</code>
+					<li><label>apply</label>
+						<code class="html">bmp.apply('grayscale', '100%');  // 添加滤镜效果</code>
 					</li>			
 					<li><label>私有方法</label><span>_initImage (初始化图像)</span>
 					</li>
@@ -507,9 +507,9 @@ require(['cartoon'], function(ct){
 	canvas.add(bmp3);
 	canvas.update();
 	setTimeout(function(){
-		bmp1.applyFilter('grayscale');
-		bmp2.applyFilter('impression');
-		bmp3.applyFilter('rilievo');
+		bmp1.apply('grayscale');
+		bmp2.apply('impression');
+		bmp3.apply('rilievo');
 		canvas.update();
 	}, 200);
 });		  		  
@@ -940,7 +940,7 @@ obj.to({ x: 60 }, 300, 'easeIn');</code>
   		return canvas;
   	}  
 });
-img.applyFilter('highlight');</code>
+img.apply('highlight');</code>
 		</pre></p>
 				
 		<!--  StyleSheet  -->

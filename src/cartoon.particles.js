@@ -1,14 +1,14 @@
 define( function ( require, exports, module ) {
 	"use strict";
 	
-var	base = require('base'),
-	ParticleEmitter = require('animation/ParticleEmitter'),
-	Shape = require('display/Shape'),
-	Bitmap = require('display/Bitmap'),
+var	cartoon = require('cartoon'),
+	Shape = cartoon.Shape,
+	Bitmap = cartoon.Bitmap,
+	ParticleEmitter = cartoon.ParticleEmitter,
 	particles = ParticleEmitter.particles,
-	random = base.random;
+	random = cartoon.random;
 
-base.expand(particles, {	
+cartoon.expand(particles, {	
 	rain: {
 		init: function(data) {
 			var width = data.width,

@@ -10,7 +10,6 @@ var Shape = DisplayObject.extend({
 	type: 'Shape',
 	
 	graphics: null,
-	fillBrush: null,
 	snapToPixel: true,
 	
 	init: function(props) {

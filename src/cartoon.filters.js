@@ -2,11 +2,11 @@
 define( function ( require, exports, module ) {
 	"use strict";
 	
-var base = require('base'),
-	Filter = require('display/Filter'),
+var cartoon = require('cartoon'),
+	Filter = cartoon.Filter,
 	filters = Filter.filters;
 
-base.expand(filters, {
+cartoon.expand(filters, {
 	grayscale: function(image, value) {
 		// 处理灰阶效果
 		var canvas = document.createElement('canvas');

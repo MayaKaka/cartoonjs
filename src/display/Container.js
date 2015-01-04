@@ -7,6 +7,7 @@ var DisplayObject = require('display/DisplayObject');
 var Container = DisplayObject.extend({
 
 	type: 'Container',
+	
 	renderMode: 0,
 	autoUpdate: true,
 	

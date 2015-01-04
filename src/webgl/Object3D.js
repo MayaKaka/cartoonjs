@@ -2,11 +2,12 @@
 define( function ( require, exports, module ) {
 	"use strict";
 
-var THREE = require('webgl/THREE'),
+var cartoon = require('cartoon'),
+	THREE = require('webgl/THREE'),
 	Style3D = require('webgl/StyleSheet3D'),
-	Preload = require('core/Preload'),
-	DisplayObject = require('display/DisplayObject'),
-	Tween = require('animation/Tween'),
+	Preload = cartoon.Preload,
+	DisplayObject = cartoon.DisplayObject,
+	Tween = cartoon.Tween,
 	OriginObject3D = THREE.Object3D,
 	JSONLoader = THREE.JSONLoader;
 

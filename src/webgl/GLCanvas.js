@@ -2,8 +2,9 @@
 define( function ( require, exports, module ) {
 	"use strict";
 	   
-var DisplayObject = require('display/DisplayObject'),
-	THREE = require('webgl/THREE');
+var cartoon = require('cartoon'),
+	THREE = require('webgl/THREE'),
+	DisplayObject = cartoon.DisplayObject;
 
 var GLCanvas = DisplayObject.extend({
 	

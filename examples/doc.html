@@ -488,9 +488,9 @@ require(['cartoon', 'cartoon.filters'], function(ct){
     canvas.add(bmp0).add(bmp1).add(bmp2).add(bmp3);
     canvas.update();
     setTimeout(function(){
-        bmp1.applyFilter('grayscale');
-        bmp2.applyFilter('impression');
-        bmp3.applyFilter('rilievo');
+        bmp1.apply('grayscale');
+        bmp2.apply('impression');
+        bmp3.apply('rilievo');
         canvas.update();
     }, 200);
 });               
@@ -500,7 +500,7 @@ require(['cartoon', 'cartoon.filters'], function(ct){
                     <p>文本，继承 DisplayObject</p>
                     <p><pre>
 <code class="html">var txt = new Text({
-   text: 'Hello World', font: '20px Arail', color: 'red'
+   text: 'Hello World', size: 20, font: 'Arail', color: 'red'
 });</code></pre></p>
                     <canvas id="cvs-text"></canvas>
                     <script>
@@ -511,7 +511,7 @@ require(['cartoon'], function(ct){
     });
     var txt = new ct.Text({
         renderMode: 'canvas', x: 320, y:50,
-        text: 'Just Do IT !', font: '40px 微软雅黑', color: 'red'
+        text: 'Just Do IT !', size: 40, color: 'red'
     });
     canvas.add(txt);
     canvas.update();

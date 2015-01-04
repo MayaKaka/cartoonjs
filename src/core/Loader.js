@@ -4,11 +4,11 @@ define( function ( require, exports, module ) {
 
 var EventDispatcher = require('core/EventDispatcher');
 
+var regexpImage = /\.jpg$|\.png$|\.gif$/,
+	regexpJson = /\.json$/;
+
 var Loader = EventDispatcher.extend({
-	
-	regexpImage: /\.jpg$|\.png$|\.gif$/,
-	regexpJson: /\.json$/,
-	
+
 	_resources: null,
 	_loadQueue: null,
 	_loadQueueLength: -1,	
@@ -24,9 +24,9 @@ var Loader = EventDispatcher.extend({
 			url, type;
 		for (var i=0; i<len; i++) {
 			url = manifest[i];
-			if (this.regexpImage.test(url)) {
+			if (regexpImage.test(url)) {
 				type = 'image';
-			} else if (this.regexpJson.test(url)) {
+			} else if (regexpJson.test(url)) {
 				type = 'json';
 			} else {
 				type = 'text';

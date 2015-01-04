@@ -668,10 +668,10 @@ var test2d = {
 				bmp3 = new ct.Bitmap(imageData),
 				bmp4 = new ct.Bitmap(imageData);
 			
-			bmp1.applyFilter('contrast', '2.6');
-			bmp2.applyFilter('hue-rotate', '260deg');
-			bmp3.applyFilter('invert', '0.9');
-			bmp4.applyFilter('saturate', '7.9');
+			bmp1.apply('contrast', '2.6');
+			bmp2.apply('hue-rotate', '260deg');
+			bmp3.apply('invert', '0.9');
+			bmp4.apply('saturate', '7.9');
 
 			dom.add(bmp).add(bmp1).add(bmp2).add(bmp3).add(bmp4);
 			
@@ -683,10 +683,10 @@ var test2d = {
 				bmp_cvs3 = new ct.Bitmap(imageData),
 				bmp_cvs4 = new ct.Bitmap(imageData);
 			
-			bmp_cvs1.applyFilter('impression');
-			bmp_cvs2.applyFilter('rilievo');
-			bmp_cvs3.applyFilter('brightness');
-			bmp_cvs4.applyFilter('grayscale');
+			bmp_cvs1.apply('impression');
+			bmp_cvs2.apply('rilievo');
+			bmp_cvs3.apply('brightness');
+			bmp_cvs4.apply('grayscale');
 			
 			cvs.add(bmp_cvs).add(bmp_cvs1).add(bmp_cvs2).add(bmp_cvs3).add(bmp_cvs4);
 			

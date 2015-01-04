@@ -1,15 +1,19 @@
 require(['cartoon'], function(ct) {
 	// alert(window.innerWidth, window.innerHeight);
-	var canvas = new ct.Canvas({
-		x: 0, y: 0, elem: '#canvas', width: window.innerWidth, height: window.innerHeight
+	var canvas = ct.create({
+		type: 'Canvas', elem: '#canvas', 
+		x: 0, y: 0, width: window.innerWidth, height: window.innerHeight
 	});
 
-	var stage = new ct.Container({
-		x: 0, y: 0, elem: '#stage'
+	var stage = ct.create({
+		type: 'Container', elem: '#stage', 
+		x: 0, y: 0
 	});
 
-	var fps = new ct.Text({
-		x: 0, y: 0, elem: '#fps', width: 100, text: 'fps: 0', color: '#ffffff', size: 20
+	var fps = ct.create({
+		type: 'Text', elem: '#fps', 
+		x: 0, y: 0, width: 100, 
+		text: 'fps: 0', color: '#ffffff', size: 20
 	});
 	fps.enable(false);
 

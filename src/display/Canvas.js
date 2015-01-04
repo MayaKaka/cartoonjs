@@ -8,6 +8,7 @@ var DisplayObject = require('display/DisplayObject'),
 var Canvas = DisplayObject.extend({
 	
 	type: 'Canvas',
+	
 	renderMode: 0,
 	autoUpdate: true,
 	useElemSize: true,

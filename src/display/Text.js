@@ -7,7 +7,8 @@ var DisplayObject = require('display/DisplayObject');
 var Text = DisplayObject.extend({
 	
 	type: 'Text',
-	text: null,
+
+	_text: null,
 	
 	init: function(props) {
 		this._super(props);
@@ -16,9 +17,9 @@ var Text = DisplayObject.extend({
 		
 	value: function (text) {
 		if (text === undefined) {
-			return this.text;
+			return this._text;
 		} else {
-			this.text = text;
+			this._text = text;
 			if (this.renderMode === 0) {
 				this.elem.innerHTML = text;
 			}
@@ -31,7 +32,7 @@ var Text = DisplayObject.extend({
 		ctx.textAlign = this.textAlign;
 		ctx.textBaseline = this.textBaseline;
 		ctx.fillStyle = this.color;
-		ctx.fillText(this.text, 0, 0);
+		ctx.fillText(this._text, 0, 0);
 	},
 
 	_initText: function(props) {

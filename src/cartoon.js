@@ -2,9 +2,9 @@
 define( function ( require, exports, module ) {
 	"use strict";
 	   
-var base = require('base');
+var cartoon = require('base');
 
-base.expand({
+cartoon.expand({
 	
 	// 基础组件
 	Class: require('core/Class'),
@@ -21,10 +21,12 @@ base.expand({
 	Canvas: require('display/Canvas'),
 	Graphics2D: require('display/Graphics2D'),
 	Shape: require('display/Shape'),
+	Filter: require('display/Filter'),
 	Bitmap: require('display/Bitmap'),
 	Text: require('display/Text'),
 	
 	// 动画组件
+	Ease: require('animation/Ease'),
 	Tween: require('animation/Tween'),
 	Movement: require('animation/Movement'),
 	Timeline:  require('animation/Timeline'),
@@ -34,17 +36,27 @@ base.expand({
 
 });
 
-base.expand({
+cartoon.expand({
 	
+	create: function(props) {
+		props = props || {};
+		
+		var cls = this[props.type || ''] || this.DisplayObject;
+
+		return cls ? ( cls.create ? cls.create(props) : new cls(props) ) : null;
+	},
+
 	setRenderMode: function(mode) {
+		var proto = this.DisplayObject.prototype;
+
 		if (mode === 'canvas' || mode === 1) {
-			this.DisplayObject.prototype.renderMode = 1;
+			proto.renderMode = 1;
 		} else {
-			this.DisplayObject.prototype.renderMode = 0;
+			proto.renderMode = 0;
 		}
 	}
 
 })
 
-return base;
+return cartoon;
 });
