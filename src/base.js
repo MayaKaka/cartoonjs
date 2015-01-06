@@ -13,7 +13,7 @@ if (!Array.prototype.indexOf) {
 	}
 }
 
-var expand = function (origin, props) {
+var extend = function (origin, props) {
 	if (arguments.length === 1) {
 		props = origin;
 		origin = this;
@@ -31,8 +31,8 @@ var random = function(min, max) {
 return { 
 	version: '0.0.0', 
 	DEG_TO_RAD: Math.PI/180,
-	expand: expand, 
-	random: random 
+	extend: extend, 
+	random: random
 };
 
 });

@@ -6,7 +6,7 @@ var cartoon = require('cartoon'),
 	Filter = cartoon.Filter,
 	filters = Filter.filters;
 
-cartoon.expand(filters, {
+cartoon.extend(filters, {
 	grayscale: function(image, value) {
 		// 处理灰阶效果
 		var canvas = document.createElement('canvas');

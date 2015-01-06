@@ -4,7 +4,7 @@ define( function ( require, exports, module ) {
 	   
 var cartoon = require('base');
 
-cartoon.expand({
+cartoon.extend({
 	
 	// 基础组件
 	Class: require('core/Class'),
@@ -31,7 +31,7 @@ cartoon.expand({
 
 });
 
-cartoon.expand({
+cartoon.extend({
 	
 	create: function(props) {
 		props = props || {};

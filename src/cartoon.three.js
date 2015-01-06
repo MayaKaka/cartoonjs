@@ -4,7 +4,7 @@ define( function ( require, exports, module ) {
 	   
 var cartoon = require('cartoon');
 
-cartoon.expand({
+cartoon.extend({
 	
 	// THREE库文件
 	THREE: require('webgl/THREE'),
