@@ -2,13 +2,13 @@ var express = require('express');
 var jade = require('jade');
 var router = express.Router();
 
-var fn = jade.compileFile('app/views/home_index.jade', {});
+var fn = jade.compileFile('app/views/home_demo.jade', {});
 
-/* GET home page. */
+/* GET demo page. */
 router.get('/', function(req, res) {
     res.send(
         fn({
-            pageurl: 'index'
+            pageurl: 'demo'
         })
     );
 });

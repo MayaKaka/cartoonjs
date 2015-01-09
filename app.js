@@ -50,9 +50,8 @@ if (files.length) {
         route = require(path.join(routes, a));
         if (a === 'index') {
             app.use('/', route);
-        } else {
-            app.use('/' + a, route);
         }
+        app.use(['/' + a, '/' + a + '.html'], route);
     });
 }
 // catch 404 and forward to error handler

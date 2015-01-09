@@ -32,14 +32,6 @@ cartoon.extend({
 });
 
 cartoon.extend({
-	
-	create: function(props) {
-		props = props || {};
-		
-		var cls = this[props.type || ''] || this.DisplayObject;
-
-		return cls ? ( cls.create ? cls.create(props) : new cls(props) ) : null;
-	},
 
 	setRenderMode: function(mode) {
 		var proto = this.DisplayObject.prototype;
