@@ -6,6 +6,7 @@
 /examples/deckjs/
 
 # Project Files #
+startup.*
 *.project
 *.project.sublime-workspace
 
