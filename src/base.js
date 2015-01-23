@@ -28,11 +28,26 @@ var random = function(min, max) {
 	return Math.round(Math.random() * (max - min)) + min;
 }
 
+var getWinSize = function() {
+	if (window.innerWidth !== undefined) {
+		return {
+			width: window.innerWidth,
+			height: window.innerHeight
+		}
+	} else {
+		return {
+			width: document.body.clientWidth,
+			height: document.body.clientHeight
+		}
+	}
+}
+
 return { 
 	version: '0.0.0', 
 	DEG_TO_RAD: Math.PI/180,
 	extend: extend, 
-	random: random
+	random: random,
+	getWinSize: getWinSize 
 };
 
 });

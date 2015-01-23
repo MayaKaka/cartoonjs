@@ -4,7 +4,7 @@ var express = require('express');
 var Image = Canvas.Image;
 var router = express.Router();
 
-/*
+
 var canvas = new Canvas(200,200,'png')
   , ctx = canvas.getContext('2d');
 

@@ -35,7 +35,7 @@ var Loader = EventDispatcher.extend({
 		}
 		
 		if (len) {
-			this._loadNext();	
+			this._loadNext();
 		}
 	},
 	
@@ -69,6 +69,7 @@ var Loader = EventDispatcher.extend({
 			})
 		}
 		
+
 		res.onload && res.onload(file);
 		
 		if (progress < 1) {
@@ -86,11 +87,15 @@ var Loader = EventDispatcher.extend({
 	_loadImage: function(res) {
 		var self = this,
 			image = new Image();
-		
 		image.src = res.url;
-		image.onload = function(){
+
+		if (image.complete) {
 			self._loadComplete(res, image);
-		};
+		} else {
+			image.onload = function(){
+				self._loadComplete(res, image);
+			};
+		}
 		
 		this.setItem(res.url, image);
 	},
@@ -98,7 +103,7 @@ var Loader = EventDispatcher.extend({
 	_loadJson: function(res) {
 		var self = this, json, text,
 			xhr = new XMLHttpRequest();
-			
+
 		xhr.onreadystatechange = function () {
 			if (xhr.readyState === xhr.DONE) {
 				if (xhr.status === 200 || xhr.status === 0) {
@@ -111,7 +116,6 @@ var Loader = EventDispatcher.extend({
 				}
 			}
 		};
-	
 		xhr.open('GET', res.url, true);
 		xhr.send(null);
 	}

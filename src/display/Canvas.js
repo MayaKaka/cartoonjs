@@ -93,7 +93,7 @@ var Canvas = DisplayObject.extend({
 			mouseX = self._getMouseX(evt);
 			mouseY = self._getMouseY(evt);
 			// 触发move事件
-			self._triggerEvent('mousemove', target, mouseX, mouseY);
+			self._triggerEvent('mousemove', target || self, mouseX, mouseY);
 			// 检测移动状态
 			if (!moved && (Math.abs(mouseX-startX) > 3 || Math.abs(mouseY-startY) > 3)) {
 				moved = true;
@@ -105,7 +105,6 @@ var Canvas = DisplayObject.extend({
 			elem.addEventListener('touchend', handleUp, false);
 			elem.addEventListener('touchmove', handleMove, false);
 		} else {
-			if (!elem.addEventListener) elem.addEventListener = elem.attachEvent;
 			elem.addEventListener('mousedown', handleDown, false);
 			elem.addEventListener('mouseup', handleUp, false);
 			elem.addEventListener('mouseout', handleUp, false);

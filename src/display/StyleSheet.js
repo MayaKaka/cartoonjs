@@ -255,6 +255,7 @@ StyleSheet.styles = {
 			var style = this.elemStyle,
 				t2d = this.transform;
 			if (supportIE6Filter) {
+				/*
 				// ie6-8下使用matrix filter
 				var	elem = this.elem,
 					filter = style.filter,
@@ -268,6 +269,9 @@ StyleSheet.styles = {
 				style.filter = regexp.test(filter) ? filter.replace(regexp, text) : ('progid:DXImageTransform.Microsoft.' + text + ') ' + filter);		
 				style.marginLeft = t2d.translateX + (elem.clientWidth - elem.offsetWidth) * t2d.originX + 'px';
 				style.marginTop = t2d.translateY + (elem.clientHeight - elem.offsetHeight) * t2d.originY + 'px';
+				*/
+				style.marginLeft = t2d.translateX + 'px';
+				style.marginTop  = t2d.translateY + 'px';
 			} else {
 				// 设置css3样式
 				css3(style, 'transform', this._mergeTransformText());

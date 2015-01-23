@@ -29,8 +29,15 @@ var Container = DisplayObject.extend({
 			target, moved,
 			startX, startY;
 		// 事件处理函数
+		var preventDef = function(evt) {
+			if (evt.preventDefault) {
+				evt.preventDefault();
+			} else {
+				window.event.returnValue = false;
+			}
+		}
 		var handleDown = function(evt) {
-			evt.preventDefault();
+			preventDef(evt);
 			mouseX = self._getMouseX(evt);
 			mouseY = self._getMouseY(evt);
 			// 检测点击对象
@@ -43,7 +50,7 @@ var Container = DisplayObject.extend({
 			startY = mouseY;
 		};
 		var	handleUp = function(evt) {
-			evt.preventDefault();
+			preventDef(evt);
 			// 触发up事件
 			self._triggerEvent('mouseup', target, mouseX, mouseY);
 			// 触发click事件
@@ -54,11 +61,11 @@ var Container = DisplayObject.extend({
 			target = null;
 		};
 		var handleMove = function(evt) {
-			evt.preventDefault();
+			preventDef(evt);
 			mouseX = self._getMouseX(evt);
 			mouseY = self._getMouseY(evt);
 			// 触发move事件
-			self._triggerEvent('mousemove', target, mouseX, mouseY);
+			self._triggerEvent('mousemove', target || self, mouseX, mouseY);
 			// 检测移动状态
 			if (!moved && (Math.abs(mouseX-startX) > 3 || Math.abs(mouseY-startY) > 3)) {
 				moved = true;
@@ -70,10 +77,15 @@ var Container = DisplayObject.extend({
 			elem.addEventListener('touchend', handleUp, false);
 			elem.addEventListener('touchmove', handleMove, false);
 		} else {
-			if (!elem.addEventListener) elem.addEventListener = elem.attachEvent;
-			elem.addEventListener('mousedown', handleDown, false);
-			elem.addEventListener('mouseup', handleUp, false);
-			elem.addEventListener('mousemove', handleMove, false);
+			if (elem.attachEvent) {
+				elem.attachEvent('onmousedown', handleDown, false);
+				elem.attachEvent('onmouseup', handleUp, false);
+				elem.attachEvent('onmousemove', handleMove, false);
+			} else {
+				elem.addEventListener('mousedown', handleDown, false);
+				elem.addEventListener('mouseup', handleUp, false);
+				elem.addEventListener('mousemove', handleMove, false);
+			}
 		}
 	},
 	
