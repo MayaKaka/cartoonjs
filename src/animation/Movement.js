@@ -16,11 +16,10 @@ var Movement = Class.extend({
 		var target = this._target = data.target;
 		
 		this.data = data;
-		this.fn = data.fn;
 		this._deltaTime = 0;
 		this._sx = target.x;
 		this._sy = target.y;
-		
+
 		this.update = this[data.type];
 	},
 	
@@ -34,7 +33,39 @@ var Movement = Class.extend({
 	},
 	
 	move: function(delta) {
+		var data = this.data,
+			target = this._target,
+			sx = this._sx,
+			sy = this._sy;
 		
+		var t = this._deltaTime,
+			p = data.path[0],
+			v = data.v,
+			dx = p[0] - sx,
+			dy = p[1] - sy,
+			dis = Math.sqrt(dx*dx + dy*dy),
+			len = v*t,
+			x, y;
+
+		if (len > dis) {
+			data.path.shift();
+			x = p[0];
+			y = p[1];
+			this._deltaTime = 0;
+			this._sx = x;
+			this._sy = y;
+		} else {
+			x = dx/dis*len+sx;
+			y = dy/dis*len+sy;
+		}
+
+		target.style({ x: x, y: y });
+		
+		if (!data.path.length || (data.fn && data.fn(t, x, y))) {
+			this.stop();
+		} else {
+			this._deltaTime += delta;
+		}
 	},
 
 	speed: function(delta) {
@@ -55,7 +86,7 @@ var Movement = Class.extend({
 			
 		target.style({ x: x, y: y });
 		
-		if (this.fn && this.fn(t, x, y)) {
+		if (data.fn && data.fn(t, x, y)) {
 			this.stop();
 		} else {
 			this._deltaTime += delta;
@@ -84,7 +115,7 @@ var Movement = Class.extend({
 		
 		target.style({ x: x, y: y });
 		
-		if (this.fn && this.fn(t, deg, x, y)) {
+		if (data.fn && data.fn(t, deg, x, y)) {
 			this.stop();
 		} else {
 			this._deltaTime += delta;
@@ -109,7 +140,7 @@ var Movement = Class.extend({
         	
         target.style({ x: x, y: y });
 		
-		if (this.fn && this.fn(p, x, y)) {
+		if (data.fn && data.fn(p, x, y)) {
 			this.stop();
 		} else {
 			this._deltaTime += delta;
@@ -140,13 +171,29 @@ Movement.get = function(target) {
 	return this;
 }
 
-Movement.addMovement = function(data) {
-	var movement;
+Movement.exec = function(fnName, onframe) {
+	var target = this._currentTarget;
+
+	switch (fnName) {
+		case 'stop':
+			target._fxMovement && target._fxMovement.stop();
+			target._fxMovement = null;
+	}
+}
+
+Movement.addMovement = function(data, onframe) {
+	var movement,
+		target = this._currentTarget;
 	
+	if (typeof(data) === 'string') {
+		this.exec(data, onframe);
+		return;
+	}
+
 	if (data.type === 'circle') {
 		movement = new Movement({
 			type: 'circle',
-			target: this._currentTarget,
+			target: target,
 			ox: data.ox || 0,
 			oy: data.oy || 0,
 			r: data.r || 0,
@@ -154,39 +201,40 @@ Movement.addMovement = function(data) {
 			scy: data.scy || 1,
 			sdeg: data.sdeg || 0,
 			vdeg: data.vdeg || 0,
-			fn: data.fn
+			fn: onframe
 		});
 	} else if (data.type === 'bezier') {
 		movement = new Movement({
 			type: 'bezier',
-			target: this._currentTarget,
+			target: target,
 			duration: data.duration || 1000,
 			p0: data.p0 || { x: 0, y: 0 },
 			p1: data.p1 || { x: 0, y: 0 },
 			p2: data.p2 || { x: 0, y: 0 },
-			fn: data.fn
+			fn: onframe
 		});
 	} else if (data.type === 'speed') {
 		movement = new Movement({
 			type: 'speed',
-			target: this._currentTarget,
+			target: target,
 			vx: data.vx || 0,
 			vy: data.vy || 0,
 			ax: data.ax || 0,
 			ay: data.ay || 0,
-			fn: data.fn
+			fn: onframe
 		});
 	} else {
 		movement = new Movement({
 			type: 'move',
-			target: this._currentTarget,
+			target: target,
 			path: data.path || [],
 			v: data.v || 0,
-			fn: data.fn
+			fn: onframe
 		});
 	}
 	
 	movement.play();
+	target._fxMovement = movement;
 }
 
 return Movement;

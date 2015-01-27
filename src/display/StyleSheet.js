@@ -383,7 +383,7 @@ StyleSheet.styles = {
 		},
 		step: function(key, fx) {
 			var value = fx.end;
-			key = regexpColor.test(value) ? 'fillColor' : 
+			key = regexpColor.test(value) ? 'fillColor' :
 				  regexpGradient.test(value) ? 'fillGradient' : null;
 			if (key) {
 				StyleSheet.step(this, key, fx);
@@ -470,7 +470,7 @@ StyleSheet.styles = {
 		css: function(key, value) {
 			this.elemStyle.backgroundImage = 'url(' + value + ')';
 		},
-		step: null,
+		step: null
 	}),
 	
 	stroke: newStyle('stroke', null, {

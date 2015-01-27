@@ -42,16 +42,21 @@ config.modules.forEach(function(a, i) {
 // 配置动态路由
 var routes = path.join(__dirname, config.routes),
     files = fs.readdirSync(routes),
+    reg = /\.js$/,
     route;
 
 if (files.length) {
     files.forEach(function(a, i) {
-        a = a.replace(/\.js$/g, '');
-        route = require(path.join(routes, a));
-        if (a === 'index') {
-            app.use('/', route);
+        if (reg.test(a)) {
+            a = a.replace(reg, '');
+            route = require(path.join(routes, a));
+            if (route) {
+                if (a === 'index') {
+                    app.use('/', route);
+                }
+                app.use(['/' + a, '/' + a + '.html'], route);
+            }
         }
-        app.use(['/' + a, '/' + a + '.html'], route);
     });
 }
 // catch 404 and forward to error handler

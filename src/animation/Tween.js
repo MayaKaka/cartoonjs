@@ -182,6 +182,7 @@ Tween.addTween = function(props, duration, easing, callback, onframe) {
 	} else if (typeof(props) === 'string') {
 		callback = duration;
 		this.exec(props, callback);
+		return;
 	}
 	
 	var nextAnimation = function() {

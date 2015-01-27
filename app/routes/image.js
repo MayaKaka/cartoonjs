@@ -1,3 +1,5 @@
+module.exports = null; return;
+
 var fs = require('fs');
 var Canvas = require('canvas');
 var express = require('express');
