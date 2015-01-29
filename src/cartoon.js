@@ -14,7 +14,7 @@ cartoon.extend({
 	// 渲染组件
 	StyleSheet: require('display/StyleSheet'),
 	DisplayObject: require('display/DisplayObject'),
-	Container: require('display/Container'),
+	Stage: require('display/Stage'),
 	Canvas: require('display/Canvas'),
 	Shape: require('display/Shape'),
 	Filter: require('display/Filter'),

@@ -12,8 +12,8 @@ var Movement = Class.extend({
 	_target: null,
 	_deltaTime: -1,
 	
-	init: function(data) {
-		var target = this._target = data.target;
+	init: function(target, data, tick, callback) {
+		this._target = target;
 		
 		this.data = data;
 		this._deltaTime = 0;
@@ -21,6 +21,8 @@ var Movement = Class.extend({
 		this._sy = target.y;
 
 		this.update = this[data.type];
+		this.tick = tick;
+		this.callback = callback;
 	},
 	
 	play: function() {
@@ -30,6 +32,11 @@ var Movement = Class.extend({
 		
 	stop: function() {
 		this._paused = true;
+	},
+
+	finish: function() {
+		this.stop();
+		this.callback && this.callback();
 	},
 	
 	move: function(delta) {
@@ -61,8 +68,8 @@ var Movement = Class.extend({
 
 		target.style({ x: x, y: y });
 		
-		if (!data.path.length || (data.fn && data.fn(t, x, y))) {
-			this.stop();
+		if (!data.path.length || (this.tick && this.tick(t, x, y))) {
+			this.finish();
 		} else {
 			this._deltaTime += delta;
 		}
@@ -86,8 +93,8 @@ var Movement = Class.extend({
 			
 		target.style({ x: x, y: y });
 		
-		if (data.fn && data.fn(t, x, y)) {
-			this.stop();
+		if (this.tick && this.tick(t, x, y)) {
+			this.finish();
 		} else {
 			this._deltaTime += delta;
 		}
@@ -115,8 +122,8 @@ var Movement = Class.extend({
 		
 		target.style({ x: x, y: y });
 		
-		if (data.fn && data.fn(t, deg, x, y)) {
-			this.stop();
+		if (this.tick && this.tick(t, deg, x, y)) {
+			this.finish();
 		} else {
 			this._deltaTime += delta;
 		}
@@ -140,8 +147,8 @@ var Movement = Class.extend({
         	
         target.style({ x: x, y: y });
 		
-		if (data.fn && data.fn(p, x, y)) {
-			this.stop();
+		if (this.tick && this.tick(p, x, y)) {
+			this.finish();
 		} else {
 			this._deltaTime += delta;
 		}
@@ -171,7 +178,7 @@ Movement.get = function(target) {
 	return this;
 }
 
-Movement.exec = function(fnName, onframe) {
+Movement.exec = function(fnName, tick) {
 	var target = this._currentTarget;
 
 	switch (fnName) {
@@ -181,56 +188,48 @@ Movement.exec = function(fnName, onframe) {
 	}
 }
 
-Movement.addMovement = function(data, onframe) {
+Movement.addMovement = function(data, tick, callback) {
 	var movement,
 		target = this._currentTarget;
 	
 	if (typeof(data) === 'string') {
-		this.exec(data, onframe);
+		this.exec(data, tick);
 		return;
 	}
 
 	if (data.type === 'circle') {
-		movement = new Movement({
+		movement = new Movement(target, {
 			type: 'circle',
-			target: target,
 			ox: data.ox || 0,
 			oy: data.oy || 0,
 			r: data.r || 0,
 			scx: data.scx || 1,
 			scy: data.scy || 1,
 			sdeg: data.sdeg || 0,
-			vdeg: data.vdeg || 0,
-			fn: onframe
-		});
+			vdeg: data.vdeg || 0
+		}, tick, callback);
 	} else if (data.type === 'bezier') {
-		movement = new Movement({
+		movement = new Movement(target, {
 			type: 'bezier',
-			target: target,
 			duration: data.duration || 1000,
 			p0: data.p0 || { x: 0, y: 0 },
 			p1: data.p1 || { x: 0, y: 0 },
-			p2: data.p2 || { x: 0, y: 0 },
-			fn: onframe
-		});
+			p2: data.p2 || { x: 0, y: 0 }
+		}, tick, callback);
 	} else if (data.type === 'speed') {
-		movement = new Movement({
+		movement = new Movement(target, {
 			type: 'speed',
-			target: target,
 			vx: data.vx || 0,
 			vy: data.vy || 0,
 			ax: data.ax || 0,
-			ay: data.ay || 0,
-			fn: onframe
-		});
+			ay: data.ay || 0
+		}, tick, callback);
 	} else {
-		movement = new Movement({
+		movement = new Movement(target, {
 			type: 'move',
-			target: target,
 			path: data.path || [],
-			v: data.v || 0,
-			fn: onframe
-		});
+			v: data.v || 0
+		}, tick, callback);
 	}
 	
 	movement.play();

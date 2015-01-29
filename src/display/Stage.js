@@ -4,9 +4,9 @@ define( function ( require, exports, module ) {
 	   
 var DisplayObject = require('display/DisplayObject');
 	
-var Container = DisplayObject.extend({
+var Stage = DisplayObject.extend({
 
-	type: 'Container',
+	type: 'Stage',
 	
 	renderMode: 0,
 	autoUpdate: true,
@@ -129,5 +129,5 @@ var Container = DisplayObject.extend({
 	
 });
 	
-return Container;
+return Stage;
 });

@@ -17,7 +17,7 @@ cartoon.extend(particles, {
 			this.particles = [];
 			this.data('fall_width', width);
 			this.data('fall_height', height);
-			// ��ʼ���������
+
 			for(var i=0, l=data.num||60; i<l; i++) {
 				particle = new Shape({
 					renderMode: this.renderMode,
@@ -38,7 +38,7 @@ cartoon.extend(particles, {
 				width = this.data('fall_width'),
 				height = this.data('fall_height'),
 				particle, dis, y;
-			// �������Ч��
+
 			for (var i=0, l=particles.length; i<l; i++) {
 				particle = particles[i];
 				dis = particle.data('fall_speed')*delta;
@@ -82,7 +82,7 @@ cartoon.extend(particles, {
 					});
 				}
 			}
-			// ��ʼ��ѩ������
+
 			for (var i=0, l = data.num || 30; i < l; i++) {
 				spd = random(25, 50);
 				p = createParticle(this.renderMode, spd); 
@@ -99,7 +99,7 @@ cartoon.extend(particles, {
 				w = this.data('fall_width'),
 				h = this.data('fall_height'),
 				p, sx, sy, sr, x, y, r;
-			// ѩ��Ʈ��Ч��
+
 			for (var i=0, l=particles.length; i<l; i++) {
 				p = particles[i];
 				sx = p.data('fall_spdx');

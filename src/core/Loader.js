@@ -69,7 +69,6 @@ var Loader = EventDispatcher.extend({
 			})
 		}
 		
-
 		res.onload && res.onload(file);
 		
 		if (progress < 1) {

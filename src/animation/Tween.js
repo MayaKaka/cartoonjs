@@ -12,14 +12,12 @@ var Tween = Class.extend({
 	start: null,
 	end: null,
 	easing: null,
-	callback: null,
-	onframe: null,
 	
 	_paused: true,
 	_target: null,
 	_deltaTime: -1,
 	
-	init: function(target, props) {
+	init: function(target, props, callback, tick) {
 		this._target = target;
 		this._deltaTime = 0;
 		// 设置开始状态和结束状态
@@ -45,8 +43,8 @@ var Tween = Class.extend({
 		this.from = props.from;
 		this.to = props.to;
 		this.easing = Ease.get(props.easing);
-		this.callback = props.callback;
-		this.onframe = props.onframe;
+		this.callback = callback;
+		this.tick = tick;
 	},
 	
 	play: function() {
@@ -56,6 +54,11 @@ var Tween = Class.extend({
 	
 	stop: function() {
 		this._paused = true;
+	},
+
+	finish: function() {
+		this.stop();
+		this.callback && this.callback();
 	},
 	
 	update: function(delta) {
@@ -75,12 +78,11 @@ var Tween = Class.extend({
 			target._stepTween(i, { pos: pos, start: start[i], end: end[i] });
 		}
 		// 执行每帧完成回调
-		if (this.onframe) this.onframe(percent, pos);
+		if (this.tick) this.tick(percent, pos);
 		// 判断动画是否结束
 		if (now === duration) {
 			// 执行动画完成回调
-			this.stop();
-			this.callback && this.callback();
+			this.finish();
 		} else {
 			// 更新执行时间
 			var nextTime = now + delta;
@@ -170,7 +172,7 @@ Tween.exec = function(fnName, callback) {
 }
 
 
-Tween.addTween = function(props, duration, easing, callback, onframe) {
+Tween.addTween = function(props, duration, easing, callback, tick) {
 	var target = this._currentTarget,
 		queue = target._fxQueue;
 	// 延迟动画，如 obj.to(500, callback)
@@ -201,10 +203,8 @@ Tween.addTween = function(props, duration, easing, callback, onframe) {
 		var tween = new Tween(target, {
 			from: 0, to: duration || 300,
 			start: null, end: props,
-			easing: easing || 'linear',
-			callback: nextAnimation,
-			onframe: onframe
-		});
+			easing: easing || 'linear'
+		}, nextAnimation, tick);
 		tween.play();
 		target._fxTween = tween;
 	};

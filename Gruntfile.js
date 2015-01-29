@@ -50,7 +50,7 @@ module.exports = function(grunt) {
 			'core/Loader', 'core/Preload', 'core/UserData', 'core/Matrix2D',
 			'display/StyleSheet', 'display/DisplayObject', 'display/Graphics2D',
 			'display/Filter',
-			'display/Container', 'display/Canvas', 'display/Graphics2D', 'display/Shape',
+			'display/Stage', 'display/Canvas', 'display/Graphics2D', 'display/Shape',
 			'display/Bitmap', 'display/Text', 
 			'animation/Ease', 'animation/Tween', 
 			'animation/Movement', 'animation/Timeline', 'animation/Sprite', 

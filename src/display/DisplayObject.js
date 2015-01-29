@@ -199,15 +199,15 @@ var DisplayObject = EventDispatcher.extend({
 		}
 	},
 
-	to: function(props, duration, easing, callback, onframe) {
+	to: function(props, duration, easing, callback, tick) {
 		// 创建补间动画，参见 jQuery.animate()
-		Tween.get(this).addTween(props, duration, easing, callback, onframe);
+		Tween.get(this).addTween(props, duration, easing, callback, tick);
 		
 		return this;
 	},
 	
-	move: function(data) {
-		Movement.get(this).addMovement(data);
+	move: function(data, tick, callback) {
+		Movement.get(this).addMovement(data, tick, callback);
 	},
 	
 	draw: function(ctx) {
