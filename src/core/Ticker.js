@@ -84,7 +84,7 @@ var Ticker = Class.extend({
 	},
     
     remove: function(target) {
-    	if (typeof(target) === 'string') { 
+    	if (typeof(target) === 'string') {
 			target = TagCollection.get(this, 'tick.' + target);
 		}
 		

@@ -3,69 +3,64 @@ module.exports = function(grunt) {
 
 	// load npm tasks
 	grunt.loadNpmTasks('grunt-contrib-requirejs');
-  	grunt.loadNpmTasks('grunt-contrib-uglify');
 
 	var pkg = grunt.file.readJSON('package.json');
 
 	var	requirejs = {
 		  	compile: {
 		    	options: {
-		      		baseUrl: 'src',
-		      		// mainConfigFile: "buildConfig.js",
-		      		name: 'cartoon',
-		      		out: 'build/cartoon.js',
-		      		optimize: 'none'
-		    	}
+		            baseUrl: './src',
+		            dir: './build',
+					optimize: 'none', 
+		            skipDirOptimize: true,
+		            generateSourceMaps: false,
+		            preserveLicenseComments: false,
+		            // useSourceUrl: true,
+		            shim: {
+		            	
+		            },
+		            modules: [
+		            	{ name: 'cartoon' },
+		            	{ name: 'cartoon.box2d', exclude: [ 'cartoon' ] },
+		            	{ name: 'cartoon.filters', exclude: [ 'cartoon' ] },
+		            	{ name: 'cartoon.particles', exclude: [ 'cartoon' ] },
+		            	{ name: 'cartoon.three', exclude: [ 'cartoon' ] }
+		            ]
+		        }
 		  	}
 		};
-
-	var uglify =  {
-	    	options: {
-	      		banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
-	    	},
-	    	build: {
-	    		files: {
-	    			'build/cartoon.js': ['build/cartoon.js'],
-	    			'build/cartoon.filters.js': ['src/cartoon.filters.js'],
-	    			'build/cartoon.particles.js': ['src/cartoon.particles.js'],
-	    			'build/cartoon.ui.js': ['src/cartoon.ui.js'],
-	    			'build/cartoon.box2d.js': ['src/cartoon.box2d.js'],
-	    			'build/cartoon.three.js': ['src/cartoon.three.js']
-	    		}
-	    	}
-	  	};
 
 	// Project configuration.
 	grunt.initConfig({
 	  	pkg: pkg,
-	  	requirejs: requirejs,
-	  	uglify: uglify
+	  	requirejs: requirejs
 	});
 
 	grunt.task.registerTask('foo', 'A sample task that logs stuff.', function(arg1, arg2) {
 		var fs = require('fs'),
 			root = __dirname + '/build';
 		var all = [
-			'core/Class', 'core/Ticker', 'core/TagCollection', 'core/EventDispatcher',
-			'core/Loader', 'core/Preload', 'core/UserData', 'core/Matrix2D',
-			'display/StyleSheet', 'display/DisplayObject', 'display/Graphics2D',
-			'display/Filter',
-			'display/Stage', 'display/Canvas', 'display/Graphics2D', 'display/Shape',
-			'display/Bitmap', 'display/Text', 
+			'core/Class', 'core/Ticker', 
+			'core/TagCollection', 
+			'core/EventDispatcher',
+			'core/Loader', 'core/Preload', 
+			'core/UserData', 
+			'core/Matrix2D',
+			
+			'display/StyleSheet', 'display/DisplayObject',
+			'display/Stage', 'display/Canvas',
+			'display/Graphics2D', 'display/Shape',
+			'display/Filter', 'display/Bitmap',
+			'display/Text', 
+			
 			'animation/Ease', 'animation/Tween', 
-			'animation/Movement', 'animation/Timeline', 'animation/Sprite', 
+			'animation/Movement', 
+			'animation/Timeline', 
+			'animation/Sprite', 
 			'animation/ParticleEmitter', 'animation/ParticleSystem'
 		];
 		var arr = (function(){
 			var a = [];
-			/*
-			grunt.file.recurse(root, function(abspath, rootdir, subdir, filename) {
-				a.push({ 
-					path: abspath,
-					data: grunt.file.read(abspath) 
-				});
-			})
-			*/
 			var path = root + '/cartoon.js';
 			a.push({ 
 				path: path,
@@ -75,7 +70,8 @@ module.exports = function(grunt) {
 		})();
 		all.forEach(function(a, i) {
 			arr.forEach(function(b, j) {
-				b.data = b.data.replace(new RegExp(a, 'g'), '~' + i);
+				console.log(a);
+				b.data = b.data.replace(new RegExp(a, 'g'), '_' + i);
 			});
 		});
 		arr.forEach(function(b, j) {
@@ -85,6 +81,6 @@ module.exports = function(grunt) {
 	});
 
   	// register default tasks
-  	grunt.registerTask('default', ['requirejs', 'uglify', 'foo']);
+  	grunt.registerTask('default', ['requirejs', 'foo']);
 
 };
