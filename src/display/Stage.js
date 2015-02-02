@@ -22,7 +22,7 @@ var Stage = DisplayObject.extend({
 		}
 	},
 	
-	_initEvents: function() {
+	_initEvents: function(props) {
 		var self = this,
 			elem = this.elem,
 			mouseX, mouseY,
@@ -30,6 +30,10 @@ var Stage = DisplayObject.extend({
 			startX, startY;
 		// 事件处理函数
 		var preventDef = function(evt) {
+			var tag = (evt.target || evt.srcElement).tagName.toLowerCase();
+			if (tag === 'a' || tag === 'input' || tag === 'select' || tag === 'textarea') {
+				return;
+			}
 			if (evt.preventDefault) {
 				evt.preventDefault();
 			} else {
@@ -41,7 +45,7 @@ var Stage = DisplayObject.extend({
 			mouseX = self._getMouseX(evt);
 			mouseY = self._getMouseY(evt);
 			// 检测点击对象
-			target = self._hitTest(evt.target) || self;
+			target = self._hitTest(evt.target || evt.srcElement) || self;
 			// 触发down事件
 			self._triggerEvent('mousedown', target, mouseX, mouseY);
 			// 标记起始状态

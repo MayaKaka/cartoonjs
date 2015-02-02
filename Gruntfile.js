@@ -4,7 +4,9 @@ module.exports = function(grunt) {
 	// load npm tasks
 	grunt.loadNpmTasks('grunt-contrib-requirejs');
 
-	var pkg = grunt.file.readJSON('package.json');
+	var fs = require('fs'),
+		path = require('path'),
+		pkg = grunt.file.readJSON('package.json');
 
 	var	requirejs = {
 		  	compile: {
@@ -21,10 +23,12 @@ module.exports = function(grunt) {
 		            },
 		            modules: [
 		            	{ name: 'cartoon' },
+		            	{ name: 'cartoon.test' },
 		            	{ name: 'cartoon.box2d', exclude: [ 'cartoon' ] },
 		            	{ name: 'cartoon.filters', exclude: [ 'cartoon' ] },
 		            	{ name: 'cartoon.particles', exclude: [ 'cartoon' ] },
 		            	{ name: 'cartoon.three', exclude: [ 'cartoon' ] }
+
 		            ]
 		        }
 		  	}
@@ -57,8 +61,19 @@ module.exports = function(grunt) {
 			'animation/Movement', 
 			'animation/Timeline', 
 			'animation/Sprite', 
-			'animation/ParticleEmitter', 'animation/ParticleSystem'
+			'animation/ParticleEmitter', 'animation/ParticleSystem',
+
+			'tilemap/PathFinder'
 		];
+
+		fs.readdirSync(root).forEach(function(a) {
+			a = path.join(root, a);
+			if (!/cartoon\./.test(a)) {
+				console.log(a);
+				grunt.file.delete(a);
+			}
+		});
+
 		var arr = (function(){
 			var a = [];
 			var path = root + '/cartoon.js';
@@ -68,9 +83,9 @@ module.exports = function(grunt) {
 			});
 			return a;
 		})();
+
 		all.forEach(function(a, i) {
 			arr.forEach(function(b, j) {
-				console.log(a);
 				b.data = b.data.replace(new RegExp(a, 'g'), '_' + i);
 			});
 		});
