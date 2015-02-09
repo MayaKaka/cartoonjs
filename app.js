@@ -4,30 +4,48 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var multer = require('multer');
+var jade = require('jade');
 var fs = require('fs');
 var os = require('os');
 
-// var routes = require('./routes/index');
-// var users = require('./routes/users');
-
-var app = express();
 var config = {
-    modules: ['build', 'editor', 'examples', 'src', 'test'],
-    statics: 'app/public',
+    modules: ['build', 'examples', 'src', 'test'],
+    statics: 'app/statics',
+    uploads: 'app/uploads',
     routes: 'app/routes',
     views: 'app/views',
-    port: 80
+    debug: true,
+    port: 80 // 18080
 };
 
+jade.__caches = {};
+jade.renderTpl = function(view, data) {
+    var tplPath = path.join(config.views, view);
+    if (config.debug) {
+        return jade.renderFile(tplPath + '.jade', data);
+    }
+
+    var fn = jade.__caches[view],
+        options = {};
+
+    if (!fn) {
+        fn = jade.__caches[view] = jade.compileFile(tplPath + '.jade', options);
+    }
+    return fn(data);
+}
+
+var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, config.views));
 app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
-//app.use(favicon(__dirname + '/public/favicon.ico'));
+// app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(multer({ dest: config.uploads }));
 app.use(cookieParser());
 // app.use(require('stylus').middleware(path.join(__dirname, config.statics)));
 app.use('/static', express.static(path.join(__dirname, config.statics)));
@@ -49,12 +67,18 @@ if (files.length) {
     files.forEach(function(a, i) {
         if (reg.test(a)) {
             a = a.replace(reg, '');
-            route = require(path.join(routes, a));
-            if (route) {
-                if (a === 'index') {
-                    app.use('/', route);
+            // 防止模块加载异常
+            try {
+                route = require(path.join(routes, a));
+                if (route) {
+                    if (a === 'index') {
+                        app.use('/', route);
+                    }
+                    // 伪静态便于seo
+                    app.use(['/' + a, '/' + a + '.html'], route);
                 }
-                app.use(['/' + a, '/' + a + '.html'], route);
+            } catch (e) {
+                console.log(e.stack);
             }
         }
     });

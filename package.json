@@ -4,6 +4,7 @@
   "description": "create stunning HTML5 animations and interactive content",
   "main": "cartoon",
   "scripts": {
+    "start": "node app.js",
     "test": "grunt"
   },
   "repository": {
@@ -33,7 +34,9 @@
     "grunt-contrib-requirejs": "^0.4.4",
     "jade": "~1.8.2",
     "morgan": "~1.5.1",
+    "multer": "^0.1.7",
     "serve-favicon": "~2.2.0",
-    "stylus": "0.42.3"
+    "stylus": "0.42.3",
+    "unzip": "^0.1.11"
   }
 }

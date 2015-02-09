@@ -1,5 +1,6 @@
 
-define( function ( require, exports, module ) {
+define(function (require) {
+	"use strict";
 
 var Preload = require('core/Preload');
 
@@ -234,12 +235,12 @@ StyleSheet.styles = {
 	transform: newStyle('transform', null, {
 		init: function(key) {
 			this.transform = {
-				translateX: 0, translateY: 0,
-				rotate: 0, scale: 1,
-				scaleX: 1, scaleY: 1,
-				skewX: 0, skewY: 0,
-				originX: 0.5, originY: 0.5
-			};
+                translateX: 0, translateY: 0,
+                rotate: 0,
+                sacle: 1, scaleX: 1, scaleY: 1,
+                skewX: 0, skewY: 0,
+                originX: 0.5, originY: 0.5
+            };
 			return this.transform;
 		},
 		get: function(key) {

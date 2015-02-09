@@ -1,5 +1,5 @@
 
-define(function(){
+define(function (require) {
 
 // 类式继承基类，参见 http://ejohn.org/blog/simple-javascript-inheritance/
 var Class = function() {}, initializing = false, fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;

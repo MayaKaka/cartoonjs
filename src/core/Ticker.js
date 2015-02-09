@@ -1,5 +1,5 @@
 
-define( function ( require, exports, module ) {
+define(function (require) {
 	"use strict";
 	   
 var Class = require('core/Class'),
@@ -111,6 +111,14 @@ var Ticker = Class.extend({
     			target._ticker = null;
     		}
     	}
+    },
+
+    delay: function(fn, tag) {
+        // 替代原生 setTimeout 功能
+    },
+
+    loop: function(fn, tag) {
+        // 替代原生 setInterval 功能
     },
 
 	_clearTimer: function() {

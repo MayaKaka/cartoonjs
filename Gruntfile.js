@@ -69,7 +69,6 @@ module.exports = function(grunt) {
 		fs.readdirSync(root).forEach(function(a) {
 			a = path.join(root, a);
 			if (!/cartoon\./.test(a)) {
-				console.log(a);
 				grunt.file.delete(a);
 			}
 		});

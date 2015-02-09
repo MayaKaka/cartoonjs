@@ -1,0 +1,20 @@
+link(rel='stylesheet', href='/static/editor/css/sprite.css')
+div(class="container")
+    div(class="upload")
+        span 请拖拽此处上传图片
+        div(id="merge" ondragover="uploadDrag(event)" ondrop="uploadDrop(event)")
+            span 合并帧动画
+        div(id="trim" ondragover="uploadDrag(event)" ondrop="uploadDrop(event)")
+            span 图片裁剪
+        div(id="flip" ondragover="uploadDrag(event)" ondrop="uploadDrop(event)")
+            span 图片翻转
+    div(class="download")
+        svg(class="svg" width="300" height="300")
+            path(fill="none" stroke="rgb(0,114,253)" stroke-width="1" d="M0 150.5L300 150.5M150.5 0 L150.5 300")
+    div(class="json")
+        span
+    div(class="input")
+        input(type="number" id="translateX" value="0")
+        input(type="number" id="translateY" value="0")
+script(src="/static/libs/require/require.min.js")
+script(src="/static/editor/js/sprite.js")

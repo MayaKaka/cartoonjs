@@ -1,5 +1,5 @@
 
-define( function ( require, exports, module ) {
+define(function (require) {
 	"use strict";
 	   
 var DisplayObject = require('display/DisplayObject'),
@@ -107,6 +107,7 @@ var Sprite = DisplayObject.extend({
 				this.playAnimation(next);
 			} else if (next === true) { // 循环播放
 				this._frameIndex = start;
+                this._deltaTime = 0;
 			} else { // 停止播放
 				this.stop();
 			}
@@ -133,6 +134,8 @@ var Sprite = DisplayObject.extend({
 		this._initImages(spriteSheet.images);
         this._initFrames(spriteSheet.frames);
         this._initAnimations(spriteSheet.animations);
+        this._offsetX = spriteSheet.offsetX || 0;
+        this._offsetY = spriteSheet.offsetY || 0;
      },
 	
 	_initImages: function(images) {
@@ -209,9 +212,11 @@ var Sprite = DisplayObject.extend({
 	        	this.style('size', { width: frame[2], height: frame[3] });
 	        }
 	        
-			var transform = this.transform;
-			if (transform.translateX !== frame[5] || transform.translateY !== frame[6]) {
-				this.style('transform', { translateX: frame[5], translateY: frame[6] });
+			var t2d = this.transform,
+                translateX = this._offsetX + frame[5],
+                translateY = this._offsetY + frame[6];
+			if (t2d.translateX !== translateX || t2d.translateY !== translateY) {
+                this.style('transform', { translateX: translateX, translateY: translateY });
 			}
 			
 			if (this.renderMode === 0) {

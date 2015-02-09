@@ -1,5 +1,5 @@
 require.config({ 
-	baseUrl: location.origin + '/src', 
+	baseUrl: '/src', 
 	paths: {
 		'cartoon': 'cartoon',
 		'cartoon.filters': 'cartoon.filters',

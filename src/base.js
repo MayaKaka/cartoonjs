@@ -1,5 +1,5 @@
 
-define(function () {
+define(function (require) {
 	"use strict";
 	
 if (!Array.prototype.indexOf) {
