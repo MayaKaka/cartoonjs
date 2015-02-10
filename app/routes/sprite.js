@@ -156,7 +156,7 @@ function merge(pid, files, useTrim) {
     var len = images.length;
     images = [];
     canvases.forEach(function(a, i) {
-        var fileName = name.replace(/\.png$/, '_' + i + '.png');
+        var fileName = i + '.png';
         fs.writeFileSync(output + pid + '/' + fileName, canvases[i].toBuffer());
         images.push(outputUrl + pid + '/' + fileName);
     });
@@ -165,10 +165,13 @@ function merge(pid, files, useTrim) {
         cmd: 'merge',
         images: images,
         frames: frames,
+        offsetX: 0,
+        offsetY: 0,
         animations: {
             all: [0, len-1, true, len*60]
         }
     };
+    fs.writeFile(output + pid + '/ss.json', JSON.stringify(result));
     return result;
 }
 

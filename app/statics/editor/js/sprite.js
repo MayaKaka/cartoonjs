@@ -1,9 +1,13 @@
+var destroy;
+
 function uploadDrag(evt) {
     evt.preventDefault();
 }
 
 function uploadDrop(evt) {
     evt.preventDefault();
+
+    destroy && destroy();
 
     var fileList = evt.dataTransfer.files;
     if (fileList.length === 0) { 
@@ -18,6 +22,28 @@ function uploadDrop(evt) {
             if (xhr.status === 200 || xhr.status === 0) {
                 text = xhr.responseText;
                 console.log(text);
+                require.config({
+                    paths: { cartoon: '/build/cartoon' }
+                })
+                require(['cartoon'], function(ct) {
+                    var stage = new ct.Stage({
+                        elem: '.download', width: 800, height: 500
+                    });
+                    var sprite = new ct.Sprite({
+                        ss: JSON.parse(text)
+                    });
+                    sprite.play('all');
+                    stage.add(sprite);
+
+                    var ticker = new ct.Ticker();
+                    ticker.add(stage);
+                    ticker.start();
+
+                    destroy = function() {
+                        ticker.stop();
+                        stage.removeAll();
+                    }
+                })
             }
         }
     };
