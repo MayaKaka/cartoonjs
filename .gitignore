@@ -3,7 +3,6 @@
 /node_modules/
 /build/
 /test/
-/examples/deckjs/
 /app/uploads/
 
 # Project Files #
