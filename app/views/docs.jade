@@ -1,0 +1,192 @@
+extends home
+
+block title
+    title CartoonJS
+
+block style
+    link(rel="stylesheet" href="/static/libs/bootstrap/bootstrap.min.css")
+    link(rel="stylesheet" href="/static/libs/bootstrap/bootstrap-responsive.min.css")
+
+block content
+    div(class="left-menu")
+        div(class="accordion")
+            h5(lang="intro") 简介
+            h5(lang="intro") 框架设计
+            h5(lang="intro") 引入框架
+            h5(lang="core") 核心模块 core
+            ul
+                li(lang="class") 基类 Class
+                li(lang="ticker") 计时器 Ticker
+                li(lang="preload") 预加载器 Preload
+            h5(lang="display") 显示模块 display
+            ul
+                li(lang="display") 显示对象 DisplayObject
+                li(lang="shape")  图形 Shape
+                li(lang="bitmap") 位图 Bitmap
+                li(lang="text") 文本 Text
+                li(lang="stage") 舞台容器 Stage
+                li(lang="canvas") 画布容器 Canvas
+            h5(lang="graphics") 图形模块 graphics
+            ul
+                li(lang="rect") 矩形 Rect
+                li(lang="circle") 圆形 Circle
+                li(lang="line") 线段 Line
+                li(lang="ploygon") 多边形 Ploygon
+            h5(lang="animation") 动画模块 animation
+            ul
+                li(lang="tween") 补间动画 Tween
+                li(lang="move") 轨迹动画 Movement
+                li(lang="sprite") 帧动画 Sprite
+                li(lang="particle") 粒子动画 ParticleSystem
+            h5 扩展物理模块 box2d
+            ul
+                li PhysicsWorld
+            h5 扩展3D模块 three
+            ul
+                li GLCanvas
+                li Object3D
+
+    div(class="right-content")
+        div(class="docs")
+            div(class="intro docs-item" style="display:block;")
+                h3 简介
+                p.
+                    cartoonjs 是一款简单跨平台的 js 动画框架，致力于帮助大家轻松的创建基于 web 的交互应用或者游戏。<br />
+                    我们希望能够做到<br />
+                    1. 将多种前端展现技术进行抽象统一，减少学习成本<br />
+                    2. 提供丰富图形图像动画相关的功能，解决技术关键点<br />
+                    3. 实现工具化和可视化编辑，提高开发效率<br />
+                h5 结构设计
+                p 
+                    img(src="/examples/images/design0.png")
+                h5 API设计
+                p 
+                    img(src="/examples/images/design1.png")
+            div(class="class docs-item")
+                h3 Class
+                p 类式继承基类，参考 <a href="http://ejohn.org/blog/simple-javascript-inheritance" target="_blank">simple-javascript-inheritance</a>
+                h5 代码示例
+                div(id="editor-class").
+                    var Person = Class.extend({
+                       init: function() {
+                          console.log('hello!');
+                       }
+                    });
+                    var Student = Person.extend({
+                       init: function() {
+                          this._super();
+                          console.log('I am a student!');
+                       }
+                    });
+                    var student = new Student();
+            div(class="ticker docs-item")
+                h3 Ticker
+                p 单例对象，高频计时器，默认为浏览器渲染帧频 (60帧)
+                h5 代码示例
+                div(id="editor-ticker").
+                    var onFrame = function(delta) { 
+                        console.log(delta); 
+                    };
+                    var updater = { 
+                        count: 0, 
+                        update: function() { 
+                            this.count++; 
+                        }
+                    };
+                    Ticker.add(onFrame);
+                    Ticker.add(updater);
+                    Ticker.start();
+            div(class="preload docs-item")
+                h3 Preload
+                p 单例对象，预加载器
+                h5 代码示例
+                div(id="editor-preload").
+                    Preload.on('progress', function() {
+
+                    });
+                    Preload.on('complete', function() {
+                        var img = Preload.get('static/icon.png');
+                        var txt = Preload.get('static/note.txt');
+                        var json = Preload.get('static/data.json');
+                    });
+                    Preload.load([
+                        'static/logo.jpg',
+                        'static/icon.png',
+                        'static/note.txt',
+                        'static/data.json'
+                    ]);
+            div(class="display docs-item")
+                h3 DisplayObject
+                p 显示对象类
+                h5 代码示例
+                div(id="editor-display").
+                    var obj = new DisplayObject({
+                        render: 0,
+                        elem: '#box',
+                        x: 300, y: 150, 
+                        width: 100, height: 100
+                    });
+                    // 节点操作
+                    obj.add(bmp);
+                    obj.add(txt);
+                    obj.remove(bmp);
+                    obj.removeAll();
+                    // 样式操作
+                    obj.style('visible', true);
+                    obj.style({
+                        x: 100, alpha: 0.5, transform: { rotate: 45 }    
+                    });
+                    // 数据操作
+                    obj.data('name', 'NewObj');
+                    obj.data({ speed: 12, touched: true });
+            div(class="shape docs-item")
+                h3 Shape
+                p 图形类
+                h5 代码示例
+                div(id="editor-shape").
+                    var obj = new Shape({
+                        render: 1,
+                        draw: function(ctx) {
+                            ctx.fillStyle = "red";
+                            ctx.fillRect(0, 0, 200, 100);
+                        }
+                    });
+            div(class="bitmap docs-item")
+                h3 Bitmap
+                p 位图类
+                h5 代码示例
+                div(id="editor-bitmap").
+                    var obj = new Bitmap({
+                        image: 'static/icon.png', rect: [0, 0, 120, 120]
+                    });
+            div(class="text docs-item")
+                h3 Text
+                p 位图类
+                h5 代码示例
+                div(id="editor-text").
+                    var obj = new Text({
+                        width: 120, height: 30, text: 'Hello! Forrest~'
+                    });
+            div(class="stage docs-item")
+                h3 Stage
+                p 舞台容器，用于处理 DOM 模式下节点的渲染和动画
+                h5 代码示例
+                div(id="editor-text").
+                    var obj = new Stage({
+                        elem: '#stage', width: 300, height: 150
+                    });
+            div(class="canvas docs-item")
+                h3 Canvas
+                p 舞台容器，用于处理 CANVAS 模式下节点的渲染和动画
+                h5 代码示例
+                div(id="editor-text").
+                    var obj = new Canvas({
+                        elem: '#canvas', width: 300, height: 150
+                    });
+            
+
+block script
+    // script(src='/static/libs/bootstrap/bootstrap.min.js')
+    script(src="/static/libs/ace/ace.js")
+    script(src='/static/home/js/docs.js')
+        

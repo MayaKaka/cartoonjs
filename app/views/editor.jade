@@ -1,0 +1,235 @@
+doctype html
+html
+    head
+        title Cartoonjs Editor
+        link(rel='stylesheet' href='/static/home/css/normalize.css')
+        link(rel='stylesheet' href='/static/home/css/editor.css')
+        link(rel="stylesheet" href="/static/libs/jquery/jquery-ui.css")
+        link(rel='stylesheet' href='/static/libs/jquery/jquery.ztree.css')
+        link(rel='stylesheet' href='/static/libs/jquery/skins/cm_default/style.css')
+    body
+        div(class="header clearfix")
+            h2 CartoonJS Editor
+            div(class="tab")
+                // span 选择
+                // span 移动
+                span(class="play") 运行
+                span(class="play-ala") 结果页运行
+        div(class="container clearfix")
+            div(class="accordion")
+                h3 Scene
+                div(class="tree ztree" id="sceneTree")
+                h3 Sprite
+                div(class="tree ztree" id="spriteTree")
+                h3 Resource
+                div(class="tree ztree" id="assetTree")
+                
+            div(class="main")
+                div(class="main-inner")
+                    div(class="main-stage main-show")
+                    div(class="main-canvas")
+                        canvas
+                    div(class="main-glcanvas")
+                        canvas
+                    div(class="main-fps") 
+                    div(class="main-mark")
+                        div(class="mark-line")
+                            div(class="mark-line00")
+                            div(class="mark-line01")
+                            div(class="mark-line02")
+                            div(class="mark-line03")
+                        div(class="mark-pt")
+                            div(class="mark-pt00")
+                            div(class="mark-pt01")
+                            div(class="mark-pt02")
+                            div(class="mark-pt03")
+                    div(class="main-sprite" ondragover="onDrag(event)" ondrop="onDrop(event)")
+                        div(class="sprite-panel")
+                        div(class="sprite-play")
+                        input(type="button" class="close" value="关闭")
+                    div(class="main-asset")
+                        div(class="asset-panel" ondragover="onDrag(event)" ondrop="onDrop(event)")
+                        input(type="button" class="close" value="关闭") 
+                    div(class="main-css")
+                        div(class="css-editor" id="cssEditor")
+                        input(type="button" class="close" value="关闭")
+                    div(class="main-script")
+                        div(class="script-editor" id="jsEditor")
+                        input(type="button" class="close" value="关闭")
+
+            div(class="info")
+                div(class="info-comm")
+                    table
+                        tbody
+                            tr
+                                td type
+                                td(colspan="2")
+                                    input(type="text" id="type" readOnly="true")
+                            tr
+                                td tag
+                                td(colspan="2")
+                                    input(type="text" id="tag")
+                            tr
+                                td position
+                                td 
+                                    input(type="number" id="x")
+                                td
+                                    input(type="number" id="y")
+                            tr
+                                td
+                                td x
+                                td y
+                            tr
+                                td size
+                                td 
+                                    input(type="number" id="width")
+                                td
+                                    input(type="number" id="height")
+                            tr
+                                td
+                                td width
+                                td height
+                            tr
+                                td transform
+                                td 
+                                    input(type="number" id="translateX")
+                                td
+                                    input(type="number" id="translateY")
+                            tr
+                                td
+                                td translateX
+                                td translateY
+                            tr
+                                td
+                                td 
+                                    input(type="number" id="rotate")
+                                td
+                                    
+                            tr
+                                td
+                                td rotate
+                                td 
+                            tr
+                                td
+                                td 
+                                    input(type="number" id="scaleX")
+                                td
+                                    input(type="number" id="scaleY")
+                            tr
+                                td
+                                td scaleX
+                                td scaleY
+                            tr
+                                td
+                                td 
+                                    input(type="number" id="skewX")
+                                td
+                                    input(type="number" id="skewY")
+                            tr
+                                td
+                                td skewX
+                                td skewY
+                            tr
+                                td alpha
+                                td 
+                                    input(type="number" id="alpha")
+                                td
+                            tr
+                                td visible
+                                td 
+                                    input(type="checkbox" id="visible")
+                                td
+                            tr
+                                td shadow
+                                td(colspan="2")
+                                    input(type="text" id="shadow")
+                            tr
+                                td script
+                                td(colspan="2")
+                                    input(type="text" id="script" readOnly="true")
+                                    input(type="button" class="change-btn" value="Θ")
+
+                div(class="info-priv")
+                    table(class="Bitmap")
+                        tbody
+                            tr
+                                td image
+                                td(colspan="2")
+                                    input(type="text" id="image" readOnly="true")
+                                    input(type="button" class="change-btn" value="Θ")
+                            tr
+                                td rect
+                                td 
+                                    input(type="number" id="rect_x")
+                                td
+                                    input(type="number" id="rect_y")
+                    table(class="Text")
+                        tbody
+                            tr
+                                td text
+                                td(colspan="2")
+                                    input(type="text" id="text")
+                    table(class="Sprite")
+                        tbody
+                            tr
+                                td spriteSheet
+                                td(colspan="2") 
+                                    input(type="text" id="ss" readOnly="true")
+                                    input(type="button" class="change-btn" value="Θ")
+
+            div(class="timeline")
+                
+
+
+        ul(id="menu" class="jeegoocontext cm_default")
+            li(class="add") add
+                ul
+                    li DisplayObject
+                    li Bitmap
+                    li Text
+                    li shapes
+                        ul
+                            li Rect
+                            li Circle
+                            // li Ring
+                            // li Line
+                            // li Ploygon
+                    li Sprite
+                    li ParticleSystem
+                        ul
+                            li rain
+                            li snow
+                    li Button
+            li(class="add-3d") add
+                ul
+                    li Object3D
+
+                    li Geometry
+                        ul
+                            li box
+                            li sphere
+                    li Light
+                        ul
+                            li point
+                            li area
+            li(class="add-res") add
+                ul
+                    li Folder
+            li(class="edit") edit
+                ul
+                    li tween
+                    li css
+                    li script
+            li(class="copy") copy
+            li(class="paste") paste
+            li(class="delete") delete
+        script(src='/static/libs/jquery/jquery-1.11.1.min.js')
+        script(src='/static/libs/jquery/jquery-ui.js')
+        script(src='/static/libs/jquery/jquery.query.min.js')
+        script(src='/static/libs/jquery/jquery.ztree.all-3.5.min.js')
+        script(src='/static/libs/jquery/jquery.jeegoocontext-2.0.0.min.js')
+        script(src='/static/libs/require/require.min.js')
+        script(src="/static/libs/ace/ace.js")
+        script(src='/static/home/js/editor.js')
+
+            

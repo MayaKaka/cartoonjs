@@ -1,78 +1,241 @@
-body {
-	color: #333333;
+@font-face {
+      font-family: Agency;
+      src: url('/static/home/css/AgencyFB.woff');
 }
 
-.header, .slide, .content {
-	position: relative;
-	width: 1000px;
-	margin: 0 auto 10px auto;
+body {
+    font-family: Microsoft YaHei;
 }
 
 .header {
-	height: 90px;
-	overflow: hidden;
-	border-bottom: 1px solid #999999;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 50px;
+    color: #5a5a5a;
+    background-color: #ffffff;
+    box-shadow: 0 2px 10px rgba(0,0,0,.25);
+    z-index: 99;
+}
+
+.header-inner {
+    width: 1000px;
+    margin: 0px auto;
 }
 
 .header-logo {
-	position: absolute;
-	left: 0px;
-	top: 15px;
-	width: 130px;
-	height: 70px;
+    float: left;
+    display: inline-block;
 }
 
-.header-logo-title {
-	color: #388bff;
-	font-size: 34px;
-	text-shadow: 1px 1px 1px #666666;
-	text-align: center;
-}
-
-.header-logo-desc {
-	color: #999999;
-	font-size: 14px;
-	text-align: center;
+.header-logo span {
+    display: inline-block;
+    padding: 0 8px;
+    height: 50px;
+    font-family: Agency;
+    color: #ffffff;
+    font-size: 34px;
+    font-weight: normal;
+    line-height: 46px;
+    text-shadow: 0 -1px 0 rgba(0,0,0,.5);
+    background-color: #00baff;
 }
 
 .header-nav {
-	margin-left: 180px;
-
+    float: left;
+    margin-left: 20px;
+    margin-top: 3px;
+    overflow: hidden;
 }
 
 .header-nav ul {
-	list-style-type: none;
+    list-style-type: none;
+    margin-top: 0;
 }
 
 .header-nav li {
-	float: left;
-	margin-right: 15px;
+    float: left;
+    margin-right: 15px;
 }
 
 .header-nav a {
-	display: inline-block;
-	color: #666666;
-	font-size: 14px;
-	padding: 15px 10px;
-	text-decoration: none;
+    display: inline-block;
+    color: #666666;
+    font-size: 15px;
+    padding: 12px 10px;
+    text-decoration: none;
 }
 
 .header-nav-index {
-	border-bottom: 1px solid #388bff;
-}
-
-.slide {
-	height: 350px;
+    border-bottom: 3px solid #00baff;
 }
 
 .content {
+    margin-top: 50px;
+}
+
+.slides {
+    width: 100%;
+    height: 287px;
+    overflow: hidden;
+}
+
+.slides ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.slides ul:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+.slides li {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    float: left;
+    line-height: 0;
+}
+
+.content-inner {
+    min-height: 500px;
+    text-shadow: 1px 1px 2px #333;
+    font-family: cursive;
+    color: #cccccc;
+    background: url(/static/home/img/bg_a.jpg) repeat;
+}
+
+.articles {
+    width: 1100px;
+    margin: 0px auto;
+}
+
+.content-cols {
+    overflow: hidden;
+}
+
+.content-cols-item {
+    float: left;
+    width: 30%;
+    margin-left: 5%;
+    font-size: 14px;
+}
+
+.content-cols-item img {
+    border-radius: 10px;
+    width: 100%;
+}
+
+.content-cols-item h2 {
+    text-align: center;
+}
+
+.content-cols-item:first-child {
+    margin-left: 0;
+}
+
+.content-sample {
+    margin-top: 25px;
+    border-top: 1px solid #ffffff;
+}
+
+
+.content-sample p {
+    font-size: 14px;
+}
+
+.content-more {
+    margin-top: 25px;
+    border-top: 1px solid #ffffff;
+}
+
+#editor {
+    position: relative;
+    width: 100%;
+    height: 400px;
+}
+
+
+iframe {
+    
+    border: none;
+}
+
+.ace-monokai {
+    background-color: rgba(21,21,21,0.5) !important;
+}
+
+.ace-monokai .ace_gutter {
+    background: rgba(31,31,31,0.5) !important;
+}
+
+.left-menu {
+    height: 100%;
+    background-color: white;
+    width: 280px;
+    position: fixed;
+    top: 0px;
+    font-size: 18px;
+    overflow-y: scroll;
+    font-size: 14px;
+    font-family: cursive;
+    z-index: 1;
+}
+
+.accordion {
+    margin-top: 60px;
+    margin-left: 15px;
+}
+.left-menu h5, .left-menu li {
+    cursor: pointer;
+}
+
+.left-menu h5:hover, .left-menu li:hover {
 
 }
 
-.products-item {
-	display: inline-block;
-	margin: 15px 25px 0 0;
-	width: 300px;
-	background: #cccccc;
-	height: 300px;
+.right-content {
+    position: fixed;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    background: url(/static/home/img/bg_a.jpg) repeat;
+}
+
+.docs {
+    color: #cccccc;
+    font-family: cursive;
+    padding-left: 320px;
+    margin-top: 60px;
+    min-height: 100%;
+}
+
+.docs h5, .docs p {
+    margin-top: 20px;
+}
+
+.docs h5 {
+    margin-top: 30px;
+    line-height: 24px;
+}
+
+.docs-item {
+    display: none;
+}
+
+.docs table {
+    border-color: #cccccc;
+}
+
+.docs th, .docs td {
+    width: 220px;
+    height: 24px;
+    text-align: center;
 }

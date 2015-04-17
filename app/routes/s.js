@@ -1,18 +1,20 @@
 var express = require('express');
 var http = require('http');
-var router = express.Router();
 
-/* GET search data. */
+var router = module.exports = express.Router();
+
+/* 代理百度请求 */
 router.get('/', function(req, res) {
     var opt = {
+        // host: 'cp01-psfe-setest0.cp01.baidu.com',
+        // port: '8012',
         host:'www.baidu.com',
         port:'80',
         method:'GET',    //这里是发送的方法
         path: req.path,  //这里是访问的路径
         headers:{
             //这里放期望发送出去的请求头
-            "Content-Type": 'application/x-www-form-urlencoded',  
-            // "Content-Length": data.length
+            "Content-Type": 'application/x-www-form-urlencoded'
         }
     };
     
@@ -32,5 +34,3 @@ router.get('/', function(req, res) {
     request.write("\n");
     request.end();
 });
-
-module.exports = router;

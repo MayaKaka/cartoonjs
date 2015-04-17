@@ -1,11 +1,12 @@
 
 define(function (require) {
-	"use strict";
-	   
+    'use strict';
+
 var cartoon = require('cartoon');
 
 cartoon.extend({
-	Button: require('ui/Button')
+    Viewer: require('ui/Viewer'),
+    Button: require('ui/Button')
 });
 
 return cartoon;

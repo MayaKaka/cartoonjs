@@ -8,21 +8,12 @@ var multer = require('multer');
 var jade = require('jade');
 var fs = require('fs');
 var os = require('os');
-
-var config = {
-    modules: ['build', 'examples', 'src', 'test'],
-    statics: 'app/statics',
-    uploads: 'app/uploads',
-    routes: 'app/routes',
-    views: 'app/views',
-    debug: true,
-    port: 80 // 18080
-};
+var conf = require('./conf');
 
 jade.__caches = {};
 jade.renderTpl = function(view, data) {
-    var tplPath = path.join(config.views, view);
-    if (config.debug) {
+    var tplPath = path.join(conf.views, view);
+    if (conf.debug) {
         return jade.renderFile(tplPath + '.jade', data);
     }
 
@@ -37,28 +28,28 @@ jade.renderTpl = function(view, data) {
 
 var app = express();
 // view engine setup
-app.set('views', path.join(__dirname, config.views));
+app.set('views', path.join(conf.root, conf.views));
 app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
-// app.use(favicon(__dirname + '/public/favicon.ico'));
+// app.use(favicon(conf.root + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(multer({ dest: config.uploads }));
+app.use(multer({ dest: path.join(conf.root, conf.uploads)}));
 app.use(cookieParser());
-// app.use(require('stylus').middleware(path.join(__dirname, config.statics)));
-app.use('/static', express.static(path.join(__dirname, config.statics)));
+// app.use(require('stylus').middleware(path.join(conf.root, conf.statics)));
+app.use('/static', express.static(path.join(conf.root, conf.statics)));
 
 // app.use('/', routes);
 // app.use('/users', users);
 // 配置静态模块
-config.modules.forEach(function(a, i) {
-    app.use('/' + a, express.static(path.join(__dirname, a)));
+conf.modules.forEach(function(a, i) {
+    app.use('/' + a, express.static(path.join(conf.root, a)));
 });
 
 // 配置动态路由
-var routes = path.join(__dirname, config.routes),
+var routes = path.join(conf.root, conf.routes),
     files = fs.readdirSync(routes),
     reg = /\.js$/,
     route;
@@ -114,9 +105,7 @@ app.use(function(err, req, res, next) {
     });
 });
 
-app.listen(config.port);
-
-module.exports = app;
+app.listen(conf.port);
 
 // 显示内网/局域网 IP
 var getLocalIP = function () {
@@ -128,7 +117,7 @@ var getLocalIP = function () {
         arr.forEach(function (a) {
             var head = parseFloat(a.address.split('.')[0]);
             if (head <= 270 && head !== 127) {
-                console.log('listen ' + a.address + ':' + config.port);
+                console.log('listen ' + a.address + ':' + conf.port);
             }
         })
     }

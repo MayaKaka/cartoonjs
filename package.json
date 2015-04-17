@@ -35,6 +35,7 @@
     "jade": "~1.8.2",
     "morgan": "~1.5.1",
     "multer": "^0.1.7",
+    "mysql": "^2.5.5",
     "serve-favicon": "~2.2.0",
     "stylus": "0.42.3",
     "unzip": "^0.1.11"

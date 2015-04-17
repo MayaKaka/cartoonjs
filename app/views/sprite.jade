@@ -1,14 +1,10 @@
-link(rel='stylesheet', href='/static/editor/css/sprite.css')
+link(rel='stylesheet', href='/static/home/css/sprite.css')
+// sudo apt-get install libcairo2-dev libjpeg8-dev libpango1.0-dev libgif-dev build-essential g++
 div(class="container")
     div(class="upload")
-        span 请拖拽此处上传图片，支持图片和zip(请勿带多级目录)
-        div(id="merge" ondragover="uploadDrag(event)" ondrop="uploadDrop(event)")
-            span 合并帧动画
-        div(id="trim" ondragover="uploadDrag(event)" ondrop="uploadDrop(event)")
-            span 图片裁剪
-        div(id="flip" ondragover="uploadDrag(event)" ondrop="uploadDrop(event)")
-            span 图片翻转
-    div(class="download")
+       div(id="common" ondragover="onDrag(event)" ondrop="onDrop(event)")
+            span 普通上传
+    div(class="download" style="display:none")
         svg(class="svg" width="800" height="500")
             path(fill="none" stroke="rgb(0,114,253)" stroke-width="1" d="M0 250.5L800 250.5M400.5 0 L400.5 500")
     div(class="json")
@@ -17,4 +13,4 @@ div(class="container")
         input(type="number" id="translateX" value="0")
         input(type="number" id="translateY" value="0")
 script(src="/static/libs/require/require.min.js")
-script(src="/static/editor/js/sprite.js")
+script(src="/static/home/js/sprite.js")

@@ -3,11 +3,11 @@
 /node_modules/
 /build/
 /test/
+/examples/
 /app/uploads/
 
 # Project Files #
 startup.*
 *.project
-*.project.sublime-workspace
-
-
+*.sublime-project
+*.sublime-workspace

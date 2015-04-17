@@ -1,62 +1,69 @@
 extends home
 
 block title
-    title WebFX
+    title CartoonJS
 
 block content
-    div(class="slide")
-        div(class="slide-inner")
+    div(class="content-inner")
+        div(class="slides")
             ul
-                li 1
-                li 2
-                li 3
-        div(class="slide-contrl-left")
-        div(class="slide-contrl-right")
-        div(class="slide-contrl-bottom")
-    div(class="content")
-        div(class="content-left")
-            div(class="content-left-products")
-                -for(var i=0; i<9; i++) {
-                    div(class="products-item")    
-                -}
-        div(class="content-right")
+                li
+                    img(src="/static/home/img/slides_0.png")
+        div(class="articles")
+            h1 基于 HTML5 的动画和交互应用框架
+            p(style="font-size:20px;").
+                cartoonjs 是一款简单跨平台的 js 动画框架，致力于帮助大家轻松的创建基于 web 的交互应用或者游戏。
+            div(class="content-cols")
+                div(class="content-cols-item")
+                    h2 绘图支持
+                    img(class="" src="/examples/images/feature1.png" alt="绘图")
+                    p 基于 html5 svg 和 canvas, 提供矩形，圆，椭圆，多边形，线段等多种基础图形的绘制，还支持位图，文本，渐变，滤镜，混色和阴影等多种效果实现。
+                div(class="content-cols-item")
+                    h2 动画功能
+                    img(class="" src="/examples/images/feature2.png" alt="动画")
+                    p 支持包括补间动画，帧动画，骨骼动画，粒子动画，时间轴动画，轨迹动画等多种动画方式，能够快速构建完善的动画系统和交互功能。
+                div(class="content-cols-item")
+                    h2 扩展实现
+                    img(class="" src="/examples/images/feature3.png" alt="扩展")
+                    p 提供基于物理引擎box2dweb和3d引擎threejs的扩展，通过扩展可以快速创造物理世界和三维世界，也可以实现趣味性的游戏和多维交互体验。
+            div(class="content-sample")
+                h2 快速构建应用
+                p 整个框架通过 AMD 方式引入，依赖于 <a href="#">requirejs</a>
+                div(id="editor").
+                    &lt;canvas id="canvas"&gt;&lt;/canvas&gt;
+                    &lt;script src="http://cartoonjs.duapp.com/static/libs/require/requrie.js"&gt;&lt;/script&gt;
+                    &lt;script&gt;
+                        require.config({
+                            paths: { 'cartoon': 'http://cartoonjs.duapp.com/build/cartoon' }
+                        });
+                        require(['cartoon'], function(ct) {
+                            ct.setRenderMode('canvas');
 
-//
-    div(id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="false")
-        ol(class="carousel-indicators")
-            li(data-target="#myCarousel" data-slide-to="0" class="active")
-            li(data-target="#myCarousel" data-slide-to="1" class="")
-        div(class="carousel-inner")
-            div(class="item active")
-                canvas(id="cvs_0" width="900" height="400")
-                div(class="container")
-                    div(class="carousel-caption" style="bottom:0;left:25%")
-                        p 构建高性能WEB动画
-                        p 引导产品设计，提升页面表现力
-                        p 基础技术积累，提高迭代效率
-            div(class="item")
-                canvas(id="cvs_1" width="900" height="400")
-        a(class="left carousel-control" href="#myCarousel" data-slide="prev")
-            span(class="glyphicon glyphicon-chevron-left")
-        a(class="right carousel-control" href="#myCarousel" data-slide="next")
-            span(class="glyphicon glyphicon-chevron-right")
-    div(class="container marketing")
-        h1(class="text-center" style="margin-bottom:30px;") 我们致力于
-        div(class="row")
-            div(class="col-lg-4")
-                img(class="col-lg-12" src="/static/img/feature1.png" alt="绘图" style="margin-bottom:20px")
-                h2 完善的绘图支持
-                p(class="text-left")    我们提供基于html5 canvas的多种绘图支持，包括多种基础图形（矩形，圆，椭圆，多边形，线段，等多边形），还包括多种图像功能（位图绘制，滤镜操作，混色处理等），通过扩展，我们还能够支持3D图形的绘制。
-            div(class="col-lg-4")
-                img(class="col-lg-12" src="/static/img/feature2.png" alt="动画" style="margin-bottom:20px")
-                h2 丰富的动画功能
-                p(class="text-left")    我们支持dom和canvas渲染模式，支持多种动画方式，包括补间动画，时间轴动画，帧动画，骨骼动画，粒子动画，轨迹运动动画等多样式的动画支持，基于事件模型能够快速构建完善的动画系统和交互功能。
-            div(class="col-lg-4")
-                img(class="col-lg-12" src="/static/img/feature3.png" alt="扩展" style="margin-bottom:20px")
-                h2 多种扩展的实现
-                p(class="text-left")    我们提供基于物理引擎box2dweb和3d引擎threejs的扩展，通过扩展可以快速创造物理世界和三维世界，也可以实现趣味性的游戏和多维交互体验。
-            p(class="pull-right")
-                a(href="demo.html" target="_blank") 更多 » 
+                            // 创建容器和图形
+                            var canvas = new ct.Canvas({ elem: '#canvas', width: 1100, height: 200 });
+                            var circle = new ct.Circle({ x: 100, y: 60, radius: 40, fill: 'top,#0ff,#ff0' });
+                            canvas.add(circle);
+
+                            // 添加计时器
+                            var ticker = ct.Ticker;
+                            ticker.add(ct.Tween);   // 更新补间动画
+                            ticker.add(canvas);     // 更新画布
+                            ticker.start();
+
+                            // 创建补间动画
+                            var animate = function() {
+                                circle.to({ x: 900, transform: { rotate: 720, scale: 2 } }, 2400, 'bounceIn')
+                                      .to({ x: 100, transform: { rotate: 0, scale: 1 } }, 1200, 'easeInOut');
+                            };
+                            ticker.loop(animate, 4000);
+                        });
+                    &lt;/script&gt;
+                canvas(id="canvas")
+            div(class="content-more")
+                h2 需要你宝贵的建议
+                p 请发送邮件至 chenrui09@baidu.com
+
 
 block script
+    script(src="/static/libs/ace/ace.js")
     script(src="/static/home/js/index.js")

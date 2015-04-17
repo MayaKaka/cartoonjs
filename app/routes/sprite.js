@@ -1,13 +1,15 @@
-var fs = require('fs');
-var unzip = require('unzip');
 var express = require('express');
 var jade = require('jade');
+var fs = require('fs');
+var unzip = require('unzip');
+var conf = require('../../conf');
 var Canvas = require('canvas');
 var Image = Canvas.Image;
-var router = express.Router();
 
-var output = 'app/statics/images/',
-    outputUrl = '/static/images/';
+var router = module.exports = express.Router();
+
+var output = conf.root + '/' + conf.projects,
+    outurl = '/static/projects';
 
 router.get('/', function(req, res) {
     res.send(jade.renderTpl('sprite', { title: 'sprite' }));
@@ -17,19 +19,31 @@ router.post('/upload', function(req, res) {
     var files = req.files;
     var list = [];
     var isZip = false;
-    var pid = new Date().getTime();
-    var outpath = output + pid;
+    var cmd = req.body.cmd;
+
+    var pname = req.body.pname,
+        sname = req.body.sname;
+
+    var paths = {
+        output: output + '/' + pname +'/ani/' + sname,
+        outurl: outurl + '/' + pname +'/ani/' + sname
+    }
+
+    if (cmd === 'comm') {
+        res.send('complete!');
+        return;
+    }
 
     for (var i in files) {
         if (files[i].extension === 'zip') {
             isZip = true;
-            fs.mkdirSync(outpath);
-            fs.createReadStream(files[i].path).pipe(unzip.Extract({ path: outpath })).on('close', function() {
-                files = fs.readdirSync(outpath);
+            fs.mkdirSync(paths.output);
+            fs.createReadStream(files[i].path).pipe(unzip.Extract({ path: paths.output })).on('close', function() {
+                files = fs.readdirSync(paths.output);
                 files.forEach(function(a) {
                     list.push({
                         originalname: a,
-                        path: outpath + '/' + a
+                        path: paths.output + '/' + a
                     });
                 });
                 exec();
@@ -40,17 +54,17 @@ router.post('/upload', function(req, res) {
         list.push(files[i]);       
     }
 
-
     var exec = function() {
-        var cmd = req.body.cmd;
-        if (!isZip) fs.mkdirSync(output + pid);
+        if (!isZip) fs.mkdirSync(paths.output);
         try {
             if (cmd === 'merge') {
-                res.send(merge(pid, list, true));
+                paths.useTrim = true;
+                paths.forMerge = true;
+                res.send(merge(paths, list));
             } else if (cmd === 'trim') {
-                res.send(trim(pid, list));
+                res.send(trim(paths, list));
             } else if (cmd === 'flip') {
-                res.send(flip(pid, list));
+                res.send(flip(paths, list));
             }
         } catch (e) {
             console.log(e.stack);
@@ -60,30 +74,37 @@ router.post('/upload', function(req, res) {
     if (!isZip) exec();
 });
 
-function merge(pid, files, useTrim) {
+function merge(paths, files) {
     var images = [];
-    var name, data, img;
+    var name, data, img, idx;
 
     files.forEach(function(a, i) {
-        if (!name) {
-            name = a.originalname;
+        name = a.originalname;
+        idx = name.match(/[0-9]+(?=[^0-9]*$)/);
+        if (idx) {
+            idx = parseFloat(idx[0]);
+        } else {
+            idx = 0;
         }
-
-        if (useTrim) {
-            img = trim(pid, [ a ], true);
+        if (paths.useTrim) {
+            img = trim(paths, [ a ]);
             images.push({
-                image: img.data, width: img.originRect[2], height: img.originRect[3], translateX: img.originRect[0], translateY: img.originRect[1]
+                idx: idx, image: img.data, width: img.originRect[2], height: img.originRect[3], translateX: img.originRect[0], translateY: img.originRect[1]
             })
         } else {
             data = fs.readFileSync(a.path);
             images.push({
-                image: data, width: img.width, height: img.height, translateX: 0, translateY: 0
+                idx: idx, image: data, width: img.width, height: img.height, translateX: 0, translateY: 0
             });
         }
         
         fs.unlink(a.path);
     });
 
+    images.sort(function(a, b) {
+        return a.idx - b.idx;
+    });
+    
     var frames = [],
         canvases = [],
         canvas, ctx;
@@ -125,44 +146,16 @@ function merge(pid, files, useTrim) {
         img = images[i];
         ctx.drawImage(img.image, a[0], a[1]);
     });
-    /*
-    var idx, diff = 1000;
-    images.forEach(function(a, i) {
-        idx = Math.floor(i/diff);
-        if (!canvases[idx]) {
-            canvases[idx] = { width: 0, height: 0 };
-        }
-        canvases[idx].width += a.width;
-        canvases[idx].height = Math.max(canvases[idx].height, a.height);
-    });
-
-    canvases.forEach(function(a, i) {
-        canvases[i] = new Canvas(a.width, a.height, 'png');
-        canvases[i].ctx = canvases[i].getContext('2d');
-        canvases[i].sx = 0;
-    })
-
-    images.forEach(function(a, i) {
-        idx = Math.floor(i/diff);
-        ctx = canvases[idx].ctx;
-        ctx.drawImage(a.image, canvases[idx].sx, 0);
-        frames.push([
-            canvases[idx].sx, 0, a.width, a.height, idx, a.translateX, a.translateY
-        ]);
-        canvases[idx].sx += a.width;
-    });
-    */
-
+    
     var len = images.length;
     images = [];
     canvases.forEach(function(a, i) {
         var fileName = i + '.png';
-        fs.writeFileSync(output + pid + '/' + fileName, canvases[i].toBuffer());
-        images.push(outputUrl + pid + '/' + fileName);
+        fs.writeFileSync(paths.output + '/' + fileName, canvases[i].toBuffer());
+        images.push(paths.outurl + '/' + fileName);
     });
 
     var result = {
-        cmd: 'merge',
         images: images,
         frames: frames,
         offsetX: 0,
@@ -171,11 +164,11 @@ function merge(pid, files, useTrim) {
             all: [0, len-1, true, len*60]
         }
     };
-    fs.writeFile(output + pid + '/ss.json', JSON.stringify(result));
+    fs.writeFile(paths.output + '/ss.json', JSON.stringify(result));
     return result;
 }
 
-function trim(pid, files, forMerge) {
+function trim(paths, files) {
     var path = files[0].path,
         data = fs.readFileSync(path);
 
@@ -269,40 +262,15 @@ function trim(pid, files, forMerge) {
     
     mini.getContext('2d').drawImage(canvas, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
 
-    if (!forMerge) {
-        fs.writeFile(output + pid + '/' + name, mini.toBuffer());
+    if (!paths.forMerge) {
+        fs.writeFile(paths.output + '/' + name, mini.toBuffer());
     }
 
     var result = {
-        cmd: 'trim',
-        image: outputUrl + pid + '/' + name,
+        image: paths.outurl + '/' + name,
         data: mini,
         sourceRect: [0, 0, canvas.width, canvas.height],
         originRect: rect
     };
     return result;
 }
-
-function flip(pid, files) {
-    var path = files[0].path,
-        data = fs.readFileSync(path);
-
-    var img = new Image;
-    img.src = data;
-    
-    var canvas = new Canvas(img.width, img.height, 'png');
-    canvas.translate(img.width, 0);
-    canvas.scale(-1, 1);
-    canvas.drawImage(img, 0, 0);
-
-    var name = new Date().getTime() + '.png';
-    fs.writeFile(output + pid + '/' + name, canvas.toBuffer());
-
-    var result = {
-        cmd: 'flip',
-        image: outputUrl + pid + '/' + name
-    };
-    return result;
-}
-
-module.exports = router;

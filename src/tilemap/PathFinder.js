@@ -1,7 +1,7 @@
 
 define(function (require) {
-	"use strict";
-	
+    'use strict';
+
 // javascript-astar 0.2.0
 // http://github.com/bgrins/javascript-astar
 // Freely distributable under the MIT License.
@@ -356,207 +356,207 @@ BinaryHeap.prototype = {
 };
 
 var PathFinder = Class.extend({
-	
-	graph: null,
-	_startNode: null,
-	_endNode: null,
-	
-	init: function(data) {
-		this.graph = new Graph(data);		
-	},
-	
-	setStartNode: function(x, y){
-		this._startNode = this.graph.nodes[x][y];
-	},
-	
-	setEndNode: function(x, y){
-		this._endNode = this.graph.nodes[x][y];
-	},
-	
+    
+    graph: null,
+    _startNode: null,
+    _endNode: null,
+    
+    init: function(data) {
+        this.graph = new Graph(data);        
+    },
+    
+    setStartNode: function(x, y){
+        this._startNode = this.graph.nodes[x][y];
+    },
+    
+    setEndNode: function(x, y){
+        this._endNode = this.graph.nodes[x][y];
+    },
+    
     getAPath: function() {
         return astar.search(this.graph.nodes, this._startNode, this._endNode, { diagonal: false }); 
     },
 
-	getPath: function() {
-		var result = [];
-		
-		if (this._endNode === this._startNode) return result;
-		
-		// 当终点不可行时，寻找最近可行点
-		if (this._endNode.isWall()) {
-			// cc.log('No Path~~~');
-			var nearest = this.getNearest(this._startNode, this._endNode);
-			if (nearest && nearest!==this._startNode) {
-				this.setEndNode(nearest.x, nearest.y);
-			} else {
-				return result;
-			}
-		}
-		// 当终点与起始点可直接连接时，走直接路径
-		if (this.isLink(this._startNode, this._endNode)) {
-			// cc.log('Direct Path~~~');
-			result.push(this._endNode);
-			return result;
-		}
-		// 当终点与起始点无法连接时，走 A星路径
-		var path = astar.search(this.graph.nodes, this._startNode, this._endNode, { diagonal: true });		
-			
-		if (path.length > 1) {
-			path.unshift(this._startNode);
-			// 加入起始点后，长度至少为3，进行优化处理
-			var lastDir = this.getDirection(path[0], path[1]), 
-				newDir = -1;
-			// 只保留方向不同的点
-			for (var i=1, l=path.length-1; i<l; i++) {	
-				newDir = this.getDirection(path[i], path[i+1]);
-				if (newDir !== lastDir) {
-					result.push(path[i]);
-				}
-				lastDir = newDir;
-			}
-			result.push(path[path.length-1]);
-		} else {
-			// path 的原始长度为 0 或者 1时，不做优化处理
-			result = path;
-		}
-		
-		if (result.length > 1) {
-			// 加入起始点后，长度至少为3，进行拐角优化
-			result.unshift(this._startNode);
-			// 节点优化， 从简处理，并非  flody 算法
-			this.flody(result);
-			// 移除起始点
-			result.shift();
-		}
-		// cc.log('Astar Path~~~');
-		return result;
-	},
-	
-	flody: function(path) {
-		var delArr = [];
-		// 正方向遍历
-		for (var i=0; i<path.length; i++) {
-			// 逆方向遍历
-			for (var j=path.length-1; j>=i+2; j--) {
-				// 当两个节点可以直接联通时，删除中间的多余的节点
-				if (this.isLink(path[i], path[j])) {
-					// 比如 1 和 4可以直接联通时，删除 2 和 3，然后从4开始寻找新的可连通的点
-					// cc.log('link', i, j);
-					for (var k=i+1; k<j; k++) {
-						delArr.push(k);
-					}
-					i = j-1;
-					break;
-				}
-			}
-		}
-		for (var i=delArr.length-1; i>=0; i--) {
-			path.splice(delArr[i], 1);
-		}
-	},
-	
-	pathToString: function(path){
-		var str = "(";
-		for (var i=0;i<path.length;i++) {
-			if (i>0) {
-				str += "|";
-			}
-			str += "("+path[i].x+"|"+path[i].y+")";
-		}
-		str += ")";
-		return str;
-	},
-	
-	pathToArray: function(str) {
-		var len = str.length;
-		str = str.substring(0, len-2);
-		str = str.substring(2, str.length);
-		var arr = str.split(")|("),
-			path = [], x, y;
-		for (var i=0;i<arr.length;i++) {
-			x = arr[i].split("|")[0];
-			y = arr[i].split("|")[1];
-			path.push(this.graph.nodes[parseInt(x)][parseInt(y)]);
-		}
-		return path;
-	},
-	
+    getPath: function() {
+        var result = [];
+        
+        if (this._endNode === this._startNode) return result;
+        
+        // 当终点不可行时，寻找最近可行点
+        if (this._endNode.isWall()) {
+            // cc.log('No Path~~~');
+            var nearest = this.getNearest(this._startNode, this._endNode);
+            if (nearest && nearest!==this._startNode) {
+                this.setEndNode(nearest.x, nearest.y);
+            } else {
+                return result;
+            }
+        }
+        // 当终点与起始点可直接连接时，走直接路径
+        if (this.isLink(this._startNode, this._endNode)) {
+            // cc.log('Direct Path~~~');
+            result.push(this._endNode);
+            return result;
+        }
+        // 当终点与起始点无法连接时，走 A星路径
+        var path = astar.search(this.graph.nodes, this._startNode, this._endNode, { diagonal: true });        
+            
+        if (path.length > 1) {
+            path.unshift(this._startNode);
+            // 加入起始点后，长度至少为3，进行优化处理
+            var lastDir = this.getDirection(path[0], path[1]), 
+                newDir = -1;
+            // 只保留方向不同的点
+            for (var i=1, l=path.length-1; i<l; i++) {    
+                newDir = this.getDirection(path[i], path[i+1]);
+                if (newDir !== lastDir) {
+                    result.push(path[i]);
+                }
+                lastDir = newDir;
+            }
+            result.push(path[path.length-1]);
+        } else {
+            // path 的原始长度为 0 或者 1时，不做优化处理
+            result = path;
+        }
+        
+        if (result.length > 1) {
+            // 加入起始点后，长度至少为3，进行拐角优化
+            result.unshift(this._startNode);
+            // 节点优化， 从简处理，并非  flody 算法
+            this.flody(result);
+            // 移除起始点
+            result.shift();
+        }
+        // cc.log('Astar Path~~~');
+        return result;
+    },
+    
+    flody: function(path) {
+        var delArr = [];
+        // 正方向遍历
+        for (var i=0; i<path.length; i++) {
+            // 逆方向遍历
+            for (var j=path.length-1; j>=i+2; j--) {
+                // 当两个节点可以直接联通时，删除中间的多余的节点
+                if (this.isLink(path[i], path[j])) {
+                    // 比如 1 和 4可以直接联通时，删除 2 和 3，然后从4开始寻找新的可连通的点
+                    // cc.log('link', i, j);
+                    for (var k=i+1; k<j; k++) {
+                        delArr.push(k);
+                    }
+                    i = j-1;
+                    break;
+                }
+            }
+        }
+        for (var i=delArr.length-1; i>=0; i--) {
+            path.splice(delArr[i], 1);
+        }
+    },
+    
+    pathToString: function(path){
+        var str = "(";
+        for (var i=0;i<path.length;i++) {
+            if (i>0) {
+                str += "|";
+            }
+            str += "("+path[i].x+"|"+path[i].y+")";
+        }
+        str += ")";
+        return str;
+    },
+    
+    pathToArray: function(str) {
+        var len = str.length;
+        str = str.substring(0, len-2);
+        str = str.substring(2, str.length);
+        var arr = str.split(")|("),
+            path = [], x, y;
+        for (var i=0;i<arr.length;i++) {
+            x = arr[i].split("|")[0];
+            y = arr[i].split("|")[1];
+            path.push(this.graph.nodes[parseInt(x)][parseInt(y)]);
+        }
+        return path;
+    },
+    
     isWall: function(x, y) {
         return this.graph.nodes[x][y].isWall();
     },
 
-	isLink: function(node0, node1){
-		var dx = node1.x - node0.x;
-		var dy = node1.y - node0.y;
-		var dd = Math.sqrt(dx * dx + dy * dy);
-		// 计算步长
-		var rule = 0.2;
-		var kx = dx / dd * rule;
-		var ky = dy / dd * rule;
-		var count = 0;
-		var nodes = this.graph.nodes;
-		var x, y, nearest;
-		while (dd>0) {
-			count++;
-			dd -= rule;
-			// 循环计算节点走过的路径
-			x = Math.floor(node0.x+0.5+count*kx);
-			y = Math.floor(node0.y+0.5+count*ky);
-			if (nodes[x][y].isWall()) {
-				return false;
-			}
-		}
-		return true;
-	},
-	
-	getNearest: function(node0, node1){
-		var neighbors = astar.neighbors(this.graph.nodes, node1, true);
-		var distance = -1, node = null, o = this, shortdis = -1;
-		neighbors.forEach(function(a, i){
-			if (!a.isWall()) {
-				distance = o.getDistance(node0, a);
-				if (shortdis < 0 || distance < shortdis) {
-					shortdis = distance;
-					node = a;
-				}
-			}
-		});
-		return node;
-	},
-	
-	getDistance: function(p0, p1){
-		return Math.sqrt((p1.x-p0.x)*(p1.x-p0.x) + (p1.y-p0.y)*(p1.y-p0.y));
-	},
-	
-	getDirection: function(p0, p1) {
-		if (p1.x > p0.x) {
-			if (p1.y > p0.y) {
-				return 0;
-			} else if(p1.y === p0.y) {
-				return 1;
-			} else {
-				return 2;
-			}
-		}
-		else if (p1.x === p0.x) {
-			if (p1.y > p0.y) {
-				return 3;
-			} else if(p1.y === p0.y) {
-				return 4;
-			} else {
-				return 5;
-			}
-		}
-		else {
-			if (p1.y > p0.y) {
-				return 6;
-			} else if(p1.y === p0.y) {
-				return 7;
-			} else {
-				return 8;
-			}
-		}
-	}
+    isLink: function(node0, node1){
+        var dx = node1.x - node0.x;
+        var dy = node1.y - node0.y;
+        var dd = Math.sqrt(dx * dx + dy * dy);
+        // 计算步长
+        var rule = 0.2;
+        var kx = dx / dd * rule;
+        var ky = dy / dd * rule;
+        var count = 0;
+        var nodes = this.graph.nodes;
+        var x, y, nearest;
+        while (dd>0) {
+            count++;
+            dd -= rule;
+            // 循环计算节点走过的路径
+            x = Math.floor(node0.x+0.5+count*kx);
+            y = Math.floor(node0.y+0.5+count*ky);
+            if (nodes[x][y].isWall()) {
+                return false;
+            }
+        }
+        return true;
+    },
+    
+    getNearest: function(node0, node1){
+        var neighbors = astar.neighbors(this.graph.nodes, node1, true);
+        var distance = -1, node = null, o = this, shortdis = -1;
+        neighbors.forEach(function(a, i){
+            if (!a.isWall()) {
+                distance = o.getDistance(node0, a);
+                if (shortdis < 0 || distance < shortdis) {
+                    shortdis = distance;
+                    node = a;
+                }
+            }
+        });
+        return node;
+    },
+    
+    getDistance: function(p0, p1){
+        return Math.sqrt((p1.x-p0.x)*(p1.x-p0.x) + (p1.y-p0.y)*(p1.y-p0.y));
+    },
+    
+    getDirection: function(p0, p1) {
+        if (p1.x > p0.x) {
+            if (p1.y > p0.y) {
+                return 0;
+            } else if(p1.y === p0.y) {
+                return 1;
+            } else {
+                return 2;
+            }
+        }
+        else if (p1.x === p0.x) {
+            if (p1.y > p0.y) {
+                return 3;
+            } else if(p1.y === p0.y) {
+                return 4;
+            } else {
+                return 5;
+            }
+        }
+        else {
+            if (p1.y > p0.y) {
+                return 6;
+            } else if(p1.y === p0.y) {
+                return 7;
+            } else {
+                return 8;
+            }
+        }
+    }
 });
 
 return PathFinder;

@@ -1,6 +1,7 @@
 var express = require('express');
 var jade = require('jade');
-var router = express.Router();
+
+var router = module.exports = express.Router();
 
 router.get('/', function(req, res) {
     res.render('user', { title: 'User' });
@@ -21,5 +22,3 @@ router.get('/info', function(req, res) {
         job: 'web developer'
     });
 });
-
-module.exports = router;

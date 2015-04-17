@@ -7,28 +7,30 @@ html
         block style
     body
         div(class="header")
-            div(class="header-logo")
-                div(class="header-logo-title") WebFX
-                div(class="header-logo-desc") 前端效果平台
-            div(class="header-nav")
-                -function matchurl(view, pageview, name) {
-                    -if (view === pageview) {
-                        a(href="#" class="header-nav-index") #{name}
-                    -} else {
-                        a(href="#{view}") #{name}
+            div(class="header-inner")
+                div(class="header-logo")
+                    span CartoonJS
+                div(class="header-nav")
+                    -function matchurl(view, pageview, name) {
+                        -if (view === pageview) {
+                            a(href="#" class="header-nav-index") #{name}
+                        -} else {
+                            a(href="#{view}") #{name}
+                        -}
                     -}
-                -}
-                ul
-                    li
-                        -matchurl('index', pageview, '首页')
-                    li
-                        -matchurl('products', pageview, '产品')
-                    li
-                        -matchurl('cartoonjs', pageview, '效果库')
-                    li
-                        -matchurl('tools', pageview, '工具')
-                    li
-                        a(href="/examples/slide.three.html") 幻灯片
-        block content
+                    ul
+                        li
+                            -matchurl('index', pageview, '首页')
+                        li
+                            -matchurl('docs', pageview, '文档')
+                        li
+                            -matchurl('demo', pageview, '实例')
+                        li
+                            -matchurl('editor', pageview, '编辑器')
+                        li
+                            -matchurl('product', pageview, '产品库')
+        div(class="content")
+            block content
         script(src='/static/libs/jquery/jquery-1.11.1.min.js')
+        script(src='/static/libs/require/require.min.js')
         block script
