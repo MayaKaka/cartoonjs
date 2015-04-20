@@ -141,14 +141,14 @@
     text-align: center;
 }
 
-.main-sprite .close, .main-asset .close, .main-css .close, .main-script .close {
+.main-sprite .close, .main-asset .close, .main-txt .close, .main-css .close, .main-script .close {
     position: absolute;
     right: 0;
     top: 0;
     z-index: 1;
 }
 
-.css-editor, .script-editor {
+.txt-editor, .css-editor, .script-editor {
     height: 600px;
 }
 

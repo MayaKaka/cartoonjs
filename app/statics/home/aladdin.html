@@ -329,27 +329,37 @@ require.config({
     paths: {
         'cartoon': baseUrl + '/build/cartoon',
         'cartoon.ui': baseUrl + '/build/cartoon.ui',
-        'cartoon.particle': baseUrl + '/build/cartoon.particle',
-        'pdata': baseUrl + '/static/projects/'+ pname +'/pdata'
-        
+        'pdata': baseUrl + '/static/projects/'+ pname +'/export/pdata'
     }
 })
 
-require(['pdata', 'cartoon', 'cartoon.ui'], function(pdata, ct) {
+require(['cartoon', 'cartoon.ui', 'pdata'], function(ct, ct_ui, pdata) {
     var viewer = new ct.Viewer();
+    var preload = ct.Preload;
     var ticker = ct.Ticker;
     var tween = ct.Tween;
     var stage;
-
+    var style;
+    
+    preload.setResPath(pdata.path);
+    
     var init = function(data) {
         viewer.enableScript(true);
+        viewer._this = _this;
+        style = document.createElement('style');
+        style.type = 'text/css';
+        if(style.styleSheet){
+            style.styleSheet.cssText = data.css;
+        }else{
+            style.appendChild(document.createTextNode(data.css));
+        }
         stage = viewer.parse(data.scenes.stage);
         ticker.add(tween);
         ticker.add(stage);
         ticker.start();
-        _this.find('.opr-activity-container').append(stage.elem);
+        _this.find('.opr-activity-container').append(style).append(stage.elem);
     }
-
+    
     init(pdata);
 
     _this.dispose = function() {
@@ -358,6 +368,7 @@ require(['pdata', 'cartoon', 'cartoon.ui'], function(pdata, ct) {
     }
 
 });
+
     });
 
 });

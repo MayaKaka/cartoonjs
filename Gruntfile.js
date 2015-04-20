@@ -25,7 +25,7 @@ module.exports = function(grunt) {
                         { name: 'cartoon' },
                         { name: 'cartoon.private' },
                         { name: 'cartoon.filter', exclude: [ 'cartoon', 'display/Bitmap' ] },
-                        { name: 'cartoon.particle', exclude: [ 'cartoon', 'base', 'display/DisplayObject', 'display/Shape', 'display/Bitmap' ] },
+                        { name: 'cartoon.particle', exclude: [ 'cartoon', 'base', 'display/DisplayObject', 'display/Bitmap', 'shapes/Shape' ] },
                         { name: 'cartoon.ui', exclude: [ 'cartoon', 'display/DisplayObject', 'display/Bitmap' ] },
                         { name: 'cartoon.box2d', exclude: [ 'cartoon', 'display/DisplayObject' ] },
                         { name: 'cartoon.three', exclude: [ 'cartoon', 'core/Preload', 'display/StyleSheet', 'display/DisplayObject', 'anim/Tween' ] }

@@ -460,7 +460,7 @@ require(modules, function(ct) {
                 $('.info #alpha').val(target.alpha);
                 $('.info #visible').attr('checked', target.visible);
                 $('.info #shadow').val(target.shadow);
-                $('.info #script').val(target.script);
+                $('.info #script').val(target.script || '');
 
                 $('.info-priv').find('table').hide();
                 $('.info-priv').find('.'+target.type).show();
@@ -956,18 +956,27 @@ require(modules, function(ct) {
             window.open('/static/home/aladdin.html?pname=' + pname);
         });
 
-        var jsEditor = ace.edit("jsEditor");
-        jsEditor.setTheme("ace/theme/monokai");
-        jsEditor.getSession().setMode("ace/mode/javascript");
-        jsEditor.commands.addCommand({
+        $('.tab .export').click(function() {
+             $.ajax({
+                url: '/editor/export-project',
+                data: {
+                    pname: pname
+                },
+                success: function(data) {
+                    alert('导出成功');
+                }
+            });
+        });
+
+        var txtEditor = ace.edit("txtEditor");
+        txtEditor.setTheme("ace/theme/monokai");
+        txtEditor.getSession().setMode("ace/mode/html");
+        txtEditor.commands.addCommand({
             name: 'myCommand',
             bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
-            exec: function(jsEditor) {
-                if ($('.main-script').css('display') === 'block') {
-                    target.script = jsEditor.getValue();
-                    var node = sceneTree.getNodeByParam('pid', target.pid);
-                    node.name = viewer.getName(target);
-                    sceneTree.updateNode(node);
+            exec: function(cssEditor) {
+                if ($('.main-txt').css('display') === 'block') {
+                    target.value(txtEditor.getValue());
                     uploadData();
                 }
             },
@@ -990,42 +999,71 @@ require(modules, function(ct) {
             readOnly: true // 如果不需要使用只读模式，这里设置false
         });
 
-        $('.main-sprite .close').click(function() {
+        var jsEditor = ace.edit("jsEditor");
+        jsEditor.setTheme("ace/theme/monokai");
+        jsEditor.getSession().setMode("ace/mode/javascript");
+        jsEditor.commands.addCommand({
+            name: 'myCommand',
+            bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
+            exec: function(jsEditor) {
+                if ($('.main-script').css('display') === 'block') {
+                    target.script = jsEditor.getValue();
+                    var node = sceneTree.getNodeByParam('pid', target.pid);
+                    node.name = viewer.getName(target);
+                    sceneTree.updateNode(node);
+                    uploadData();
+                }
+            },
+            readOnly: true // 如果不需要使用只读模式，这里设置false
+        });
+
+        var hideAll = function() {
             $('.main-sprite').hide();
-        });
-
-        $('.main-css .close').click(function() {
-            $('.main-css').hide();
-        });
-
-        $('.main-script .close').click(function() {
-            $('.main-script').hide();
-        });
-
-        $('.main-asset .close').click(function() {
             $('.main-asset').hide();
-        });
+            $('.main-txt').hide();
+            $('.main-css').hide();
+            $('.main-script').hide();
+        }
+
+        $('.main-sprite .close').click(hideAll);
+        $('.main-asset .close').click(hideAll);
+        $('.main-txt .close').click(hideAll);
+        $('.main-css .close').click(hideAll);
+        $('.main-script .close').click(hideAll);
 
         $('#ss').next().click(function() {
             if (target) {
+                hideAll();
                 $('.main-sprite').show();
-            }
-        });
-
-        $('#script').next().click(function() {
-            if (target) {
-                $('.main-script').show();
-                jsEditor.setValue(target.script || '');
             }
         });
 
         $('#image').next().click(function() {
             if (target) {
+                hideAll();
                 $('.main-asset').show();
                 var node = assetTree.getNodeByParam('path', folderPath);
                 showAsset(node.children);
             }
         });
+
+        $('#text').next().click(function() {
+            if (target) {
+                hideAll();
+                $('.main-txt').show();
+                txtEditor.setValue(target._text || '');
+            }
+        });
+
+        $('#script').next().click(function() {
+            if (target) {
+                hideAll();
+                $('.main-script').show();
+                jsEditor.setValue(target.script || '');
+            }
+        });
+
+
 
         $('.main-asset').click(function(evt) {
             if (display === 'stage' && target && target.type === 'Bitmap') {

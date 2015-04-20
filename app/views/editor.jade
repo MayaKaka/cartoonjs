@@ -14,7 +14,8 @@ html
                 // span 选择
                 // span 移动
                 span(class="play") 运行
-                span(class="play-ala") 结果页运行
+                span(class="export") 导出
+                span(class="play-ala") 运行aladdin
         div(class="container clearfix")
             div(class="accordion")
                 h3 Scene
@@ -47,9 +48,12 @@ html
                         div(class="sprite-panel")
                         div(class="sprite-play")
                         input(type="button" class="close" value="关闭")
-                    div(class="main-asset")
-                        div(class="asset-panel" ondragover="onDrag(event)" ondrop="onDrop(event)")
-                        input(type="button" class="close" value="关闭") 
+                    div(class="main-asset" ondragover="onDrag(event)" ondrop="onDrop(event)")
+                        div(class="asset-panel")
+                        input(type="button" class="close" value="关闭")
+                    div(class="main-txt")
+                        div(class="txt-editor" id="txtEditor")
+                        input(type="button" class="close" value="关闭")
                     div(class="main-css")
                         div(class="css-editor" id="cssEditor")
                         input(type="button" class="close" value="关闭")
@@ -169,6 +173,7 @@ html
                                 td text
                                 td(colspan="2")
                                     input(type="text" id="text")
+                                    input(type="button" class="change-btn" value="Θ")    
                     table(class="Sprite")
                         tbody
                             tr

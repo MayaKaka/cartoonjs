@@ -5,7 +5,8 @@ var conf = require('../../conf');
 
 var router = module.exports = express.Router();
 
-var output = conf.root + '/' + conf.projects,
+var statics = conf.root + '/' + conf.statics,
+    output = conf.root + '/' + conf.projects,
     outurl = '/static/projects';
 
 router.get('/', function(req, res) {
@@ -39,6 +40,7 @@ router.get('/create-project', function(req, res) {
                     fs.writeFile(pjPath + '/project.json', JSON.stringify(conf));
                     fs.mkdir(pjPath + '/res');
                     fs.mkdir(pjPath + '/ani');
+                    fs.mkdir(pjPath + '/export');
                     res.send({
                         status: 1,
                         msg: '创建成功'
@@ -63,10 +65,37 @@ router.post('/save-project', function(req, res) {
     var pname = req.body.pname;
     var data = req.body.pdata;
     var path = output + '/' + pname;
-    var requireData = 'define(function(require){ return '+ data.replace(/(\s*)\\n(\s*)/g, '') +'; })';
-
+    
     fs.writeFile(path + '/project.json', data);
-    fs.writeFile(path + '/pdata.js', requireData);
+
+    res.send('success');
+});
+
+router.get('/export-project', function(req, res) {
+    var pname = req.query.pname;
+    var path = output + '/' + pname;
+    var url = outurl + '/' + pname;
+    var staticUrl = '/static';
+    var exportPath = path + '/export';
+
+    fs.readFile(path + '/project.json', 'utf-8', function(err, data) {
+        if (err) return;
+        data = 'define(function(require){ return '+ data.replace(/(\s*)\\n(\s*)/g, '') +'; })';
+        var reg = new RegExp(staticUrl + '([a-zA-Z0-9-_/]*)\.(jpg|png|gif)', 'g');
+        var idx = 0;
+        data = data.replace(reg, function(str) {
+            var str = str.replace(staticUrl, '');
+            var type = str.match(/.jpg$/) ? 'jpg' : str.match(/.png$/) ? 'png' : 'gif';
+            var name = (idx++) + '.' + type;
+            fs.readFile(statics + str, function(err, data) {
+                if (err) console.log(err);
+                else fs.writeFile(exportPath + '/' + name, data);
+            });
+            return name;
+        });
+        data = data.replace(url, 'http://localhost' + url + '/export/');
+        fs.writeFile(exportPath + '/pdata.js', data);
+    });
 
     res.send('success');
 });

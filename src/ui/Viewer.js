@@ -229,6 +229,7 @@ var Viewer = ct.Class.extend({
         var V = function(tag) {
             return viewer.get(tag);
         };
+        var _this = viewer._this;
         
         objects.forEach(function(a, i) {
             eval('(function(){'+a.script+'}).call(a)');

@@ -1,1 +1,0 @@
-define(function(require){ return {"name":"hello","path":"/static/projects/hello/","date":1429081301403,"scenes":{"stage":{"type":"Stage","render":0,"width":792,"height":600,"children":[{"type":"Bitmap","x":172,"y":165,"width":120,"height":120,"image":"/static/home/img/bear.png","rect":[0,0,120,120]}]}}}; })

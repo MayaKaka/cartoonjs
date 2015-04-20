@@ -16,12 +16,18 @@ require(['cartoon', 'cartoon.ui'], function(ct) {
     var ticker = ct.Ticker;
     var tween = ct.Tween;
     var stage;
+    var div
     var style;
 
     var init = function(data) {
         viewer.enableScript(true);
         style = document.createElement('style');
-        style.innerHTML = data.css;
+        style.type = 'text/css';
+        if(style.styleSheet){
+            style.styleSheet.cssText = data.css;
+        }else{
+            style.appendChild(document.createTextNode(data.css));
+        }
         stage = viewer.parse(data.scenes.stage);
         ticker.add(tween);
         ticker.add(stage);
