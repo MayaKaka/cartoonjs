@@ -192,7 +192,7 @@ var Viewer = ct.Class.extend({
 
         var tree = {
             name: this.getName(obj),
-            drag: !root,
+            drag: !root && !obj.renderMode,
             pid: pid,
             isParent: isContainer
         };
@@ -218,7 +218,11 @@ var Viewer = ct.Class.extend({
     },
 
     getName: function(obj) {
-        return obj.type + (obj.tag ? ' 【'+obj.tag+'】' : '') + (obj.script ? ' Θ' : '');
+        var type = obj.type === 'DisplayObject' ? 'Display' : obj.type === 'ParticleSystem' ? 'Particle' : obj.type;
+        var tag = obj.tag ? ' 【'+obj.tag+'】' : '';
+        var script = obj.script ? ' Θ' : '';
+        var hidden = obj.visible ? '' : ' × ';
+        return hidden + type + tag + script;
     },
 
     get: function(tag) {

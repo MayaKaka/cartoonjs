@@ -82,11 +82,10 @@ router.get('/export-project', function(req, res) {
         if (err) return;
         data = 'define(function(require){ return '+ data.replace(/(\s*)\\n(\s*)/g, '') +'; })';
         var reg = new RegExp(staticUrl + '([a-zA-Z0-9-_/]*)\.(jpg|png|gif)', 'g');
-        var idx = 0;
         data = data.replace(reg, function(str) {
             var str = str.replace(staticUrl, '');
-            var type = str.match(/.jpg$/) ? 'jpg' : str.match(/.png$/) ? 'png' : 'gif';
-            var name = (idx++) + '.' + type;
+            var name = str.replace('\/home\/', '').replace('\/projects\/'+pname+'\/', '');
+            name = name.replace(/\//g, '_');
             fs.readFile(statics + str, function(err, data) {
                 if (err) console.log(err);
                 else fs.writeFile(exportPath + '/' + name, data);

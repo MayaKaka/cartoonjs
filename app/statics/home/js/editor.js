@@ -228,7 +228,7 @@ require(modules, function(ct) {
                     }
                     
                     parent.add(obj);
-                    sceneTree.addNodes(sceneTree.getNodeByParam('pid', parent.pid), [viewer.jsonTree(obj, true)]);
+                    sceneTree.addNodes(sceneTree.getNodeByParam('pid', parent.pid), [viewer.jsonTree(obj)]);
                 }
 
                 uploadData();
@@ -462,6 +462,10 @@ require(modules, function(ct) {
                 case 'visible':
                     val = evt.target.checked;
                     target.style(id, val);
+
+                    var node = sceneTree.getNodeByParam('pid', target.pid);
+                    node.name = viewer.getName(target);
+                    sceneTree.updateNode(node);
                     break;
                 case 'image':
                     target.source(val);
@@ -702,6 +706,9 @@ require(modules, function(ct) {
                         parent = target.parent,
                         index;
 
+                    if (!targetNode.drag) {
+                        return false;
+                    }
                     if (moveType==='inner' && targetNode.isParent) {
                         origin.parent.remove(origin);
                         target.add(origin);
