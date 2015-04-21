@@ -155,10 +155,19 @@ Tween.exec = function(fnName, callback) {
             target._fxQueue = target._fxTween = null;
             break;
         case 'fadeIn':
+            target.style({
+                visible: true, alpha: 0
+            })
             this.addTween({ alpha: 1 }, null, null, callback);
             break;
         case 'fadeOut':
-            this.addTween({ alpha: 0 }, null, null, callback);
+            target.style({
+                visible: true, alpha: 1
+            })
+            this.addTween({ alpha: 0 }, null, null, function(pos) {
+                target.style({ visible: false });
+                callback && callback(pos);
+            });
             break;
     }
 }

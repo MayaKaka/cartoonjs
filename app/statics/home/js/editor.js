@@ -1020,7 +1020,6 @@ require(modules, function(ct) {
             } else {
                 $grid.remove();
             }
-             
         });
 
         

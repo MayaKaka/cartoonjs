@@ -265,6 +265,14 @@ var DisplayObject = EventDispatcher.extend({
         this._cacheCanvas = null;
     },
 
+    show: function() {
+        this.style('visible', true);
+    },
+
+    hide: function() {
+        this.style('visible', false);
+    },
+
     _stepTween: function(key, fx) {
         // 补间动画逐帧更新样式
         if (key === 'data') {
