@@ -108,6 +108,9 @@ var Viewer = ct.Class.extend({
             case 'Button':
                 obj = new ct.Button(json);
                 break;
+            case 'TextField':
+                obj = new ct.TextField(json);
+                break;
             case 'ParticleSystem':
                 obj = new ct.DisplayObject(json);
                 break;
@@ -180,6 +183,10 @@ var Viewer = ct.Class.extend({
                 break;
             case 'Button':
                 json.ss = obj._spriteSheet.originName || obj._spriteSheet;
+                break;
+            case 'TextField':
+                json.size = obj.fontSize;
+                break;
         }
     },
 

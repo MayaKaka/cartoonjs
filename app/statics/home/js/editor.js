@@ -125,6 +125,11 @@ require(modules, function(ct) {
                             }
                         });
                         break;
+                    case 'TextField':
+                        obj = new ct.TextField({
+                            x: 0, y: 0, width: 120, height: 24, size: 22
+                        });
+                        break;
                     case 'Rect':
                         obj = new ct.Rect({
                             x: 0, y: 0,
@@ -1008,6 +1013,17 @@ require(modules, function(ct) {
             });
         });
 
+        var $grid = $('<style>.main-stage div { box-shadow: 0 0 1px 1px red; }</style>')
+        $('.tab .grid').on('change', function() {
+            if (this.checked) {
+                $grid.appendTo(document.body);
+            } else {
+                $grid.remove();
+            }
+             
+        });
+
+        
         var txtEditor = ace.edit("txtEditor");
         txtEditor.setTheme("ace/theme/monokai");
         txtEditor.getSession().setMode("ace/mode/html");
