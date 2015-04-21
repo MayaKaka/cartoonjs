@@ -139,6 +139,7 @@ var Viewer = ct.Class.extend({
         this.getProp(json, obj, 'height', 0);
         this.getProp(json, obj, 'alpha', 1);
         this.getProp(json, obj, 'visible', true);
+        this.getProp(json, obj, 'cursor', 'auto');
 
         this.jsonDisplayObj(json, obj);
 
@@ -182,7 +183,7 @@ var Viewer = ct.Class.extend({
         }
     },
 
-    jsonTree: function(obj) {
+    jsonTree: function(obj, root) {
         var self = this;
         var isContainer = this.isContainer(obj.type);
         var pid = obj.pid = ++this._viewIndex;    
@@ -191,7 +192,7 @@ var Viewer = ct.Class.extend({
 
         var tree = {
             name: this.getName(obj),
-            drag: false,
+            drag: !root,
             pid: pid,
             isParent: isContainer
         };

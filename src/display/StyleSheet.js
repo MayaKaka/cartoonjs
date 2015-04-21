@@ -340,6 +340,12 @@ var styles = {
                 stlyeName = this.type === 'Text' ? 'textShadow' : 'boxShadow';
             this.elemStyle[stlyeName] = shadow.color ? (shadow.offsetX+'px ' + shadow.offsetY+'px ' + shadow.blur+'px ' + shadow.color) : '';
         }
+    }),
+
+    cursor: newStyle('cursor', null, {
+        css: function(key, value) {
+            this.elemStyle.cursor = value;
+        }
     })
 
 };

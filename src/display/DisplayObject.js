@@ -26,6 +26,7 @@ var DisplayObject = EventDispatcher.extend({
     overflow: 'visible',
     alpha: 1,
     shadow: null,
+    cursor: 'auto',
     
     transform: null, // 2d&3d变换
     transform3d: null,
@@ -95,26 +96,43 @@ var DisplayObject = EventDispatcher.extend({
     },
     
     add: function(child, tag) {
+        this.addAt(child, 'none', tag);
+        
+        return this;
+    },
+    
+    addAt: function(child, index, tag) {
+        var children = this.children;
+        var elem = this.elem;
+        var isdom = child.renderMode === 0 && this.renderMode === 0;
+        var target = isdom && elem.children[index];
+
         if (child.parent) {
             child.parent.remove(child);
         }
         child.parent = this;
-        // 添加子节点
-        this.children.push(child);
-        
-        if (child.renderMode === 0 && this.renderMode === 0) {
-            this.elem.appendChild(child.elem);
+
+        if (index < children.length) {
+            this.children.splice(index, 0, child);
+        } else {
+            this.children.push(child);
         }
-        
+
+        if (isdom) {
+            if (target) {
+                elem.insertBefore(child.elem, target);
+            } else {
+                elem.appendChild(child.elem);
+            }
+        }
+
         this._addUpdater(child);
-        
+
         if (tag) {
             TagCollection.set(this, 'child.' + tag, child);
         }
-
-        return this;
     },
-    
+
     remove: function(child) {
         if (typeof(child) === 'string') { 
             child = TagCollection.get(this, 'child.' + child, true);

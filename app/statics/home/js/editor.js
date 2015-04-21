@@ -228,7 +228,7 @@ require(modules, function(ct) {
                     }
                     
                     parent.add(obj);
-                    sceneTree.addNodes(sceneTree.getNodeByParam('pid', parent.pid), [viewer.jsonTree(obj)]);
+                    sceneTree.addNodes(sceneTree.getNodeByParam('pid', parent.pid), [viewer.jsonTree(obj, true)]);
                 }
 
                 uploadData();
@@ -354,63 +354,7 @@ require(modules, function(ct) {
             }
         });
         
-        $info.find('input').on({
-            focus: function() {
-                $info.seleted = true;
-            },
-            blur: function() {
-                $info.seleted = false;
-            },
-            change: function(evt) {
-                var id = evt.target.id,
-                    val = evt.target.value,
-                    obj;
-                switch(id) {
-                    case 'tag':
-                        target.tag = val;
-                        var node = sceneTree.getNodeByParam('pid', target.pid);
-                        node.name = viewer.getName(target);
-                        sceneTree.updateNode(node);
-                        break;
-                    case 'x':
-                    case 'y':
-                    case 'width':
-                    case 'height':
-                    case 'alpha':
-                        target.style(id, parseFloat(val));
-                        break;
-                    case 'shadow':
-                        target.style(id, val);
-                        break;
-                    case 'translateX':
-                    case 'translateY':
-                    case 'rotate':
-                    case 'scaleX':
-                    case 'scaleY':
-                    case 'skewX':
-                    case 'skewY':
-                        obj = {};
-                        obj[id] = parseFloat(val);
-                        target.style('transform', obj);
-                        break;
-                    case 'visible':
-                        val = evt.target.checked;
-                        target.style(id, val);
-                        break;
-                    case 'image':
-                        target.source(val);
-                        break;
-                    case 'text':
-                        target.value(val);
-                        break;
-                    case 'ss':
-                        target._initSpriteSheet(val);
-                        break;
-                }
-
-                uploadData();
-            }
-        });
+        
 
         var stage;
         var canvas;
@@ -460,6 +404,7 @@ require(modules, function(ct) {
                 $('.info #alpha').val(target.alpha);
                 $('.info #visible').attr('checked', target.visible);
                 $('.info #shadow').val(target.shadow);
+                $('.info #cursor').val(target.cursor);
                 $('.info #script').val(target.script || '');
 
                 $('.info-priv').find('table').hide();
@@ -481,6 +426,67 @@ require(modules, function(ct) {
             }
         }
 
+        var changeInfo = function(evt) {
+            var id = evt.target.id,
+                val = evt.target.value,
+                obj;
+            switch(id) {
+                case 'tag':
+                    target.tag = val;
+                    var node = sceneTree.getNodeByParam('pid', target.pid);
+                    node.name = viewer.getName(target);
+                    sceneTree.updateNode(node);
+                    break;
+                case 'x':
+                case 'y':
+                case 'width':
+                case 'height':
+                case 'alpha':
+                    target.style(id, parseFloat(val));
+                    break;
+                case 'shadow':
+                case 'cursor':
+                    target.style(id, val);
+                    break;
+                case 'translateX':
+                case 'translateY':
+                case 'rotate':
+                case 'scaleX':
+                case 'scaleY':
+                case 'skewX':
+                case 'skewY':
+                    obj = {};
+                    obj[id] = parseFloat(val);
+                    target.style('transform', obj);
+                    break;
+                case 'visible':
+                    val = evt.target.checked;
+                    target.style(id, val);
+                    break;
+                case 'image':
+                    target.source(val);
+                    break;
+                case 'text':
+                    target.value(val);
+                    break;
+                case 'ss':
+                    target._initSpriteSheet(val);
+                    break;
+            }
+
+            uploadData();
+        }
+
+        $info.find('input, select').on({
+            focus: function() {
+                $info.seleted = true;
+            },
+            blur: function() {
+                $info.seleted = false;
+            },
+            change: changeInfo
+        });
+
         var initStage = function() {
             pjData.scenes = pjData.scenes || {};
             var sceneData = pjData.scenes.stage;
@@ -492,8 +498,7 @@ require(modules, function(ct) {
                     elem: '.main-stage', x: 0, y: 0, width: stageSize.width, height: stageSize.height
                 });
             }
-            sceneNodes.push(viewer.jsonTree(stage));
-                   
+            sceneNodes.push(viewer.jsonTree(stage, true));
 
             if (sceneData) {
                 sceneData.elem = '.main-canvas canvas';
@@ -505,7 +510,7 @@ require(modules, function(ct) {
                     elem: '.main-canvas canvas', x: 0, y: 0, width: stageSize.width, height: stageSize.height
                 });
             }
-            sceneNodes.push(viewer.jsonTree(canvas));
+            sceneNodes.push(viewer.jsonTree(canvas, true));
             
 
             if (ct.GLCanvas) {
@@ -518,7 +523,7 @@ require(modules, function(ct) {
             spriteConitaner = new ct.Stage({
                 elem: '.main-sprite', x: 0, y: 0, width: stageSize.width, height: stageSize.height
             });
-            sceneNodes.push(viewer.jsonTree(glcanvas));
+            sceneNodes.push(viewer.jsonTree(glcanvas, true));
 
             sceneTree = zTree.init($sceneTree, sceneConf, sceneNodes);
 
@@ -684,9 +689,37 @@ require(modules, function(ct) {
             },
             callback: {
                 beforeDrag: function(treeId, treeNodes) {
-                    return false;
+                    for (var i=0, l=treeNodes.length; i<l; i++) {
+                        if (treeNodes[i].drag !== true) {
+                            return false;
+                        }
+                    }
+                    return true;
                 },
                 beforeDrop: function(treeId, treeNodes, targetNode, moveType) {
+                    var origin = viewer.get(treeNodes[0].pid),
+                        target = viewer.get(targetNode.pid),
+                        parent = target.parent,
+                        index;
+
+                    if (moveType==='inner' && targetNode.isParent) {
+                        origin.parent.remove(origin);
+                        target.add(origin);
+                        uploadData();
+                        return true;
+                    } else if (moveType==='prev') {
+                        index = parent.children.indexOf(target);
+                        origin.parent.remove(origin);
+                        parent.addAt(origin, index);
+                        uploadData();
+                        return true;
+                    } else if (moveType==='next') {
+                        index = parent.children.indexOf(target);
+                        origin.parent.remove(origin);
+                        parent.addAt(origin, index+1);
+                        uploadData();
+                        return true;
+                    }
                     return false;
                 },
                 beforeClick: function(treeId, treeNode) {
