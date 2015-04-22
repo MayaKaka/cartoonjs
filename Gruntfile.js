@@ -72,6 +72,7 @@ module.exports = function(grunt) {
 
             'ui/Viewer',
             'ui/Button',
+            'ui/TextField',
 
             'tilemap/PathFinder'
         ];
