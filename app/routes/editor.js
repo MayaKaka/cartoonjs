@@ -80,7 +80,7 @@ router.get('/export-project', function(req, res) {
 
     fs.readFile(path + '/project.json', 'utf-8', function(err, data) {
         if (err) return;
-        data = 'define(function(require){ return '+ data.replace(/(\s*)\\n(\s*)/g, ' ') +'; })';
+        data = 'define(function(require){ return '+ data.replace(/(\s*)\\n(\s*)/g, '') +'; })';
         var reg = new RegExp(staticUrl + '([a-zA-Z0-9-_/]*)\.(jpg|png|gif)', 'g');
         data = data.replace(reg, function(str) {
             var str = str.replace(staticUrl, '');

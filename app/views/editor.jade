@@ -83,8 +83,8 @@ html
                                     input(type="number" id="y")
                             tr
                                 td
-                                td x
-                                td y
+                                td(class="txt") x
+                                td(class="txt") y
                             tr
                                 td size
                                 td 
@@ -93,8 +93,8 @@ html
                                     input(type="number" id="height")
                             tr
                                 td
-                                td width
-                                td height
+                                td(class="txt") width
+                                td(class="txt") height
                             tr
                                 td transform
                                 td 
@@ -103,8 +103,8 @@ html
                                     input(type="number" id="translateY")
                             tr
                                 td
-                                td translateX
-                                td translateY
+                                td(class="txt") translateX
+                                td(class="txt") translateY
                             tr
                                 td
                                 td 
@@ -113,7 +113,7 @@ html
                                     
                             tr
                                 td
-                                td rotate
+                                td(class="txt") rotate
                                 td 
                             tr
                                 td
@@ -123,8 +123,8 @@ html
                                     input(type="number" id="scaleY")
                             tr
                                 td
-                                td scaleX
-                                td scaleY
+                                td(class="txt") scaleX
+                                td(class="txt") scaleY
                             tr
                                 td
                                 td 
@@ -133,8 +133,8 @@ html
                                     input(type="number" id="skewY")
                             tr
                                 td
-                                td skewX
-                                td skewY
+                                td(class="txt") skewX
+                                td(class="txt") skewY
                             tr
                                 td alpha
                                 td 
@@ -158,7 +158,7 @@ html
                             tr
                                 td script
                                 td(colspan="2")
-                                    input(type="text" id="script" readOnly="true")
+                                    input(type="text" id="script" class="change" readOnly="true")
                                     input(type="button" class="change-btn" value="Θ")
 
                 div(class="info-priv")
@@ -167,7 +167,7 @@ html
                             tr
                                 td image
                                 td(colspan="2")
-                                    input(type="text" id="image" readOnly="true")
+                                    input(type="text" id="image" class="change" readOnly="true")
                                     input(type="button" class="change-btn" value="Θ")
                             tr
                                 td rect
@@ -180,14 +180,14 @@ html
                             tr
                                 td text
                                 td(colspan="2")
-                                    input(type="text" id="text")
+                                    input(type="text" id="text" class="change")
                                     input(type="button" class="change-btn" value="Θ")    
                     table(class="Sprite")
                         tbody
                             tr
-                                td spriteSheet
+                                td(style="") sheet
                                 td(colspan="2") 
-                                    input(type="text" id="ss" readOnly="true")
+                                    input(type="text" id="ss" class="change" readOnly="true")
                                     input(type="button" class="change-btn" value="Θ")
 
             div(class="timeline")

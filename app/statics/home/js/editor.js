@@ -199,13 +199,16 @@ require(modules, function(ct) {
                         })
                         break;
                     case 'tween':
+                        hideAll();
                         $('.timeline').show();
                         break;
                     case 'css':
+                        hideAll();
                         $('.main-css').show();
                         cssEditor.setValue(pjData.css || '');
                         break;
                     case 'script':
+                        hideAll();
                         $('.main-script').show();
                         jsEditor.setValue(target.script || '');
                         break;
