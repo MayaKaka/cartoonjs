@@ -236,6 +236,8 @@ require(modules, function(ct) {
                     
                     parent.add(obj);
                     sceneTree.addNodes(sceneTree.getNodeByParam('pid', parent.pid), [viewer.jsonTree(obj)]);
+
+                    target = obj;
                 }
 
                 uploadData();
