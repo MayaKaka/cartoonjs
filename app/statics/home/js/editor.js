@@ -406,7 +406,7 @@ require(modules, function(ct) {
                 $('.info #skewX').val(target.transform.skewX);
                 $('.info #skewY').val(target.transform.skewY);
                 $('.info #alpha').val(target.alpha);
-                $('.info #visible').attr('checked', target.visible);
+                $('.info #visible')[0].checked = target.visible;
                 $('.info #shadow').val(target.shadow);
                 $('.info #cursor').val(target.cursor);
                 $('.info #script').val(target.script || '');
