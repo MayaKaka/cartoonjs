@@ -2,7 +2,8 @@
 define(function (require) {
     'use strict';
 
-var DisplayObject = require('display/DisplayObject');
+var cartoon = require('cartoon'),
+    DisplayObject = cartoon.DisplayObject;
     
 var TextField = DisplayObject.extend({
     

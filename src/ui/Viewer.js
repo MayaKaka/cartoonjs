@@ -6,6 +6,7 @@ var ct = require('cartoon');
     
 var Viewer = ct.Class.extend({
     
+    _cssPrefix: '',
     _viewIndex: -1,
     _views: null,
     _sprites: null,
@@ -17,6 +18,11 @@ var Viewer = ct.Class.extend({
         this._views = {};
         this._sprites = {};
     },
+
+    useCss: function(prefix) {
+        this._cssPrefix = prefix;
+    },
+ 
 
     isContainer: function(type) {
         return ['Stage', 'Canvas', 'GLCanvas', 'DisplayObject'].indexOf(type) > -1;
@@ -52,8 +58,7 @@ var Viewer = ct.Class.extend({
         }
 
         if (json.tag) {
-            obj.tag = json.tag;
-            this.set(json.tag, obj);
+            this.setTag(obj, json.tag);
         }
 
         if (json.children) {
@@ -234,6 +239,16 @@ var Viewer = ct.Class.extend({
 
     get: function(tag) {
         return this._views[tag];
+    },
+
+    setTag: function(obj, tag) {
+        obj.tag = tag;
+
+        this.set(tag, obj);
+
+        if (obj.tag && obj.renderMode === 0) {
+            obj.elem.className = (this._cssPrefix + obj.tag).replace(/_/g, '-');
+        }
     },
 
     callback: function(objects) {

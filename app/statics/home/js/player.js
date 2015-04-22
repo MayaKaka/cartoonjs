@@ -21,6 +21,7 @@ require(['cartoon', 'cartoon.ui'], function(ct) {
 
     var init = function(data) {
         viewer.enableScript(true);
+        viewer.useCss('opr-'+pname+'-');
         style = document.createElement('style');
         style.type = 'text/css';
         if(style.styleSheet){

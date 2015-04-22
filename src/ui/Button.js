@@ -2,8 +2,9 @@
 define(function (require) {
     'use strict';
 
-var DisplayObject = require('display/DisplayObject'),
-    Bitmap = require('display/Bitmap');
+var cartoon = require('cartoon'),
+    DisplayObject = cartoon.DisplayObject,
+    Bitmap = cartoon.Bitmap;
 
 var Button = DisplayObject.extend({
 

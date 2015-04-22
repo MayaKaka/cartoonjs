@@ -344,8 +344,10 @@ require(['cartoon', 'cartoon.ui', 'pdata'], function(ct, ct_ui, pdata) {
     preload.setResPath(pdata.path);
     
     var init = function(data) {
+
         viewer.enableScript(true);
         viewer._this = _this;
+        viewer.useCss('opr-'+pname+'-');
         style = document.createElement('style');
         style.type = 'text/css';
         if(style.styleSheet){

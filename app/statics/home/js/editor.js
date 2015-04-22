@@ -198,7 +198,6 @@ require(modules, function(ct) {
                             }
                         })
                         break;
-                    
                     case 'tween':
                         $('.timeline').show();
                         break;
@@ -437,7 +436,7 @@ require(modules, function(ct) {
                 obj;
             switch(id) {
                 case 'tag':
-                    target.tag = val;
+                    viewer.setTag(target, val);
                     var node = sceneTree.getNodeByParam('pid', target.pid);
                     node.name = viewer.getName(target);
                     sceneTree.updateNode(node);
