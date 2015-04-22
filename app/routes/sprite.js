@@ -9,10 +9,10 @@ var Image = Canvas.Image;
 /*
 var cvs = new Canvas(20, 20, 'png');
 var ctx = cvs.getContext('2d');
-ctx.fillStyle = '#cccccc';
+ctx.fillStyle = '#ececec';
 ctx.fillRect(0, 0, 10, 10);
 ctx.fillRect(10, 10, 10, 10);
-fs.writeFile('bg.png', cvs.toBuffer());
+fs.writeFile('app/statics/home/img/bg.png', cvs.toBuffer());
 */
 
 var router = module.exports = express.Router();
