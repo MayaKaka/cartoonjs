@@ -32,7 +32,7 @@ var Stage = DisplayObject.extend({
         // 事件处理函数
         var preventDef = function(evt) {
             var tag = (evt.target || evt.srcElement).tagName.toLowerCase();
-            if (tag === 'a' || tag === 'input' || tag === 'select' || tag === 'textarea') {
+            if (tag === 'a' || tag === 'input' || tag === 'select' || tag === 'textarea' || tag === 'embed') {
                 return;
             }
             if (evt.preventDefault) {

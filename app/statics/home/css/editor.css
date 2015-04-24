@@ -12,7 +12,9 @@
 }
 
 .header {
-    background-color: #444444;
+	background: #444;
+    background: -webkit-linear-gradient(top, #555, #333, #222);
+    box-shadow: 0 2px 4px #000;
     padding: 8px;
 }
 

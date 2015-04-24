@@ -322,8 +322,8 @@ function request (paras) {
         return returnValue; 
     } 
 }
-var pname = request('pname') || 'abc';
-var baseUrl = location.origin;
+var pname = request('pname') || 'test';
+var baseUrl = '//'+location.host;
         
 require.config({
     paths: {

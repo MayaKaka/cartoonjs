@@ -54,7 +54,7 @@ require(modules, function(ct) {
                 });
             }
         } else {
-            location.href = location.href + '?pname=abc';
+            location.href = location.href + '?pname=test';
         }
     } else {
         var viewer = new ct.Viewer();
@@ -964,7 +964,7 @@ require(modules, function(ct) {
                 if (a.isParent) {
                     html += '<img src="/static/home/img/folder.png" lang="'+a.path+'">'
                 } else {
-                    html += '<img src="' + (pjData.path+'/res'+a.path) + '">'
+                    html += '<img src="' + (pjData.path+'res'+a.path) + '">'
                 }
                 html += '<p>' + a.name + '</p>';
                 html += '</div>';
@@ -1012,7 +1012,7 @@ require(modules, function(ct) {
                     pname: pname
                 },
                 success: function(data) {
-                    alert('导出成功');
+                    console.log('导出成功');
                 }
             });
         });

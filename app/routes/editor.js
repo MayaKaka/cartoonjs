@@ -75,7 +75,7 @@ router.get('/export-project', function(req, res) {
     var pname = req.query.pname;
     var path = output + '/' + pname;
     var url = outurl + '/' + pname;
-    var staticUrl = '/static';
+    var staticUrl = '/static/';
     var exportPath = path + '/export';
 
     fs.readFile(path + '/project.json', 'utf-8', function(err, data) {
@@ -84,15 +84,15 @@ router.get('/export-project', function(req, res) {
         var reg = new RegExp(staticUrl + '([a-zA-Z0-9-_/]*)\.(jpg|png|gif)', 'g');
         data = data.replace(reg, function(str) {
             var str = str.replace(staticUrl, '');
-            var name = str.replace('\/home\/', '').replace('\/projects\/'+pname+'\/', '');
+            var name = str.replace('home\/', '').replace('projects\/'+pname+'\/', '');
             name = name.replace(/\//g, '_');
-            fs.readFile(statics + str, function(err, data) {
+            fs.readFile(statics + '/' + str, function(err, data) {
                 if (err) console.log(err);
                 else fs.writeFile(exportPath + '/' + name, data);
             });
             return name;
         });
-        data = data.replace(url, 'http://localhost' + url + '/export/');
+        data = data.replace(url + '/', '' + url + '/export/');
         fs.writeFile(exportPath + '/pdata.js', data);
     });
 
