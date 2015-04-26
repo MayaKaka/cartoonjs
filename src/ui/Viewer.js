@@ -206,6 +206,7 @@ var Viewer = ct.Class.extend({
             name: this.getName(obj),
             drag: !root && !obj.renderMode,
             pid: pid,
+            open: obj.type === 'Stage',
             isParent: isContainer
         };
 
@@ -232,7 +233,7 @@ var Viewer = ct.Class.extend({
     getName: function(obj) {
         var type = obj.type === 'DisplayObject' ? 'Display' : obj.type === 'ParticleSystem' ? 'Particle' : obj.type;
         var tag = obj.tag ? ' 【'+obj.tag+'】' : '';
-        var script = obj.script ? ' Θ' : '';
+        var script = obj.script ? '<span class="button edit" data-pid="'+ obj.pid +'"></span>' : '';
         var hidden = obj.visible ? '' : ' × ';
         return hidden + type + tag + script;
     },

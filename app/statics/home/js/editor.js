@@ -209,8 +209,7 @@ require(modules, function(ct) {
                         break;
                     case 'script':
                         hideAll();
-                        $('.main-script').show();
-                        jsEditor.setValue(target.script || '');
+                        showScript();
                         break;
                     case 'delete':
                         parent = target.parent;
@@ -629,6 +628,15 @@ require(modules, function(ct) {
             }
   
         };
+
+        var showScript = function() {
+            $('.main-script').show();
+            jsEditor.setValue(target.script || '');
+            if (target._scriptPos) {
+                jsEditor.gotoLine(target._scriptPos.row, target._scriptPos.column, true);
+            }
+        }
+
         var updateCss = function() {
             var css = pjData.css || '';
             var id = 'css';
@@ -686,7 +694,8 @@ require(modules, function(ct) {
             view: { 
                 dblClickExpand: false, 
                 showLine: true, 
-                selectedMulti: false 
+                selectedMulti: false,
+                nameIsHTML: true
             },
             data: {
                 keep: { 
@@ -1077,6 +1086,10 @@ require(modules, function(ct) {
         });
 
         var hideAll = function() {
+            if ($('.main-script').css('display') === 'block') {
+                target._scriptPos = jsEditor.getCursorPosition();
+            }
+
             $('.main-sprite').hide();
             $('.main-asset').hide();
             $('.main-txt').hide();
@@ -1117,8 +1130,7 @@ require(modules, function(ct) {
         $('#script').next().click(function() {
             if (target) {
                 hideAll();
-                $('.main-script').show();
-                jsEditor.setValue(target.script || '');
+                showScript();
             }
         });
 
@@ -1157,6 +1169,17 @@ require(modules, function(ct) {
                         uploadData();    
                     }
                 }
+            }
+        });
+
+        $('#sceneTree').click(function(evt) {
+            var tgt = evt.target;
+            
+            if ($(tgt).hasClass('edit')) {
+                hideAll();
+                setTimeout(function() {   
+                    showScript();
+                }, 1);
             }
         });
     }
