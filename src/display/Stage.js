@@ -32,13 +32,12 @@ var Stage = DisplayObject.extend({
         // 事件处理函数
         var preventDef = function(evt) {
             var tag = (evt.target || evt.srcElement).tagName.toLowerCase();
-            if (tag === 'a' || tag === 'input' || tag === 'select' || tag === 'textarea' || tag === 'embed') {
-                return;
-            }
-            if (evt.preventDefault) {
-                evt.preventDefault();
-            } else {
-                window.event.returnValue = false;
+            if (tag === 'div' || tag === 'svg') {
+                if (evt.preventDefault) {
+                    evt.preventDefault();
+                } else {
+                    window.event.returnValue = false;
+                }
             }
         }
         var handleDown = function(evt) {
@@ -54,7 +53,7 @@ var Stage = DisplayObject.extend({
             startX = mouseX;
             startY = mouseY;
         };
-        var    handleUp = function(evt) {
+        var handleUp = function(evt) {
             preventDef(evt);
             // 触发up事件
             self._triggerEvent('mouseup', target, mouseX, mouseY);
@@ -81,7 +80,9 @@ var Stage = DisplayObject.extend({
             elem.addEventListener('touchstart', handleDown, false);
             elem.addEventListener('touchend', handleUp, false);
             elem.addEventListener('touchmove', handleMove, false);
-        } else {
+        } 
+
+        if ('onmousedown' in window) {
             if (elem.attachEvent) {
                 elem.attachEvent('onmousedown', handleDown, false);
                 elem.attachEvent('onmouseup', handleUp, false);

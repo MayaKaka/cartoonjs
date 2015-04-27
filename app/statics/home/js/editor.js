@@ -633,7 +633,7 @@ require(modules, function(ct) {
             $('.main-script').show();
             jsEditor.setValue(target.script || '');
             if (target._scriptPos) {
-                jsEditor.gotoLine(target._scriptPos.row, target._scriptPos.column, true);
+                jsEditor.gotoLine(target._scriptPos.row+1, target._scriptPos.column, true);
             }
         }
 
@@ -775,8 +775,7 @@ require(modules, function(ct) {
                     }
 
                     $('.info input').blur();
-                    $('.main-script').hide();
-                    $('.main-asset').hide();
+                    hideAll();
                 }
             }
         };
