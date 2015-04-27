@@ -24,6 +24,39 @@ router.get('/', function(req, res) {
     res.send(jade.renderTpl('sprite', { title: 'sprite' }));
 });
 
+router.get('/merge', function(req, res) {
+    var pname = req.query.pname;
+
+    var paths = {
+        output: output + '/' + pname +'/export/',
+        outurl: outurl + '/' + pname +'/export/',
+        cssSprite: true
+    };
+    fs.readdir(paths.output, function(err, files) {
+        if (err) return;
+        var list = [];
+        files.forEach(function(a) {
+            if (a.match(/^res_/g)) {
+                list.push({
+                    originalname: a,
+                    path: paths.output + a
+                });    
+            }
+        });
+        var result = merge(paths, list);
+        var data = fs.readFileSync(paths.output + 'pdata.js', 'utf-8');
+
+        result.frames.forEach(function(a) {
+            var query = '"image":"'+a[7]+'","rect":\\[0,0,'+a[2]+','+a[3]+'\\]';
+            var place = '"image":"0.png","rect":['+a[0]+','+a[1]+','+a[2]+','+a[3]+']';
+            data = data.replace(new RegExp(query, 'g'), place);
+        });
+        fs.writeFile(paths.output + 'pdata.js', data);
+
+        res.send('complete!');
+    });
+});
+
 router.post('/upload', function(req, res) {
     var files = req.files;
     var list = [];
@@ -34,8 +67,8 @@ router.post('/upload', function(req, res) {
         sname = req.body.sname;
 
     var paths = {
-        output: output + '/' + pname +'/ani/' + sname,
-        outurl: outurl + '/' + pname +'/ani/' + sname
+        output: output + '/' + pname +'/ani/' + sname + '/',
+        outurl: outurl + '/' + pname +'/ani/' + sname + '/'
     }
 
     if (cmd === 'comm') {
@@ -52,7 +85,7 @@ router.post('/upload', function(req, res) {
                 files.forEach(function(a) {
                     list.push({
                         originalname: a,
-                        path: paths.output + '/' + a
+                        path: paths.output + a
                     });
                 });
                 exec();
@@ -101,9 +134,12 @@ function merge(paths, files) {
                 idx: idx, image: img.data, width: img.originRect[2], height: img.originRect[3], translateX: img.originRect[0], translateY: img.originRect[1]
             })
         } else {
+            console.log(a.path)
             data = fs.readFileSync(a.path);
+            img = new Image();
+            img.src = data;
             images.push({
-                idx: idx, image: data, width: img.width, height: img.height, translateX: 0, translateY: 0
+                idx: idx, image: img, width: img.width, height: img.height, translateX: 0, translateY: 0, name: name
             });
         }
         
@@ -137,7 +173,11 @@ function merge(paths, files) {
             canvas.lineHeight = 0;
         }
 
-        frames.push([canvas.sx, canvas.sy, a.width, a.height, canvases.length-1, a.translateX, a.translateY]);
+        var frameData = [canvas.sx, canvas.sy, a.width, a.height, canvases.length-1, a.translateX, a.translateY];
+        if (paths.cssSprite) {
+            frameData.push(a.name);
+        }
+        frames.push(frameData);
 
         canvas.sx += a.width;
         canvas.lineHeight = Math.max(canvas.lineHeight, a.height);
@@ -160,8 +200,8 @@ function merge(paths, files) {
     images = [];
     canvases.forEach(function(a, i) {
         var fileName = i + '.png';
-        fs.writeFileSync(paths.output + '/' + fileName, canvases[i].toBuffer());
-        images.push(paths.outurl + '/' + fileName);
+        fs.writeFileSync(paths.output + fileName, canvases[i].toBuffer());
+        images.push(paths.outurl + fileName);
     });
 
     var result = {
@@ -272,11 +312,11 @@ function trim(paths, files) {
     mini.getContext('2d').drawImage(canvas, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
 
     if (!paths.forMerge) {
-        fs.writeFile(paths.output + '/' + name, mini.toBuffer());
+        fs.writeFile(paths.output + name, mini.toBuffer());
     }
 
     var result = {
-        image: paths.outurl + '/' + name,
+        image: paths.outurl + name,
         data: mini,
         sourceRect: [0, 0, canvas.width, canvas.height],
         originRect: rect

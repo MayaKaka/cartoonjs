@@ -1013,6 +1013,19 @@ require(modules, function(ct) {
             window.open('/static/home/aladdin.html?pname=' + pname);
         });
 
+        $('.tab .css-sprite').click(function() {
+            $.ajax({
+                url: '/sprite/merge',
+                data: {
+                    pname: pname
+                },
+                success: function(data) {
+                    console.log('合并成功');
+                    window.d = data;
+                }
+            });
+        });
+        
         $('.tab .export').click(function() {
              $.ajax({
                 url: '/editor/export-project',
@@ -1181,5 +1194,6 @@ require(modules, function(ct) {
                 }, 1);
             }
         });
+
     }
 });
