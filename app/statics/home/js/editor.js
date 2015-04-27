@@ -430,6 +430,9 @@ require(modules, function(ct) {
                     case 'Sprite':
                         $('.info #ss').val(target._spriteSheet.originName);
                         break;
+                    case 'Button':
+                        $('.info #ss_b').val(target._spriteSheet.originName);
+                        break;
                 }
             }
         }
@@ -1122,6 +1125,13 @@ require(modules, function(ct) {
             }
         });
 
+        $('#ss_b').next().click(function() {
+            if (target) {
+                hideAll();
+                $('.main-sprite').show();
+            }
+        });
+
         $('#image').next().click(function() {
             if (target) {
                 hideAll();
@@ -1146,8 +1156,6 @@ require(modules, function(ct) {
             }
         });
 
-
-
         $('.main-asset').click(function(evt) {
             if (display === 'stage' && target && target.type === 'Bitmap') {
                 var img = evt.target;
@@ -1170,14 +1178,22 @@ require(modules, function(ct) {
         });
 
         $('.main-sprite').click(function(evt) {
-            if (display === 'stage' && target && target.type === 'Sprite') {
+            if (display === 'stage' && target) {
                 var img = evt.target;
                 if (img.tagName.toLowerCase() === 'img') {
                     var ss = sprites[img.lang];
                     if (ss) {
-                        target._initSpriteSheet(ss);
-                        target.play('all');
-                        $sprite.hide();
+                        if (target.type === 'Sprite') {
+                            target._initSpriteSheet(ss);
+                            target.play('all');
+                        } else if (target.type === 'Button') {
+                            target.removeAll();
+                            target.off('mousedown');
+                            target.off('mouseup')
+                            target._initUI(ss);
+                        }
+
+                        hideAll();
                         uploadData();    
                     }
                 }

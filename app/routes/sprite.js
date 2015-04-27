@@ -134,7 +134,6 @@ function merge(paths, files) {
                 idx: idx, image: img.data, width: img.originRect[2], height: img.originRect[3], translateX: img.originRect[0], translateY: img.originRect[1]
             })
         } else {
-            console.log(a.path)
             data = fs.readFileSync(a.path);
             img = new Image();
             img.src = data;
@@ -213,7 +212,10 @@ function merge(paths, files) {
             all: [0, len-1, true, len*60]
         }
     };
-    fs.writeFile(paths.output + '/ss.json', JSON.stringify(result));
+
+    if (!paths.cssSprite) {
+        fs.writeFile(paths.output + '/ss.json', JSON.stringify(result));
+    }
     return result;
 }
 

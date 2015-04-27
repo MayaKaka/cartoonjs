@@ -26,12 +26,13 @@ var Button = DisplayObject.extend({
         this._frames = spriteSheet.frames;
 
         var self = this;
-
+        var len = this._frames.length > 4 ? 4 : this._frames.length;  
         var bmp, frame, image;
-        for (var i=0, l=this._frames.length; i<l; i++) {
+
+        for (var i=0, l=len; i<l; i++) {
             frame = this._frames[i];
             image = this._images[frame[4]];
-            bmp = new Bitmap({ renderMode: this.renderMode, image: image, rect: frame, visible: false });
+            bmp = new Bitmap({ render: this.renderMode, image: image, rect: frame, visible: false });
             bmp.enable(false);
             this.add(bmp);
         }
@@ -42,7 +43,6 @@ var Button = DisplayObject.extend({
         this.on('mouseup', function() {
             self.status(0);
         });
-
         this.status(0);
     },
 
