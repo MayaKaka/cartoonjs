@@ -47,7 +47,8 @@ router.get('/merge', function(req, res) {
         var data = fs.readFileSync(paths.output + 'pdata.js', 'utf-8');
 
         result.frames.forEach(function(a) {
-            var query = '"image":"'+a[7]+'","rect":\\[0,0,'+a[2]+','+a[3]+'\\]';
+            var num = '\\d+';
+            var query = '"image":"'+a[7]+'","rect":\\[0,0,'+num+','+num+'\\]';
             var place = '"image":"0.png","rect":['+a[0]+','+a[1]+','+a[2]+','+a[3]+']';
             data = data.replace(new RegExp(query, 'g'), place);
         });
@@ -145,9 +146,16 @@ function merge(paths, files) {
         fs.unlink(a.path);
     });
 
-    images.sort(function(a, b) {
-        return a.idx - b.idx;
-    });
+    if (paths.cssSprite) {
+        images.sort(function(a, b) {
+            return b.height - a.height;
+        });
+    } else {
+        images.sort(function(a, b) {
+            return a.idx - b.idx;
+        });
+    }
+    
     
     var frames = [],
         canvases = [],

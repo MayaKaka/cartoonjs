@@ -33,6 +33,9 @@ var Button = DisplayObject.extend({
             frame = this._frames[i];
             image = this._images[frame[4]];
             bmp = new Bitmap({ render: this.renderMode, image: image, rect: frame, visible: false });
+            bmp.data({
+                offsetX: frame[5], offsetY: frame[6]
+            });
             bmp.enable(false);
             this.add(bmp);
         }
@@ -57,7 +60,8 @@ var Button = DisplayObject.extend({
         child = this.children[this._status];
         child.style('visible', true);
         this.style({
-            width: child.width, height: child.height
+            width: child.width, height: child.height,
+            transform: { translateX: child.data('offsetX'), translateY: child.data('offsetY') }
         });
     }
     
