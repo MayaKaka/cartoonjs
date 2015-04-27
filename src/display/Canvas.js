@@ -107,12 +107,12 @@ var Canvas = DisplayObject.extend({
             }
         };
         // 绑定事件
-        if ('ontouchstart' in window) {
+        if ('ontouchstart' in document) {
             elem.addEventListener('touchstart', handleDown, false);
             elem.addEventListener('touchend', handleUp, false);
             elem.addEventListener('touchmove', handleMove, false);
         }
-        if ('onmousedown' in window) {
+        if ('onmousedown' in document) {
             elem.addEventListener('mousedown', handleDown, false);
             elem.addEventListener('mouseup', handleUp, false);
             elem.addEventListener('mousemove', handleMove, false);

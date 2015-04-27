@@ -76,13 +76,13 @@ var Stage = DisplayObject.extend({
             }
         };
         // 绑定事件
-        if ('ontouchstart' in window) {
+        if ('ontouchstart' in document) {
             elem.addEventListener('touchstart', handleDown, false);
             elem.addEventListener('touchend', handleUp, false);
             elem.addEventListener('touchmove', handleMove, false);
         } 
 
-        if ('onmousedown' in window) {
+        if ('onmousedown' in document) {
             if (elem.attachEvent) {
                 elem.attachEvent('onmousedown', handleDown, false);
                 elem.attachEvent('onmouseup', handleUp, false);
