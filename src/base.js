@@ -60,6 +60,7 @@ var setRenderMode = function(mode) {
 return {
     _renderMode: 0,
     
+    ie: navigator.userAgent.indexOf("MSIE") > 0,
     extend: extend, 
     random: random,
     getWinSize: getWinSize,

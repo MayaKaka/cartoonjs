@@ -40,7 +40,17 @@ var Stage = DisplayObject.extend({
                 }
             }
         }
+        var checkButton = function(evt) {
+            if (evt.touches) {
+                return true;
+            } else if (base.ie) {
+                return evt.button == 1;
+            } else {
+                return evt.button == 0;
+            }
+        }
         var handleDown = function(evt) {
+            if (!checkButton(evt)) return;
             preventDef(evt);
             mouseX = self._getMouseX(evt);
             mouseY = self._getMouseY(evt);
@@ -54,6 +64,7 @@ var Stage = DisplayObject.extend({
             startY = mouseY;
         };
         var handleUp = function(evt) {
+            if (!checkButton(evt)) return;
             preventDef(evt);
             // 触发up事件
             self._triggerEvent('mouseup', target, mouseX, mouseY);
@@ -65,6 +76,7 @@ var Stage = DisplayObject.extend({
             target = null;
         };
         var handleMove = function(evt) {
+            if (!checkButton(evt)) return;
             preventDef(evt);
             mouseX = self._getMouseX(evt);
             mouseY = self._getMouseY(evt);

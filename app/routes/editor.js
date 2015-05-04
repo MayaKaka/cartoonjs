@@ -85,10 +85,10 @@ router.get('/export-project', function(req, res) {
         data = data.replace(reg, function(str) {
             var str = str.replace(staticUrl, '');
             var name = str.replace('home\/', '').replace('projects\/'+pname+'\/', '');
-            name = name.replace(/\//g, '_');
-            if (/^ani_/g.test(name)) {
-                name = name.replace('_0.', '.');
+            if (/^ani\//g.test(name)) {
+                name = name.replace('\/0.', '.');
             }
+            name = name.replace(/\//g, '_');
             fs.readFile(statics + '/' + str, function(err, data) {
                 if (err) console.log(err);
                 else fs.writeFile(exportPath + '/' + name, data);

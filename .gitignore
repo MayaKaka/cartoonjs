@@ -4,6 +4,7 @@
 /test/
 /examples/
 /app/uploads/
+/app/statics/projects/*/export/*
 
 # Project Files #
 startup.*
